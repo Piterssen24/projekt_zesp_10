@@ -3,19 +3,11 @@
 
     <string name="app_name">PicNews</string>
     <string name="hello_world">Hello world!</string>
-    <string name="rejestacja">Zarejestruj</string>
-    <string name="stringrejestruj">Zarejestruj się w aplikacji PicNews!</string>
-    <string name="stringemail">Adres e-mail</string>
-    <string name="stringlogin">Login</string>
-    <string name="stringhaslo">Hasło</string>
-    <string name="stringhaslopowtorz">Powtórz hasło</string>
-    <string name="stringtyp">Zarejestruj się jako:</string>
-    <string name="radiobuttonDziennikarz">Dziennikarz</string>
-    <string name="radiobuttonUzytkownik">Użytkownik</string>
-    <string name="stringrejestracja">Rejestracja</string>
-    <string name="stringrejestracjafacebook">Kontynuuj przez Facebook\'a</string>
-    <string name="stringlogowanie">Zaloguj</string>
-    <string name="stringbezlogowania">Przejdź do aplikacji</string>
-    <string name="stringzaloguj">Zaloguj</string>
+    <string name="action_settings">Settings</string>
+    <string name="stringview1">Witaj w mojej aplikacji</string>
+    <string name="stringbutton">button</string>
+    <string name="stringnews">news</string>
+    <string name="stringhome">home</string>
+    <string name="stringkonto">konto</string>
 
 </resources>
