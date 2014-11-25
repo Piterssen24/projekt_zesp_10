@@ -1,0 +1,49 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="10dp"
+ 	android:paddingRight="10dp"
+ 	android:background="@drawable/gaz3"
+    tools:context="${relativePackage}.${activityClass}" >
+
+    <Button
+        android:id="@+id/buttonrejestracja"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:background="#CC009900"
+        android:text="@string/rejestacja" />
+
+    <Button
+        android:id="@+id/buttonrejestracjafacebook"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/buttonrejestracja"
+        android:layout_centerHorizontal="true"
+        android:background="#CC003399"
+        android:layout_marginTop="15dp"
+        android:textColor="#fbfbfb"
+        android:text="@string/stringrejestracjafacebook" />
+
+    <Button
+        android:id="@+id/buttonlogowanie"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/buttonrejestracjafacebook"
+        android:layout_centerHorizontal="true"
+        android:background="#CC009900"
+        android:layout_marginTop="15dp"
+        android:text="@string/stringlogowanie" />
+
+    <Button
+        android:id="@+id/buttonbezlogowania"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/buttonlogowanie"
+        android:layout_centerHorizontal="true"
+        android:background="#CC009900"
+        android:layout_marginTop="15dp"
+        android:text="@string/stringbezlogowania" />
+
+</RelativeLayout>
