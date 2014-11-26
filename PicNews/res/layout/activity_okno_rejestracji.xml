@@ -7,6 +7,7 @@
     android:orientation="vertical"
     tools:context=".OknoRejestracji" >
 
+
     <TextView
         android:id="@+id/textemail"
         android:layout_width="wrap_content"
@@ -17,139 +18,129 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <LinearLayout
-        android:id="@+id/Layoutemail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="15dp" >
-
-        <TextView
-            android:id="@+id/textViewemail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/stringemail" />
-
-        <EditText
-            android:id="@+id/editTextemail"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:ems="10"
-            android:inputType="textEmailAddress" >
-
-            <requestFocus />
-        </EditText>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/Layoutlogin"
+        android:id="@+id/Layoutrejestracja"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp" >
+        android:layout_marginTop="30dp"
+        android:layout_height="wrap_content" >
 
-        <TextView
-            android:id="@+id/textViewlogin"
+        <LinearLayout
+            android:id="@+id/LayoutTextView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-            android:text="@string/stringlogin" />
+            android:orientation="vertical" >
 
-        <EditText
-            android:id="@+id/editTextlogin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="30dp"
-            android:layout_weight="1"
-            android:ems="10"
-            android:inputType="text" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/Layouthaslo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"        
-        android:layout_marginTop="15dp" >
-
-        <TextView
-            android:id="@+id/textViewhaslo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-            android:text="@string/stringhaslo" />
-
-        <EditText
-            android:id="@+id/editTexthaslo"
-            android:layout_width="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"
-            android:ems="10"
-            android:inputType="textPassword" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/Layouthaslopowtorz"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="15dp" >
-
-        <TextView
-            android:id="@+id/textViewhaslopowtorz"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/stringhaslopowtorz" />
-
-        <EditText
-            android:id="@+id/editTexthaslopowtorz"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginRight="30dp"
-            android:ems="10"
-            android:inputType="textPassword" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/Layouttyp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="15dp" >
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/stringtyp" />
-
-        <RadioGroup
-            android:id="@+id/radioGrouptyp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="40dp"
-            android:layout_weight="1" >
-
-            <RadioButton
-                android:id="@+id/radio0"
+            <TextView
+                android:id="@+id/textViewemail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/radiobuttonDziennikarz" />
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:text="@string/stringemail" />
 
-            <RadioButton
-                android:id="@+id/radio1"
+            <TextView
+                android:id="@+id/textViewlogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/radiobuttonUzytkownik" />
-        </RadioGroup>
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:text="@string/stringlogin" />
+
+            <TextView
+                android:id="@+id/textViewhaslo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:text="@string/stringhaslo" />
+
+            <TextView
+                android:id="@+id/textViewhaslopowtorz"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:text="@string/stringhaslopowtorz" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:text="@string/stringtyp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LayoutEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical" >
+
+            <EditText
+                android:id="@+id/editTextemail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textEmailAddress" />
+
+            <EditText
+                android:id="@+id/editTextlogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="text" >
+
+                <requestFocus />
+            </EditText>
+
+            <EditText
+                android:id="@+id/editTexthaslo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textPassword" />
+
+            <EditText
+                android:id="@+id/editTexthaslopowtorz"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textPassword" />
+
+            <RadioGroup
+                android:id="@+id/radioGrouptyp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1" >
+
+                <RadioButton
+                    android:id="@+id/radio0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/radiobuttonDziennikarz" />
+
+                <RadioButton
+                    android:id="@+id/radio1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/radiobuttonUzytkownik" />
+            </RadioGroup>
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <Button

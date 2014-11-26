@@ -1624,15 +1624,15 @@ containing a value of this type.
         public static final int abc_textfield_search_default_mtrl_alpha=0x7f020031;
         public static final int abc_textfield_search_material=0x7f020032;
         public static final int gaz3=0x7f020033;
-        public static final int ic_launcher=0x7f020034;
+        public static final int greyframe=0x7f020034;
+        public static final int ic_launcher=0x7f020035;
+        public static final int orangeframe=0x7f020036;
     }
     public static final class id {
+        public static final int LayoutEditText=0x7f090050;
         public static final int LayoutGlowny=0x7f090048;
-        public static final int Layoutemail=0x7f090049;
-        public static final int Layouthaslo=0x7f09004f;
-        public static final int Layouthaslopowtorz=0x7f090052;
-        public static final int Layoutlogin=0x7f09004c;
-        public static final int Layouttyp=0x7f090055;
+        public static final int LayoutTextView=0x7f09004a;
+        public static final int Layoutrejestracja=0x7f090049;
         public static final int action_bar=0x7f090031;
         public static final int action_bar_activity_content=0x7f090003;
         public static final int action_bar_container=0x7f090030;
@@ -1654,7 +1654,7 @@ containing a value of this type.
         public static final int buttonrejestracja=0x7f09003f;
         public static final int buttonrejestracjafacebook=0x7f090040;
         public static final int buttonzaloguj=0x7f090047;
-        public static final int buttonzarejestruj=0x7f09005a;
+        public static final int buttonzarejestruj=0x7f090058;
         public static final int checkbox=0x7f090029;
         public static final int collapseActionView=0x7f090015;
         public static final int decor_content_parent=0x7f09002f;
@@ -1662,10 +1662,10 @@ containing a value of this type.
         public static final int dialog=0x7f090019;
         public static final int disableHome=0x7f09000d;
         public static final int dropdown=0x7f09001a;
-        public static final int editTextemail=0x7f09004b;
-        public static final int editTexthaslo=0x7f090051;
+        public static final int editTextemail=0x7f090051;
+        public static final int editTexthaslo=0x7f090053;
         public static final int editTexthaslopowtorz=0x7f090054;
-        public static final int editTextlogin=0x7f09004e;
+        public static final int editTextlogin=0x7f090052;
         public static final int edit_query=0x7f090033;
         public static final int editemail=0x7f090044;
         public static final int edithaslo=0x7f090046;
@@ -1686,9 +1686,9 @@ containing a value of this type.
         public static final int progress_circular=0x7f090007;
         public static final int progress_horizontal=0x7f090008;
         public static final int radio=0x7f09002b;
-        public static final int radio0=0x7f090058;
-        public static final int radio1=0x7f090059;
-        public static final int radioGrouptyp=0x7f090057;
+        public static final int radio0=0x7f090056;
+        public static final int radio1=0x7f090057;
+        public static final int radioGrouptyp=0x7f090055;
         public static final int search_badge=0x7f090035;
         public static final int search_bar=0x7f090034;
         public static final int search_button=0x7f090036;
@@ -1706,11 +1706,11 @@ containing a value of this type.
         public static final int split_action_bar=0x7f090004;
         public static final int submit_area=0x7f09003c;
         public static final int tabMode=0x7f09000c;
-        public static final int textView2=0x7f090056;
-        public static final int textViewemail=0x7f09004a;
-        public static final int textViewhaslo=0x7f090050;
-        public static final int textViewhaslopowtorz=0x7f090053;
-        public static final int textViewlogin=0x7f09004d;
+        public static final int textView2=0x7f09004f;
+        public static final int textViewemail=0x7f09004b;
+        public static final int textViewhaslo=0x7f09004d;
+        public static final int textViewhaslopowtorz=0x7f09004e;
+        public static final int textViewlogin=0x7f09004c;
         public static final int textemail=0x7f090043;
         public static final int texthaslo=0x7f090045;
         public static final int title=0x7f090027;

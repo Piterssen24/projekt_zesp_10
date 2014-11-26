@@ -16,6 +16,7 @@
         android:id="@+id/editemail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/greyframe"
         android:ems="10"
         android:layout_marginRight="10dp"
         android:inputType="textEmailAddress" >
@@ -33,6 +34,7 @@
         android:id="@+id/edithaslo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/greyframe"
         android:layout_marginRight="10dp"
         android:ems="10"
         android:inputType="textPassword" />
