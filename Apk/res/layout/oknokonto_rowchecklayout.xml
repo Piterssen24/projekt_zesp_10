@@ -1,0 +1,18 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="55dip"
+    android:orientation="vertical" >
+ 
+    <CheckedTextView
+        android:id="@+id/elementycheckchild"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="?android:attr/listChoiceIndicatorMultiple"
+		android:drawableRight="@null"
+        android:checked="true"
+        android:textSize="17sp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp" />
+ 
+</LinearLayout>
+

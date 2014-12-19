@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest package="pl.example.apk"
+    android:versionCode="1"
+    android:versionName="1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="21" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    
+    <application        
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:uiOptions="splitActionBarWhenNarrow"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity android:name="OknoGlowne">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <activity android:name="pl.example.apk.OknoNews"
+            android:configChanges="orientation"
+    		android:screenOrientation="portrait">
+        </activity>
+        <activity android:name="OknoLog"></activity>
+        <activity android:name="OknoRejestracja"></activity>
+        <activity android:name="OknoKonto"
+            android:uiOptions="splitActionBarWhenNarrow">
+        </activity>
+        <activity android:name="oknoAutora"></activity>
+        <activity android:name="OknoPost"></activity>        
+    </application>
+
+</manifest>
