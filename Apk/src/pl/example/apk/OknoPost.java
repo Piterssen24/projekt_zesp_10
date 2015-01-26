@@ -37,6 +37,7 @@ public class OknoPost extends Activity {
         aut= autor.getText();
         aut = aut + " Lamia";
         autor.setText(aut);
+        autor.setTextColor(Color.parseColor("#CC009900"));
         autor.setOnClickListener(new View.OnClickListener() {
   			
   			@Override

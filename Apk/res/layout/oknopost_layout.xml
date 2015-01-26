@@ -2,31 +2,38 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="15dp"
     android:orientation="vertical" >
 
     <ImageView
         android:id="@+id/picture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"/>
+        android:layout_gravity="center"/>
 
     <TextView
         android:id="@+id/post"
+        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/stringautor" />
+        android:layout_gravity="center"
+         />
 
     <TextView
         android:id="@+id/autor"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="@string/stringautor" 
+        android:layout_marginRight="10dp"
+        android:layout_gravity="right"/>
     
     <LinearLayout              
             		android:id="@+id/dodatkowe"
         			android:layout_width="match_parent"
         			android:layout_height="0dip"
         			android:layout_weight="1"
-        			android:gravity="center|bottom"
+        			android:layout_marginTop="15dp"
+        			android:layout_gravity="center|bottom"
         			android:orientation="horizontal">
                      
                     <TextView 
@@ -35,6 +42,7 @@
             			android:layout_height="wrap_content"
             			android:layout_weight="1"
            				android:gravity="center_horizontal"
+           				android:textColor="#CC009900"
             			android:text="@string/stringplus"
                  	/>
                      
@@ -43,6 +51,7 @@
                 		android:layout_width="wrap_content"
             			android:layout_height="wrap_content"
             			android:layout_weight="1"
+            			android:textColor="#CC009900"
             			android:gravity="center_horizontal"
             			android:text="@string/stringminus"
                  	/>
@@ -52,6 +61,7 @@
                 		android:layout_width="wrap_content"
             			android:layout_height="wrap_content"
             			android:layout_weight="1"
+            			android:textColor="#CC009900"
             			android:gravity="center_horizontal"
             			android:text="@string/stringzglosnaduzycie"
                  	/>

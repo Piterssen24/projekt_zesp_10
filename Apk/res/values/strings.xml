@@ -45,4 +45,5 @@
     <string name="stringminus"> - </string>
     <string name="stringczytajdalej">czytaj dalej</string>
     <string name="stringautor">autor: </string>
+    <string name="stringbuttondodaj">Dodaj Newsa</string>
 </resources>

@@ -6,10 +6,25 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="21" />
+    
+    <permission
+      android:name="com.example.googlemaps.permission.MAPS_RECEIVE"
+      android:protectionLevel="signature" />
+    
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 
+    <uses-permission android:name="com.example.googlemaps.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    
     <uses-feature android:name="android.hardware.camera" />
     <uses-permission android:name="android.permission.CAMERA"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
     
     <application        
         android:allowBackup="true"
@@ -24,6 +39,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data 
+            android:name="com.google.android.gms.version"
+      		android:value="6587000" />
         
         <activity android:name="pl.example.apk.OknoNews"
             android:configChanges="orientation"
@@ -35,7 +53,14 @@
             android:uiOptions="splitActionBarWhenNarrow">
         </activity>
         <activity android:name="oknoAutora"></activity>
-        <activity android:name="OknoPost"></activity>        
+        <activity android:name="OknoPost"></activity>
+        <activity android:name="OknoNew"></activity> 
+        
+        <meta-data
+   			android:name="com.google.android.maps.v2.API_KEY"
+   			android:value="AIzaSyBLtYHKEHxktNVNnkCj2ayDMoMWZEYFwGA" />
+        <activity android:name="OknoMapa"></activity>   
+                
     </application>
 
 </manifest>

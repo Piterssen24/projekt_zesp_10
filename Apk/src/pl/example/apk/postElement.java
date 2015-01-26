@@ -58,7 +58,7 @@ public class postElement extends Fragment {
       		});
            
            zdjecie = (ImageView) v.findViewById(R.id.zdjeciedziennikarza);
-           zdjecie.setImageResource(R.drawable.gaz3min);
+           zdjecie.setImageResource(R.drawable.pobrane);
        	   LayoutParams params = (LayoutParams) this.zdjecie.getLayoutParams();
        	   params.width = 100;
        	   params.height = 160;

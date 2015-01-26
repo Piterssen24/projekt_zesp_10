@@ -7,6 +7,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -39,6 +40,7 @@ public class OknoNews extends Activity {
        ImageView zdjecie;
        LinearLayout ll;
        Fragment newpost, newpost2;
+       public final static String APP_PATH_SD_CARD = "/PicNews";
        
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -179,10 +181,12 @@ public class OknoNews extends Activity {
       		startActivity(intent);
           return true;
       case R.id.map:
-         
+    	  Intent intentmapa = new Intent(getApplicationContext(), OknoMapa.class);
+    	  startActivity(intentmapa);         
           return true;
       case R.id.news:
-          
+    	  Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE); 
+    	  startActivityForResult(cameraIntent, 0);
           return true;
       case R.id.konto:
     	  Intent intentkonto = new Intent(getApplicationContext(), OknoKonto.class);
@@ -193,15 +197,18 @@ public class OknoNews extends Activity {
           return super.onOptionsItemSelected(item);
   }
   }
+  
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+     // TODO Auto-generated method stub
+     super.onActivityResult(requestCode, resultCode, data);
+     Uri u = data.getData();
+     Intent intentzdjecie = new Intent(this, OknoNew.class);
+     intentzdjecie.putExtra("imgurl", u);
+     startActivity(intentzdjecie);
+  }   
 
-  /** Called whenever we call invalidateOptionsMenu() */
- /* @Override
-  public boolean onPrepareOptionsMenu(Menu menu) {
-      // If the drawer is open, hide action items related to the content view
-      boolean drawerOpen = dLayout.isDrawerOpen(mDrawerLinear);
-
-      return super.onPrepareOptionsMenu(menu);
-  }*/
+  
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
