@@ -2,9 +2,35 @@
 <resources>
 
     <string name="app_name">PicNews</string>
+    <string name="icon_calendar">&#xf073;</string>
+    <string name="icon_camera">&#xf030;</string>
+    <string name="icon_account">&#xf007;</string>
+    <string name="icon_map">&#xf041;</string>
+    <string name="icon_home">&#xf015;</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="miasta">Wybierz miasto:</string>
+    <string-array name="listCategories">
+        <item>Wybierz tag</item>
+        <item>Sport</item>
+        <item>Konferencja</item>
+        <item>Konkurs</item>
+        <item>Koncert</item>
+        <item>Wykład</item>
+        <item>Impreza</item>
+        <item>Warsztaty</item>
+    </string-array>
+    
+    <string-array name="listLocations">
+        <item>Wydział 1</item>
+        <item>Wydział 2</item>
+        <item>Wydział 3</item>
+        <item>Wydział 4</item>
+        <item>Wydział 5</item>
+        <item>Wydział 6</item>
+        <item>Wydział 7</item>
+    </string-array>
+    
     <string-array name="rivers">
         <item >Toruń</item>
         <item >Bydgoszcz</item>
@@ -15,6 +41,7 @@
         <item >Warszawa</item>
         <item >Kraków</item>
     </string-array>
+    
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
 
@@ -46,4 +73,8 @@
     <string name="stringczytajdalej">czytaj dalej</string>
     <string name="stringautor">autor: </string>
     <string name="stringbuttondodaj">Dodaj Newsa</string>
+    <string name="stringChangeLocation">Zmień lokalizację</string>
+    <string name="stringPrompt1">Kategorie</string>
+    <string name="stringPrompt2">Lokalizacja</string>
+    <string name="stringEventDate">Data wydarzenia</string>
 </resources>

@@ -10,13 +10,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.LinearLayout.LayoutParams;
 
 public class OknoPost extends Activity {
 
-	TextView tresc,autor;
+	TextView content,author;
 	ImageView zdjecie;
-	CharSequence aut;
+	CharSequence authorTemp;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,15 +29,15 @@ public class OknoPost extends Activity {
         zdjecie = (ImageView) findViewById(R.id.picture);
         zdjecie.setImageResource(R.drawable.gaz3);
         
-        tresc = (TextView) findViewById(R.id.post);
-        tresc.setText("Tresc posta");
+        content = (TextView) findViewById(R.id.post);
+        content.setText("Treœæ posta");
         
-        autor = (TextView) findViewById(R.id.autor);
-        aut= autor.getText();
-        aut = aut + " Lamia";
-        autor.setText(aut);
-        autor.setTextColor(Color.parseColor("#CC009900"));
-        autor.setOnClickListener(new View.OnClickListener() {
+        author = (TextView) findViewById(R.id.author);
+        authorTemp= author.getText();
+        authorTemp = authorTemp + " Lamia";
+        author.setText(authorTemp);
+        author.setTextColor(Color.parseColor("#CC009900"));
+        author.setOnClickListener(new View.OnClickListener() {
   			
   			@Override
           	public void onClick(View v) {

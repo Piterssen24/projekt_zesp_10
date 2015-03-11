@@ -5,21 +5,81 @@
     android:orientation="vertical" >
 
     <ImageView
-        android:id="@+id/imageViewzdjecieposta"
+        android:id="@+id/imageViewPostPhoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="10dp" />
 
     <TextView
-        android:id="@+id/textViewgps"
+        android:id="@+id/textViewGps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center" 
         android:layout_marginTop="10dp" />
+    
+    <LinearLayout 
+        android:id="@+id/options"
+        android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:orientation="horizontal" >
+    
+        <Spinner
+    		android:id="@+id/listOfCategories"
+    		android:layout_width="130dp"
+    		android:layout_height="40dp"
+    		android:layout_marginLeft="20dp"
+    		 />
+        
+        <Button
+            android:id="@+id/locationChange"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="@string/stringChangeLocation" />
+        
+        <Spinner
+    		android:id="@+id/listOfLocations"
+    		android:layout_width="130dp"
+    		android:layout_height="40dp"
+    		 />
+        
+        </LinearLayout>
 
+    <LinearLayout 
+        android:id="@+id/dateOptions"
+        android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:orientation="horizontal">
+        
+        <TextView
+            android:id="@+id/textViewDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/stringEventDate" />
+        
+        <TextView
+            android:id="@+id/editTextDate"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="1"
+            
+            android:ems="10"/>
+        
+        <Button
+            android:id="@+id/buttonDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/icon_calendar" 
+            android:layout_marginRight="10dp"/>
+        
+    </LinearLayout>
+    
     <TextView
-        android:id="@+id/textViewlicznik"
+        android:id="@+id/textViewCounter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
@@ -27,20 +87,19 @@
         android:layout_marginTop="10dp" />
 
     <EditText
-        android:id="@+id/editTexttrescposta"
+        android:id="@+id/editTextPostContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:maxLength="140"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
         android:inputType="textMultiLine" >
 
         <requestFocus />
     </EditText>
 
     <Button
-        android:id="@+id/buttondodaj"
+        android:id="@+id/buttonAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

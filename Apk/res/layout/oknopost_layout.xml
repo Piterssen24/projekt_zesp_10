@@ -20,7 +20,7 @@
          />
 
     <TextView
-        android:id="@+id/autor"
+        android:id="@+id/author"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/stringautor" 
@@ -28,7 +28,7 @@
         android:layout_gravity="right"/>
     
     <LinearLayout              
-            		android:id="@+id/dodatkowe"
+            		android:id="@+id/extras"
         			android:layout_width="match_parent"
         			android:layout_height="0dip"
         			android:layout_weight="1"
@@ -37,7 +37,7 @@
         			android:orientation="horizontal">
                      
                     <TextView 
-                		android:id="@+id/ocenplus"
+                		android:id="@+id/ratePlus"
                 		android:layout_width="wrap_content"
             			android:layout_height="wrap_content"
             			android:layout_weight="1"
@@ -47,7 +47,7 @@
                  	/>
                      
                     <TextView 
-                		android:id="@+id/ocenminus"
+                		android:id="@+id/rateMinus"
                 		android:layout_width="wrap_content"
             			android:layout_height="wrap_content"
             			android:layout_weight="1"
@@ -57,7 +57,7 @@
                  	/>
                      
                     <TextView 
-                		android:id="@+id/ocenzglosnaduzycie"
+                		android:id="@+id/rateReport"
                 		android:layout_width="wrap_content"
             			android:layout_height="wrap_content"
             			android:layout_weight="1"

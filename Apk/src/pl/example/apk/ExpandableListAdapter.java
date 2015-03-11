@@ -54,7 +54,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.oknokonto_rowchecklayout, null);
             
             final CheckedTextView txtListChild = (CheckedTextView) convertView
-                    .findViewById(R.id.elementycheckchild);
+                    .findViewById(R.id.elementsCheckChild);
      
             txtListChild.setText(childText);
             
@@ -77,7 +77,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     convertView = infalInflater2.inflate(R.layout.oknokonto_rowlayout, null);
                     
                     TextView txtListChild2 = (TextView) convertView
-                            .findViewById(R.id.elementychild);
+                            .findViewById(R.id.elementsChild);
              
                     txtListChild2.setText(childText);
         	}
@@ -122,7 +122,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         }
  
         TextView lblListHeader = (TextView) convertView
-                .findViewById(R.id.elementglowny);
+                .findViewById(R.id.mainElement);
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
  

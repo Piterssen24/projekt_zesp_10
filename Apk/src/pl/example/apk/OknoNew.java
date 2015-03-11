@@ -2,58 +2,71 @@ package pl.example.apk;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.ContentResolver;
+import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Matrix;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.DatePickerDialog.OnDateSetListener;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.DatePicker;
+import android.widget.Toast;
 
-public class OknoNew extends Activity {
+public class OknoNew extends FragmentActivity {
 
 	Context context;
-	Button przyciskzatwierdzenia;
-	TextView licznik,gps;
-	EditText tresc;
+	Button buttonConfirm, buttonChangeLocation, buttonDate;
+	TextView counter,gps,date;
+	EditText content;
 	ActionBar ab;
-	ImageView zdjecieposta;
-	int znaczek = 1;
+	ImageView postPhoto;
 	Uri path;
 	LocationManager locManager;
+	Spinner categories, locations;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.oknonew_layout);
         context = getApplicationContext();
+        
+        Typeface font = Typeface.createFromAsset( getAssets(), "fontawesome-webfont.ttf" );
         
         ab = getActionBar();
         ab.setTitle("PicNews - Nowy News");
@@ -73,57 +86,129 @@ public class OknoNew extends Activity {
         Cursor cursor = getContentResolver().query(path, filePathColumn, null, null, null);
         cursor.moveToFirst();
         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-        String imagepath = cursor.getString(columnIndex); 
-        File f = new File(imagepath);   
+        String imagePath = cursor.getString(columnIndex); 
+        File f = new File(imagePath);   
         cursor.close();
-        Bitmap bitmap = BitmapFactory.decodeFile(imagepath);
-        
-        /*String image_path = getIntent().getStringExtra("path");
-        Bitmap bitmap = BitmapFactory.decodeFile(image_path);*/
+        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
     
-        zdjecieposta = (ImageView) findViewById(R.id.imageViewzdjecieposta);   
-        zdjecieposta.setImageBitmap(bitmap);
-       // zdjecieposta.setImageURI(path);
-        LayoutParams params = (LayoutParams) this.zdjecieposta.getLayoutParams();
+        postPhoto = (ImageView) findViewById(R.id.imageViewPostPhoto);   
+        postPhoto.setImageBitmap(bitmap);
+        LayoutParams params = (LayoutParams) this.postPhoto.getLayoutParams();
     	params.width = 200;
     	params.height = 260;
-    	   
     	
-    	   
-    	   
-    	   
-    	przyciskzatwierdzenia = (Button) findViewById(R.id.buttondodaj);
+    	locations = (Spinner) findViewById(R.id.listOfLocations);
+    	locations.setVisibility(View.GONE);
     	
-    	// licznik znakow posta
+    	categories = (Spinner) findViewById(R.id.listOfCategories);
+    	ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.listCategories, R.layout.customspinner);
+    	adapter.setDropDownViewResource(R.layout.customspinner);
+    	categories.setAdapter(adapter);
+    	categories.setOnItemSelectedListener(new OnItemSelectedListener() {
+    	    
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				String tag = parent.getItemAtPosition(position).toString();
+				categories.setPrompt(tag);
+				
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// TODO Auto-generated method stub
+				
+			}
+
+    	});
+    	 
+    	buttonChangeLocation = (Button) findViewById(R.id.locationChange);
+    	buttonChangeLocation.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				buttonChangeLocation.setVisibility(View.GONE);				
+				gps.setVisibility(View.GONE);
+				locations.setVisibility(View.VISIBLE);
+				ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(context, R.array.listLocations, R.layout.customspinner);
+		    	adapter2.setDropDownViewResource(R.layout.customspinner);
+		    	locations.setAdapter(adapter2);
+		    	locations.setOnItemSelectedListener(new OnItemSelectedListener() {
+		    	    
+					@Override
+					public void onItemSelected(AdapterView<?> parent, View view,
+							int position, long id) {
+						// TODO Auto-generated method stub
+						String loc = parent.getItemAtPosition(position).toString();
+						categories.setPrompt(loc);
+						
+					}
+
+					@Override
+					public void onNothingSelected(AdapterView<?> parent) {
+						// TODO Auto-generated method stub
+						
+					}
+
+		    	});
+				
+			}
+		});
     	
-    	licznik = (TextView) findViewById(R.id.textViewlicznik);
-    	tresc = (EditText) findViewById(R.id.editTexttrescposta);
-    	licznik.setText("140");
+    	date = (TextView) findViewById(R.id.editTextDate);
+    	final Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+        date.setText(String.valueOf(year)+"/"+String.valueOf(month+1)+"/"+String.valueOf(day));
     	
-    	final TextWatcher txwatcher = new TextWatcher() {
+    	buttonDate = (Button) findViewById(R.id.buttonDate);
+    	buttonDate.setTypeface(font);
+    	buttonDate.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+		        
+		        showDatePicker();
+			}
+				
+		});
+    	
+    	
+    	buttonConfirm = (Button) findViewById(R.id.buttonAdd);
+    	
+    	// counter znakow posta
+    	
+    	counter = (TextView) findViewById(R.id.textViewCounter);
+    	content = (EditText) findViewById(R.id.editTextPostContent);
+    	counter.setText("140");
+    	
+    	final TextWatcher txWatcher = new TextWatcher() {
     		   public void beforeTextChanged(CharSequence s, int start, int count, int after) {
     		   }
 
     		   public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-    		      licznik.setText(String.valueOf(140-s.length()));
+    		      counter.setText(String.valueOf(140-s.length()));
     		      
     		   }
 
     		   public void afterTextChanged(Editable s) {
-    			  int liczba = Integer.parseInt(licznik.getText().toString());
-     		      if (liczba<11)
+    			  int number = Integer.parseInt(counter.getText().toString());
+     		      if (number<11)
      		      {
-     		    	  licznik.setTextColor(Color.RED);
+     		    	  counter.setTextColor(Color.RED);
      		      }
-     		      else licznik.setTextColor(Color.BLACK);
+     		      else counter.setTextColor(Color.BLACK);
     		   }
     		};
     		
-    		tresc.addTextChangedListener(txwatcher);
+    		content.addTextChangedListener(txWatcher);
     		
     		//GPS location
-    		gps = (TextView) findViewById(R.id.textViewgps);
+    		gps = (TextView) findViewById(R.id.textViewGps);
     		gps.setText("Lokalizacja newsa:\n"+"...wczytywanie lokalizacji...");
     		
     		final LocationListener myLocationListener = new LocationListener(){   		       
@@ -208,6 +293,38 @@ public class OknoNew extends Activity {
     	
     }
         
+
+    private void showDatePicker() {
+    	  DatePickerFragment date = new DatePickerFragment();
+    	  /**
+    	   * Set Up Current Date Into dialog
+    	   */
+    	  Calendar calender = Calendar.getInstance();
+    	  Bundle args = new Bundle();
+    	  args.putInt("year", calender.get(Calendar.YEAR));
+    	  args.putInt("month", calender.get(Calendar.MONTH));
+    	  args.putInt("day", calender.get(Calendar.DAY_OF_MONTH));
+    	  date.setArguments(args);
+    	  /**
+    	   * Set Call back to capture selected date
+    	   */
+    	  date.setCallBack(ondate);
+    	  date.show(getSupportFragmentManager(), "Date Picker");
+    	 }
+
+    	 OnDateSetListener ondate = new OnDateSetListener() {
+    	  @Override
+    	  public void onDateSet(DatePicker view, int year, int monthOfYear,
+    	    int dayOfMonth) {
+    	   date.setText(
+    	     String.valueOf(year) + "/" + String.valueOf(monthOfYear+1)
+    	       + "/" + String.valueOf(dayOfMonth) );
+    	  }
+    	 };
+
+
 }
+
+
 
 

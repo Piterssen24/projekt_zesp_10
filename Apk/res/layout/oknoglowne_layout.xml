@@ -8,7 +8,7 @@
     tools:context="${relativePackage}.${activityClass}" >
 
     <Button
-        android:id="@+id/buttonrejestracja"
+        android:id="@+id/buttonRegistration"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
         android:layout_centerVertical="true"
@@ -16,10 +16,10 @@
         android:text="@string/stringrejestracja" />
 
     <Button
-        android:id="@+id/buttonrejestracjafacebook"
+        android:id="@+id/buttonRegistrationFacebook"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
-        android:layout_below="@+id/buttonrejestracja"
+        android:layout_below="@+id/buttonRegistration"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
         android:background="#CC003399"
@@ -27,20 +27,20 @@
         android:textColor="#fbfbfb" />
 
     <Button
-        android:id="@+id/buttonlogowanie"
+        android:id="@+id/buttonLogin"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
-        android:layout_below="@+id/buttonrejestracjafacebook"
+        android:layout_below="@+id/buttonRegistrationFacebook"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
         android:background="#CC009900"
         android:text="@string/stringlogowanie" />
 
     <Button
-        android:id="@+id/buttonbezlogowania"
+        android:id="@+id/buttonWithoutLogin"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
-        android:layout_below="@+id/buttonlogowanie"
+        android:layout_below="@+id/buttonLogin"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
         android:background="#CC009900"

@@ -32,7 +32,9 @@
         android:uiOptions="splitActionBarWhenNarrow"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity android:name="OknoGlowne">
+        <activity android:name="OknoGlowne"
+            android:configChanges="orientation"
+    		android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -47,19 +49,41 @@
             android:configChanges="orientation"
     		android:screenOrientation="portrait">
         </activity>
-        <activity android:name="OknoLog"></activity>
-        <activity android:name="OknoRejestracja"></activity>
-        <activity android:name="OknoKonto"
-            android:uiOptions="splitActionBarWhenNarrow">
+        <activity android:name="OknoLog"
+			android:configChanges="orientation"
+    		android:screenOrientation="portrait">
         </activity>
-        <activity android:name="oknoAutora"></activity>
-        <activity android:name="OknoPost"></activity>
-        <activity android:name="OknoNew"></activity> 
+        <activity android:name="OknoRejestracja"
+            android:configChanges="orientation"
+    		android:screenOrientation="portrait"> </activity>
+        <activity android:name="OknoKonto"
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:configChanges="orientation"
+    		android:screenOrientation="portrait">
+        </activity>
+        <activity android:name="oknoAutora"
+			android:configChanges="orientation"
+    		android:screenOrientation="portrait">
+		</activity>
+        <activity android:name="OknoPost"
+            android:configChanges="orientation"
+    		android:screenOrientation="portrait">
+            
+        </activity>
+        <activity android:name="OknoNew"
+            android:configChanges="orientation"
+    		android:screenOrientation="portrait">
+            
+        </activity> 
         
         <meta-data
    			android:name="com.google.android.maps.v2.API_KEY"
    			android:value="AIzaSyBLtYHKEHxktNVNnkCj2ayDMoMWZEYFwGA" />
-        <activity android:name="OknoMapa"></activity>   
+        <activity android:name="OknoMapa"
+            android:configChanges="orientation"
+    		android:screenOrientation="portrait">
+            
+        </activity>   
                 
     </application>
 

@@ -11,10 +11,10 @@ import android.widget.Button;
 public class OknoGlowne extends Activity {
 
 	Context context;
-	Button przyciskbezlogowania;
-	Button przycisklogowania;
-	Button przyciskrejestracji;
-	ActionBar ab;
+	Button buttonWithoutLogin;
+	Button buttonLogin;
+	Button buttonRegistration;
+	ActionBar actionBar;
 	
 	
     @Override
@@ -22,15 +22,15 @@ public class OknoGlowne extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.oknoglowne_layout);
         context = getApplicationContext();
-        ab = getActionBar();
-        ab.hide();
-        przyciskbezlogowania = (Button) findViewById(R.id.buttonbezlogowania); 
-        przycisklogowania = (Button) findViewById(R.id.buttonlogowanie);
-        przyciskrejestracji = (Button) findViewById(R.id.buttonrejestracja);
+        actionBar = getActionBar();
+        actionBar.hide();
+        buttonWithoutLogin = (Button) findViewById(R.id.buttonWithoutLogin); 
+        buttonLogin = (Button) findViewById(R.id.buttonLogin);
+        buttonRegistration = (Button) findViewById(R.id.buttonRegistration);
 
         
         
-        przyciskbezlogowania.setOnClickListener(new View.OnClickListener() {
+        buttonWithoutLogin.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
         	public void onClick(View v) {
@@ -40,7 +40,7 @@ public class OknoGlowne extends Activity {
 			
 		});
         
-        przycisklogowania.setOnClickListener(new View.OnClickListener() {
+        buttonLogin.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
         	public void onClick(View v) {
@@ -50,7 +50,7 @@ public class OknoGlowne extends Activity {
 			
 		});
         
-        przyciskrejestracji.setOnClickListener(new View.OnClickListener() {
+        buttonRegistration.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
         	public void onClick(View v) {

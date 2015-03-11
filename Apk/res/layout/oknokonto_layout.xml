@@ -5,13 +5,13 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:id="@+id/uzytkoniklayout"
+        android:id="@+id/userLayout"
         android:layout_width="match_parent"
         android:layout_gravity="center"
         android:layout_height="wrap_content" >
 
         <ImageView
-            android:id="@+id/zdjecieuzytkownika"
+            android:id="@+id/userPhoto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/gaz3" />
@@ -23,14 +23,14 @@
             android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/textViewloginuzytkownika"
+                android:id="@+id/textViewUserName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/stringwymyslonylogin"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <Button
-                android:id="@+id/buttonedycja"
+                android:id="@+id/buttonEdit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/stringedycja" />
@@ -40,13 +40,13 @@
     </LinearLayout>
 
     <ExpandableListView
-				android:id="@+id/expandablelist"
+				android:id="@+id/expandableList"
 				android:layout_height="wrap_content"
 				android:layout_width="match_parent"
 				android:groupIndicator="@null" /> 
 				
     <ExpandableListView
-				android:id="@+id/expandablelist2"
+				android:id="@+id/expandableList2"
 				android:layout_height="wrap_content"
 				android:layout_width="match_parent"
 				android:groupIndicator="@null" /> 

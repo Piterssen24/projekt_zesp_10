@@ -51,7 +51,7 @@ public class ExpandableListAdapterCheck extends BaseExpandableListAdapter {
         }
  
         final CheckedTextView txtListChild = (CheckedTextView) convertView
-                .findViewById(R.id.elementycheckchild);
+                .findViewById(R.id.elementsCheckChild);
  
         txtListChild.setText(childText);
         
@@ -101,7 +101,7 @@ public class ExpandableListAdapterCheck extends BaseExpandableListAdapter {
         }
  
         TextView lblListHeader = (TextView) convertView
-                .findViewById(R.id.elementglowny);
+                .findViewById(R.id.mainElement);
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
  

@@ -8,12 +8,11 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.LinearLayout.LayoutParams;
 
 public class oknoAutora extends Activity {
 
-	TextView liczbaPostow,liczbaPostowUsunietych,ocenaUzytkownika;
-	ImageView yourpicture;
+	TextView postsNumber,postsNumberDeleted,userRate;
+	ImageView yourPicture;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,13 +23,13 @@ public class oknoAutora extends Activity {
         bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#009900")));
         bar.setTitle("PicNews - Lamia");
         
-        liczbaPostow = (TextView) findViewById(R.id.textViewlicznikpostow);
-        liczbaPostowUsunietych = (TextView) findViewById(R.id.textViewlicznikpostowusunietych);
-        ocenaUzytkownika = (TextView) findViewById(R.id.textViewlicznikoceny);
+        postsNumber = (TextView) findViewById(R.id.textViewPostCounter);
+        postsNumberDeleted = (TextView) findViewById(R.id.textViewPostsCounterDeleted);
+        userRate = (TextView) findViewById(R.id.textViewCounterRates);
         
-        liczbaPostow.setText("10");
-        liczbaPostowUsunietych.setText("0");
-        ocenaUzytkownika.setText("5,0");
+        postsNumber.setText("10");
+        postsNumberDeleted.setText("0");
+        userRate.setText("5,0");
         
        
     }

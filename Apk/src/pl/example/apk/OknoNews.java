@@ -2,24 +2,20 @@ package pl.example.apk;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,12 +31,11 @@ public class OknoNews extends Activity {
        ListView dList;
        ArrayAdapter<String> adapter;
        ActionBarDrawerToggle mDrawerToggle;
-       TextView trescPosta,autorPosta;
+       TextView postContent,postAuthor;
        Context context;
-       ImageView zdjecie;
-       LinearLayout ll;
-       Fragment newpost, newpost2;
-       public final static String APP_PATH_SD_CARD = "/PicNews";
+       ImageView photo;
+       LinearLayout linearLayout;
+       Fragment newPost, newPost2;
        
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -48,15 +43,14 @@ public class OknoNews extends Activity {
     setContentView(R.layout.oknonews_layout);
     
     context = getApplicationContext();
-    ll = (LinearLayout) findViewById(R.id.zawartosc);
-    newpost = new postElement();
+    linearLayout = (LinearLayout) findViewById(R.id.content);
+    newPost = new postElement();
     FragmentTransaction ft = getFragmentManager().beginTransaction();
-    ft.add(R.id.zawartosc, newpost, "f1");
-    newpost2 = new postElement();
-    ft.add(R.id.zawartosc, newpost2,"f2");
+    ft.add(R.id.content, newPost, "f1");
+    newPost2 = new postElement();
+    ft.add(R.id.content, newPost2,"f2");
     ft.commit();
-   
-    
+
     
  // setup action bar for tabs
     ActionBar actionBar =getActionBar();
@@ -69,9 +63,9 @@ public class OknoNews extends Activity {
     
     //DRAWERLAYOUT
        
-    dLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-    final LinearLayout mDrawerLinear = (LinearLayout) findViewById(R.id.linear_drawer);
-    dList = (ListView) findViewById(R.id.left_drawer);
+    dLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+    final LinearLayout mDrawerLinear = (LinearLayout) findViewById(R.id.linearDrawer);
+    dList = (ListView) findViewById(R.id.leftDrawer);
     
     
     
@@ -90,7 +84,7 @@ public class OknoNews extends Activity {
         R.string.drawer_open,
         R.string.drawer_close){
 
-            /** Called when drawer is closed */
+            /** CalinearLayouted when drawer is closed */
             public void onDrawerClosed(View view) {
             	getActionBar().setTitle("PicNews");
                 invalidateOptionsMenu();
@@ -153,7 +147,7 @@ public class OknoNews extends Activity {
                 FragmentTransaction ft = fragmentManager.beginTransaction();
 
                 // Adding a fragment to the fragment transaction
-                ft.replace(R.id.content_frame, rFragment);
+                ft.replace(R.id.contentFrame, rFragment);
 
                 // Committing the transaction
                 ft.commit();
@@ -181,16 +175,16 @@ public class OknoNews extends Activity {
       		startActivity(intent);
           return true;
       case R.id.map:
-    	  Intent intentmapa = new Intent(getApplicationContext(), OknoMapa.class);
-    	  startActivity(intentmapa);         
+    	  Intent intentMap = new Intent(getApplicationContext(), OknoMapa.class);
+    	  startActivity(intentMap);         
           return true;
       case R.id.news:
-    	  Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE); 
-    	  startActivityForResult(cameraIntent, 0);
+    	  Intent intentCamera = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE); 
+    	  startActivityForResult(intentCamera, 0);
           return true;
       case R.id.konto:
-    	  Intent intentkonto = new Intent(getApplicationContext(), OknoKonto.class);
-    	  startActivity(intentkonto);
+    	  Intent intentAccount = new Intent(getApplicationContext(), OknoKonto.class);
+    	  startActivity(intentAccount);
           
           return true;
       default:
@@ -203,9 +197,9 @@ public class OknoNews extends Activity {
      // TODO Auto-generated method stub
      super.onActivityResult(requestCode, resultCode, data);
      Uri u = data.getData();
-     Intent intentzdjecie = new Intent(this, OknoNew.class);
-     intentzdjecie.putExtra("imgurl", u);
-     startActivity(intentzdjecie);
+     Intent intentPhoto = new Intent(this, OknoNew.class);
+     intentPhoto.putExtra("imgurl", u);
+     startActivity(intentPhoto);
   }   
 
   

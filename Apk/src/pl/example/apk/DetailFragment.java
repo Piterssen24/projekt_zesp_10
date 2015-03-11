@@ -25,7 +25,7 @@ public class DetailFragment extends Fragment{
         View v = inflater.inflate(R.layout.menu_detail_fragment, container, false);
  
         // Getting reference to the TextView of the Fragment
-        TextView tv = (TextView) v.findViewById(R.id.tv_content);
+        TextView tv = (TextView) v.findViewById(R.id.listCategories);
  
         // Setting currently selected river name in the TextView
         tv.setText(rivers[position]);

@@ -1,8 +1,6 @@
 package pl.example.apk;
 
-import android.app.Activity;
 import android.content.Context;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,10 +18,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class OknoMapa extends FragmentActivity {
 
-	LatLng twojalokalizacja;
+	LatLng yourLocation;
 	private GoogleMap googleMap;
 	LocationManager locManager;
-	boolean zmienna = true;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +56,10 @@ public class OknoMapa extends FragmentActivity {
     	            Log.d("tag", "Finding Longitude");
     	            double lon = loc.getLongitude();
     	            Log.d("tag", "Lon: "+String.valueOf(lon));
-    	            twojalokalizacja = new LatLng(lat, lon);
-    	            googleMap.moveCamera(CameraUpdateFactory.newLatLng(twojalokalizacja));
+    	            yourLocation = new LatLng(lat, lon);
+    	            googleMap.moveCamera(CameraUpdateFactory.newLatLng(yourLocation));
     	            googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-    	            Marker TP = googleMap.addMarker(new MarkerOptions().position(twojalokalizacja).title("Tu jesteœ"));
+    	            Marker TP = googleMap.addMarker(new MarkerOptions().position(yourLocation).title("Tu jesteœ"));
     	            locManager.removeUpdates(this);
     	            
     				

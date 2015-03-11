@@ -5,7 +5,7 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:id="@+id/uzytkowniklayout"
+        android:id="@+id/authorLayout"
         android:layout_width="match_parent"
         android:layout_gravity="center"
         android:layout_marginLeft="10dp"
@@ -13,7 +13,7 @@
         android:layout_height="wrap_content" >
 
         <ImageView
-            android:id="@+id/zdjeciedziennikarza"
+            android:id="@+id/userAuthorPhoto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxHeight="200dp"
@@ -21,7 +21,7 @@
             android:src="@drawable/gaz3min" />
         
         <TextView 
-            android:id="@+id/textViewloginuzytkownika" 
+            android:id="@+id/textViewAuthorName" 
             android:layout_width="wrap_content" 
             android:layout_height="wrap_content" 
             android:layout_marginLeft="20dp"
@@ -34,7 +34,7 @@
     </LinearLayout>
 
  	<LinearLayout
-     	android:id="@+id/liczniklayout"
+     	android:id="@+id/counterLayout"
      	android:layout_width="fill_parent"
      	android:layout_marginLeft="10dp"
      	android:layout_marginRight="10dp"
@@ -42,7 +42,7 @@
      	android:layout_height="wrap_content">
         
      	<LinearLayout
-     		android:id="@+id/liczniklayout1"
+     		android:id="@+id/counterLayout1"
      		android:layout_width="wrap_content"
      		android:orientation="vertical"
      		android:gravity="center"
@@ -50,7 +50,7 @@
      		android:layout_height="wrap_content">
             
      	    <TextView
-                android:id="@+id/textViewlicznikpostow"
+                android:id="@+id/textViewPostCounter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/stringliczbapostow"
@@ -58,7 +58,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge" />
      	    
      	     <TextView
-                android:id="@+id/textlicznikpostow"
+                android:id="@+id/textPostCounter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/stringliczbapostow"
@@ -68,7 +68,7 @@
  		</LinearLayout>
  		
      	<LinearLayout
-     		android:id="@+id/liczniklayout2"
+     		android:id="@+id/counterLayout2"
      		android:layout_width="wrap_content"
      		android:orientation="vertical"
      		android:gravity="center"
@@ -76,7 +76,7 @@
      		android:layout_height="wrap_content">
      	    
      	    <TextView
-                android:id="@+id/textViewlicznikpostowusunietych"
+                android:id="@+id/textViewPostsCounterDeleted"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -87,7 +87,7 @@
      	   
      	    
      	    <TextView
-                android:id="@+id/textlicznikpostowusunietych"
+                android:id="@+id/textCouterPostsDeleted"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/stringliczbapostowusunietych"
@@ -98,7 +98,7 @@
  		</LinearLayout>
  		
      	<LinearLayout
-     	    android:id="@+id/liczniklayout3"
+     	    android:id="@+id/counterLayout3"
      		android:layout_width="wrap_content"
      		android:orientation="vertical"
      		android:padding="15dp"
@@ -106,7 +106,7 @@
      		android:layout_height="wrap_content">
      	    
      	    <TextView
-                android:id="@+id/textViewlicznikoceny"
+                android:id="@+id/textViewCounterRates"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -114,7 +114,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge" />
      	    
      	    <TextView
-                android:id="@+id/textlicznikoceny"
+                android:id="@+id/textCounterRates"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/stringocenauzytkownika"

@@ -14,26 +14,20 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.ExpandableListView.OnChildClickListener;
-import android.widget.ExpandableListView.OnGroupCollapseListener;
-import android.widget.ExpandableListView.OnGroupExpandListener;
-import android.widget.Toast;
-import android.view.View;
 
 public class OknoKonto extends Activity {
 	
-	ImageView yourpicture;
+	ImageView yourPicture;
 	ExpandableListAdapter listAdapter;
-	ExpandableListAdapterCheck listAdaptercheck;
+	ExpandableListAdapterCheck listAdapterCheck;
     ExpandableListView expListView;
     ExpandableListView expListView2;
     ArrayList<String> listDataHeader;
-    ArrayList<String> listDataHeadercheck;
+    ArrayList<String> listDataHeaderCheck;
     HashMap<String, List<String>> listDataChild;
-    HashMap<String, List<String>> listDataChildcheck;
+    HashMap<String, List<String>> listDataChildCheck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,19 +39,19 @@ public class OknoKonto extends Activity {
         bar.setTitle("PicNews - Twoje konto");
         bar.setSplitBackgroundDrawable(new ColorDrawable(Color.parseColor("#009900")));
         
-        yourpicture = (ImageView) findViewById(R.id.zdjecieuzytkownika);
-        LayoutParams params = (LayoutParams) yourpicture.getLayoutParams();
+        yourPicture = (ImageView) findViewById(R.id.userPhoto);
+        LayoutParams params = (LayoutParams) yourPicture.getLayoutParams();
         params.width = 120;
         params.height = 200;
         // existing height is ok as is, no need to edit it
-        yourpicture.setLayoutParams(params);
+        yourPicture.setLayoutParams(params);
         
         
         //expandablelist
         
         
      // get the listview
-        expListView = (ExpandableListView) findViewById(R.id.expandablelist);
+        expListView = (ExpandableListView) findViewById(R.id.expandableList);
  
         // preparing list data
         // Adding child data
@@ -92,17 +86,17 @@ public class OknoKonto extends Activity {
         obserwujacy.add("Europa Report");
  
         listDataChild = new HashMap<String, List<String>>();
-        //listDataChildcheck = new HashMap<String, List<String>>();
-       // listDataChildcheck.put(listDataHeadercheck.get(0), typy); // Header, Child data
+        //listDataChildCheck = new HashMap<String, List<String>>();
+       // listDataChildCheck.put(listDataHeaderCheck.get(0), typy); // Header, Child data
         listDataChild.put(listDataHeader.get(0), typy); // Header, Child data
         listDataChild.put(listDataHeader.get(1), obserwowani);
         listDataChild.put(listDataHeader.get(2), obserwujacy);
  
-        //listAdaptercheck = new ExpandableListAdapterCheck(this, listDataHeadercheck, listDataChildcheck);
+        //listAdapterCheck = new ExpandablelistAdapterCheck(this, listDataHeaderCheck, listDataChildCheck);
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
  
         // setting list adapter
-       // expListView.setAdapter(listAdaptercheck);
+       // expListView.setAdapter(listAdapterCheck);
         expListView.setAdapter(listAdapter);
  
         // Listview Group click listener
