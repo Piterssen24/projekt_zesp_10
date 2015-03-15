@@ -2,27 +2,32 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent">  
+    
+     <pl.example.apk.ObservableScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+    
     <FrameLayout
         android:id="@+id/contentFrame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        
+        android:layout_height="match_parent" >
+
         <LinearLayout
             android:id="@+id/content"
         	android:layout_width="match_parent"
         	android:orientation="vertical"
         	android:gravity="center"
         	android:layout_marginLeft="10dp"
-        	android:layout_height="wrap_content">
+        	android:layout_height="wrap_content">	
         	
             </LinearLayout>
-        	            	
-     
-        
          
          </FrameLayout>
-    
+     
+        </pl.example.apk.ObservableScrollView>
+
     <LinearLayout 
         android:id="@+id/linearDrawer"
         android:layout_width="320dp"
@@ -37,6 +42,7 @@
     
    
     
+        
     <ListView android:id="@+id/leftDrawer"
         android:layout_width="240dp"
         android:layout_height="match_parent"
@@ -47,7 +53,6 @@
         android:background="#fff"/>
     
     </LinearLayout>
-
    
 
 </android.support.v4.widget.DrawerLayout>

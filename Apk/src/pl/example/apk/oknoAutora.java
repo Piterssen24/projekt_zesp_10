@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.LinearLayout.LayoutParams;
 
 public class oknoAutora extends Activity {
 

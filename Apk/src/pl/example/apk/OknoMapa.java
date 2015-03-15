@@ -1,6 +1,8 @@
 package pl.example.apk;
 
+import android.app.Activity;
 import android.content.Context;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -22,7 +24,7 @@ public class OknoMapa extends FragmentActivity {
 	private GoogleMap googleMap;
 	LocationManager locManager;
 	
-    @Override
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.oknomapa_layout);
@@ -34,7 +36,6 @@ public class OknoMapa extends FragmentActivity {
             }
 
             final LocationListener myLocationListener = new LocationListener(){   		       
-
     	        @Override
     	        public void onProviderDisabled(String provider){
     	            System.out.println("disabled");
@@ -42,10 +43,8 @@ public class OknoMapa extends FragmentActivity {
 
     	        @Override
     	        public void onProviderEnabled(String provider){
-    	        	System.out.println("Provider enables");
-    	            
+    	        	System.out.println("Provider enables");           
     	        }
-
 
     			@Override
     			public void onLocationChanged(Location loc) {
@@ -60,17 +59,13 @@ public class OknoMapa extends FragmentActivity {
     	            googleMap.moveCamera(CameraUpdateFactory.newLatLng(yourLocation));
     	            googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
     	            Marker TP = googleMap.addMarker(new MarkerOptions().position(yourLocation).title("Tu jesteœ"));
-    	            locManager.removeUpdates(this);
-    	            
-    				
+    	            locManager.removeUpdates(this);   	               				
     			}
 
     			@Override
     			public void onStatusChanged(String provider, int status, Bundle extras) {
-    				// TODO Auto-generated method stub
-    				
-    			}
-    			
+    				// TODO Auto-generated method stub   				
+    			}   			
     		};
     		
     		
@@ -80,19 +75,13 @@ public class OknoMapa extends FragmentActivity {
     		{
     			locManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 0, 0, myLocationListener);
     		}
-    		else locManager.requestLocationUpdates( LocationManager.NETWORK_PROVIDER, 0, 0, myLocationListener);
-    		
-    		  
+    		else locManager.requestLocationUpdates( LocationManager.NETWORK_PROVIDER, 0, 0, myLocationListener);    		  
     		
     		googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-    		
-
       } catch (Exception e) {
          e.printStackTrace();
       }
-        
-    }
-    
-    
+       
+    }  
     
 }

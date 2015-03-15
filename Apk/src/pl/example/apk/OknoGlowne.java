@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+
 public class OknoGlowne extends Activity {
 
 	Context context;
@@ -16,53 +17,43 @@ public class OknoGlowne extends Activity {
 	Button buttonRegistration;
 	ActionBar actionBar;
 	
-	
-    @Override
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.oknoglowne_layout);
         context = getApplicationContext();
+        
         actionBar = getActionBar();
         actionBar.hide();
         buttonWithoutLogin = (Button) findViewById(R.id.buttonWithoutLogin); 
         buttonLogin = (Button) findViewById(R.id.buttonLogin);
         buttonRegistration = (Button) findViewById(R.id.buttonRegistration);
 
-        
-        
-        buttonWithoutLogin.setOnClickListener(new View.OnClickListener() {
-			
+        Bundle b = getIntent().getExtras();  
+        buttonWithoutLogin.setOnClickListener(new View.OnClickListener() {			
 			@Override
         	public void onClick(View v) {
             	Intent intent = new Intent(context, OknoNews.class);
             	startActivity(intent);
-            }
-			
+            }		
 		});
         
-        buttonLogin.setOnClickListener(new View.OnClickListener() {
-			
+        buttonLogin.setOnClickListener(new View.OnClickListener() {			
 			@Override
         	public void onClick(View v) {
             	Intent intent = new Intent(context, OknoLog.class);
             	startActivity(intent);
-            }
-			
+            }			
 		});
         
-        buttonRegistration.setOnClickListener(new View.OnClickListener() {
-			
+        buttonRegistration.setOnClickListener(new View.OnClickListener() {			
 			@Override
         	public void onClick(View v) {
             	Intent intent = new Intent(context, OknoRejestracja.class);
             	startActivity(intent);
-            }
-			
-		});
-        
+            }			
+		});        
        
-    }
-    
-    
+    }   
     
 }

@@ -5,6 +5,8 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
-	<classpathentry exported="true" kind="lib" path="libs/android-support-v4.jar"/>
+	<classpathentry kind="lib" path="D:/Programy/Workspace/appcompat_v7/libs/android-support-v4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Julka/.m2/repository/com/google/collections/google-collections/1.0/google-collections-1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Julka/.m2/repository/com/google/code/findbugs/jsr305/2.0.1/jsr305-2.0.1.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

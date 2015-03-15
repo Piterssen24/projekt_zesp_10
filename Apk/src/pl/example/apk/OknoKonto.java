@@ -14,8 +14,14 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.ExpandableListView.OnChildClickListener;
+import android.widget.ExpandableListView.OnGroupCollapseListener;
+import android.widget.ExpandableListView.OnGroupExpandListener;
+import android.widget.Toast;
+import android.view.View;
 
 public class OknoKonto extends Activity {
 	
@@ -44,15 +50,10 @@ public class OknoKonto extends Activity {
         params.width = 120;
         params.height = 200;
         // existing height is ok as is, no need to edit it
-        yourPicture.setLayoutParams(params);
-        
-        
-        //expandablelist
-        
-        
+        yourPicture.setLayoutParams(params);       
+        //expandablelist        
      // get the listview
-        expListView = (ExpandableListView) findViewById(R.id.expandableList);
- 
+        expListView = (ExpandableListView) findViewById(R.id.expandableList); 
         // preparing list data
         // Adding child data
         listDataHeader = new ArrayList<String>();
@@ -86,17 +87,17 @@ public class OknoKonto extends Activity {
         obserwujacy.add("Europa Report");
  
         listDataChild = new HashMap<String, List<String>>();
-        //listDataChildCheck = new HashMap<String, List<String>>();
-       // listDataChildCheck.put(listDataHeaderCheck.get(0), typy); // Header, Child data
+        //listDataChildcheck = new HashMap<String, List<String>>();
+       // listDataChildcheck.put(listDataHeadercheck.get(0), typy); // Header, Child data
         listDataChild.put(listDataHeader.get(0), typy); // Header, Child data
         listDataChild.put(listDataHeader.get(1), obserwowani);
         listDataChild.put(listDataHeader.get(2), obserwujacy);
  
-        //listAdapterCheck = new ExpandablelistAdapterCheck(this, listDataHeaderCheck, listDataChildCheck);
+        //listAdaptercheck = new ExpandableListAdapterCheck(this, listDataHeadercheck, listDataChildcheck);
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
  
         // setting list adapter
-       // expListView.setAdapter(listAdapterCheck);
+       // expListView.setAdapter(listAdaptercheck);
         expListView.setAdapter(listAdapter);
  
         // Listview Group click listener
@@ -187,16 +188,7 @@ public class OknoKonto extends Activity {
         default:
             return super.onOptionsItemSelected(item);
     }
-    }
-    
-    //explist
-    
-
-
-    
-    //endexplist
-    
-    
-    
-    
+    }   
+    //explist    
+    //endexplist           
 }
