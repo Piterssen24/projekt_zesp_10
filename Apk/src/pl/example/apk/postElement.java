@@ -24,7 +24,7 @@ public class postElement extends Fragment {
        ImageView photoView;
        LinearLayout layout; 
        Context context;
-       String postText, photo;
+       String postText, post, photo;
        Bitmap picture;
        
        public postElement(){
@@ -56,7 +56,9 @@ public class postElement extends Fragment {
            });
      
            // Setting currently selected river name in the TextView
-           postContent.setText(postText);     
+		post=postText;
+		post=truncate(post,60);
+           postContent.setText(post);     
            postContent.setOnClickListener(new View.OnClickListener() {   			
       			@Override
               	public void onClick(View v) {
@@ -101,3 +103,16 @@ public class postElement extends Fragment {
        }
        
 }
+
+public static String truncate(final String content, final int lastIndex) {
+			if(content.length()>60)
+			{
+				String result = content.substring(0, lastIndex);
+				if (content.charAt(lastIndex) != ' ') 
+				{
+					result = result.substring(0, result.lastIndexOf(" "));
+				}
+				return result+"...";
+			}
+			else return content;
+    	}
