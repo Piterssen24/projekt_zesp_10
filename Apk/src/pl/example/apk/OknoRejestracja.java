@@ -49,8 +49,6 @@ public class OknoRejestracja extends Activity {
         setContentView(R.layout.oknorejestracja_layout);
         serwer = getResources().getString(R.string.server);
         
-        radioGrouRola = (RadioGroup) findViewById(R.id.radioGroupType);
-        id = radioGrouRola.getCheckedRadioButtonId();
         elogin = (EditText) findViewById(R.id.editTextUsername);
         epassword = (EditText) findViewById(R.id.editTextPassword);
         erepassword = (EditText) findViewById(R.id.editTextPasswordRepeat);
@@ -77,11 +75,7 @@ public class OknoRejestracja extends Activity {
     	if (login.equals("") || password.equals("") || repassword.equals("") || email.equals("") ) {
     		Toast.makeText(this, "Pola nie mog¹ byæ puste!", Toast.LENGTH_LONG).show();
     	}else if(password.equals(repassword)){
-    		if(id == R.id.radio0){
     			role = "D";
-    		}else if(id == R.id.radio1){
-    			role = "U";
-    		}
     		WebServiceTask wst = new WebServiceTask(WebServiceTask.REGISTER_TASK, this, "Registering...", login, password, email, role);   
         	wst.execute(new String[] { sampleURL });
     	}else{

@@ -27,6 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
             android:orientation="vertical" >
 
             <TextView
@@ -60,14 +61,6 @@
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
                 android:text="@string/stringhaslopowtorz" />
-
-            <TextView
-                android:id="@+id/textViewTypes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_weight="1"
-                android:text="@string/stringtyp" />
 
         </LinearLayout>
 
@@ -116,27 +109,6 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:inputType="textPassword" />
-
-            <RadioGroup
-                android:id="@+id/radioGroupType"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_weight="1" >
-
-                <RadioButton
-                    android:id="@+id/radio0"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="@string/stringDziennikarz" />
-
-                <RadioButton
-                    android:id="@+id/radio1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/stringUzytkownik" />
-            </RadioGroup>
 
         </LinearLayout>
 
