@@ -268,7 +268,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             			json.put("place", place);
             			json.put("eventTime", eventTime);
             			json.put("tag", tag);
-            			StringEntity se = new StringEntity(json.toString());
+            			StringEntity se = new StringEntity(json.toString(), "UTF-8");
             			httpPost.addHeader("Content-Type","application/json");
             			httpPost.setEntity(se);
             			response = httpClient.execute(httpPost);				
