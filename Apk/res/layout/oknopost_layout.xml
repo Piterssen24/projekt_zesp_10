@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="15dp"
+    android:layout_marginTop="10dp"
     android:orientation="vertical" >
 
     <ImageView
@@ -13,10 +13,10 @@
 
     <TextView
         android:id="@+id/post"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:textSize="19sp"
+        android:textSize="18sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -25,18 +25,38 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" 
         android:text="@string/stringautor" 
-        android:layout_marginRight="10dp"
         android:textSize="15sp"
+        android:layout_marginRight="10dp"
         android:layout_gravity="right"/>
+                     
+                    <TextView
+                        android:id="@+id/postDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="10dp"
+                        android:text="@string/postDate"
+                        android:textColor="#CC009900"
+                        android:textSize="15sp" />
+                     
+                    <TextView
+                        android:id="@+id/postLoc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="1"
+                        android:text="@string/postLoc"
+                        android:textColor="#CC009900"
+                        android:textSize="15sp" />
     
     <LinearLayout              
             		android:id="@+id/extras"
         			android:layout_width="match_parent"
         			android:layout_height="0dip"
         			android:layout_weight="1"
-        			android:layout_marginTop="10dp"
         			android:gravity="center|bottom"
         			android:layout_marginBottom="10dp"
+        			android:layout_marginTop="10dp"
         			android:orientation="horizontal">
                      
                     <TextView 
