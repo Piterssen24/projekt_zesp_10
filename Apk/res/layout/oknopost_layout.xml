@@ -18,18 +18,18 @@
         android:layout_marginRight="10dp"
         android:textSize="18sp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/author"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" 
-        android:text="@string/stringautor" 
-        android:textSize="15sp"
+        android:text="@string/stringautor"
+        android:textSize="15sp" 
         android:layout_marginRight="10dp"
         android:layout_gravity="right"/>
-                     
-                    <TextView
+    
+      <TextView
                         android:id="@+id/postDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -54,9 +54,9 @@
         			android:layout_width="match_parent"
         			android:layout_height="0dip"
         			android:layout_weight="1"
+        			android:layout_marginTop="10dp"
         			android:gravity="center|bottom"
         			android:layout_marginBottom="10dp"
-        			android:layout_marginTop="10dp"
         			android:orientation="horizontal">
                      
                     <TextView 
@@ -87,8 +87,8 @@
             			android:layout_height="wrap_content"
             			android:layout_weight="1"
             			android:textColor="#CC009900"
-            			android:textSize="15sp"
             			android:gravity="center_horizontal"
+            			android:textSize="15sp"
             			android:text="@string/stringzglosnaduzycie"
                  	/>
                     

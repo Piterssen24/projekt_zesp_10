@@ -6,6 +6,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import pl.example.apk.*;
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -19,9 +22,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import android.app.FragmentManager;
 
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -38,6 +39,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     public static final int REGISTER_TASK = 2;  
     public static final int NEWS_TASK = 3;
     public static final int NEW_TASK = 4; 
+    public static final int ACCOUNT_TASK = 5;
     private int taskType, number;
     Fragment newpost, newpost2;
     public int idItem;
@@ -47,6 +49,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     public String photo;
     public String postType;
     public String addTime;
+    public String categoryId, count;
     public String place, token, tags, faculties;
     private static final String TAG = "WebServiceTask";
     private static final int CONN_TIMEOUT = 5000;        
@@ -58,6 +61,9 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
     private ProgressDialog pDlg = null;
     public String [] coords, fac, tagName, tagId;
+    public static int id = 0; 
+  	public static int id2 = 0;
+  	public static int max = 0;
     
     public WebServiceTask(int taskType, Context mContext, String processMessage, String login, String password) {
         this.taskType = taskType;
@@ -96,6 +102,13 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
         this.tag = tag;
         this.token = token;
     }
+    
+    // konstruktor do okna konto
+    public WebServiceTask(int taskType, Context mContext, String token){
+    	this.taskType = taskType;
+        this.mContext = mContext;
+        this.token = token;
+    }
 
     public void addNameValuePair(String name, String value) {
         params.add(new BasicNameValuePair(name, value));
@@ -118,12 +131,14 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     protected String doInBackground(String... urls) {
         String url = urls[0];
         String result = ""; 
-        HttpResponse response = doResponse(url); 
+        HttpResponse response = doResponse(url);
+        System.out.println("response: " + response);
         if (response == null) {
             return result;
         } else { 
             try {
                 result = inputStreamToString(response.getEntity().getContent());
+                System.out.println("result: " + result);
             } catch (IllegalStateException e) {
                 Log.e(TAG, e.getLocalizedMessage(), e); 
             } catch (IOException e) {
@@ -152,9 +167,11 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
         	case NEW_TASK:
         		pDlg.dismiss(); 
         		handleResponseNEW(response);
-        		//OknoNew oknonew = new OknoNew();
-        		//oknonew.handleResponse(response);
         		break;
+        	case ACCOUNT_TASK:
+        		pDlg.dismiss();
+        		OknoKonto ok = new OknoKonto();
+        		ok.handleResponse(response);
     	}
                   
     }
@@ -216,6 +233,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             		}
             		HttpGet httpgetlogin = new HttpGet(url);
             		response = httpclient.execute(httpgetlogin);
+            		System.out.println("response w doResponse: " + response);
             		break;
             	case NEWS_TASK: 
             		url2 = serwer + "/news2";
@@ -243,7 +261,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             		JSONObject json = new JSONObject();
             		try{
             			HttpPost httpPost = new HttpPost(url2);
-            			//json.put("login", login);  
+            			json.put("token", token);  
             			json.put("content", content);
             			json.put("photo",photo);
             			json.put("addTime", addTime);  
@@ -262,6 +280,26 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             		}
             		HttpGet httpgetnew = new HttpGet(url);
             		response = httpclient.execute(httpgetnew);  
+            		break;
+            	case ACCOUNT_TASK:
+            		url2 = serwer + "/account2";
+            		HttpConnectionParams.setConnectionTimeout(httpClient.getParams(), 10000);
+            		JSONObject jsona = new JSONObject();
+            		try{
+            			HttpPost httpPost = new HttpPost(url2);
+            			jsona.put("token", token);
+            			StringEntity se = new StringEntity(jsona.toString());
+            			httpPost.addHeader("Content-Type","application/json");
+            			httpPost.setEntity(se);
+            			response = httpClient.execute(httpPost);
+            			if(response != null){
+            				InputStream in = response.getEntity().getContent();
+            			}
+            		}catch(Exception e){
+            			e.printStackTrace();
+            		}
+            		HttpGet httpgetaccount = new HttpGet(url);
+            		response = httpclient.execute(httpgetaccount);               
             		break;
             }
        	} catch (Exception e) {
@@ -288,7 +326,8 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     	try {
     		JSONArray jsonarray = new JSONArray(response);
     		if(jsonarray!=null){
-    			if(jsonarray.getString(0).equals("")){
+    			token = jsonarray.getString(0);
+    			if(token.equals("")){
     				Toast.makeText(mContext, "B³êdny login lub has³o!", Toast.LENGTH_LONG).show();
     			} else {
     				JSONArray jarraytag = jsonarray.getJSONArray(1);
@@ -320,7 +359,8 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     			
     				Toast.makeText(mContext, "Zalogowano!", Toast.LENGTH_LONG).show();
     				Intent in = new Intent(mContext,OknoNews.class);
-    				//	in.putExtra("Token",response);
+    				in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    				in.putExtra("token",token);
     				in.putExtra("tagsId", tagId);
     				in.putExtra("tags", tagName);
     				in.putExtra("faculties", fac);

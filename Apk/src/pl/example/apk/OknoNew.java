@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import android.view.Gravity;
+import android.widget.LinearLayout;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -34,14 +36,12 @@ import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -114,16 +114,13 @@ public class OknoNew extends FragmentActivity {
        		bitmap  = null;
         }
         
-        int or = getOrientation(context, path);    
-        System.out.println(or);
+        int or = getOrientation(context, path);     
         if (or==90)
         {
-        	bitmap = Bitmap.createScaledBitmap(bitmapx,240, 200, true);
+        	bitmap = Bitmap.createScaledBitmap(bitmapx, 240, 200, true);
         	Log.d("tag", "Rotujemy obraz");
         	bitmap = RotateBitmap(bitmap, 90);
-        }
-        else
-        {
+        } else {
         	bitmap = Bitmap.createScaledBitmap(bitmapx,300, 200, true);
         }
         postPhoto = (ImageView) findViewById(R.id.imageViewPostPhoto);   
@@ -132,17 +129,16 @@ public class OknoNew extends FragmentActivity {
        /* LayoutParams params = (LayoutParams) this.postPhoto.getLayoutParams();
         if (or==90)
     	{
-        	Log.d("tag", "parametry dla obróconego");
+    		Log.d("tag", "parametry dla obróconego");
     		params.width = 200;
     		params.height = 260;
     	} else if(or==0) {
     		System.out.println("Parametry dla nieobroconego");
     		params.width = 300;
     		params.height = 200;
-    	}	
-        postPhoto.setLayoutParams(params);
+    	}	 
+    	postPhoto.setLayoutParams(params);
         System.out.println(postPhoto.getWidth()+"  "+postPhoto.getHeight());*/
-        
     	locations = (Spinner) findViewById(R.id.listOfLocations);
     	locations.setVisibility(View.GONE);
     	
@@ -155,7 +151,7 @@ public class OknoNew extends FragmentActivity {
     	date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         addTime = date.format(new Date());
         
-        categories = (Spinner) findViewById(R.id.listOfCategories);        
+        categories = (Spinner) findViewById(R.id.listOfCategories);
     	//ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.listCategories, R.layout.customspinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.customspinner, tags);
     	adapter.setDropDownViewResource(R.layout.customspinner);
@@ -186,11 +182,9 @@ public class OknoNew extends FragmentActivity {
 			public void onClick(View v) {
 				buttonChangeLocation.setVisibility(View.GONE);				
 				gps.setVisibility(View.GONE);
-				
 				LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
 				params.gravity = Gravity.TOP;
 				locations.setLayoutParams(params);
-				
 				locations.setVisibility(View.VISIBLE);
 				//ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(context, R.array.listLocations, R.layout.customspinner);
 				ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(context, R.layout.customspinner, faculties);
@@ -353,6 +347,15 @@ public class OknoNew extends FragmentActivity {
         }
     }
     
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed(); 
+        startActivity(new Intent(OknoNew.this, OknoNews.class));
+        finish();
+
+    }
+    
     private void showDatePicker() {
   	  	DatePickerFragment date = new DatePickerFragment();
   	  	/**
@@ -404,14 +407,6 @@ public class OknoNew extends FragmentActivity {
   	    }
   	}
     
-  	@Override
-    public void onBackPressed()
-    {
-        super.onBackPressed(); 
-        startActivity(new Intent(OknoNew.this, OknoNews.class));
-        finish();
-
-    }
 }
 
 

@@ -26,14 +26,16 @@ public class postElement extends Fragment {
        Context context;
        String postText, post, photo;
        Bitmap picture;
+       String userLogin;
        
        public postElement(){
     	   
        }
        
-       public postElement(String postId, String userId, String content, String photo, String categoryId, String addTime, String place, String eventTime){
+       public postElement(String postId, String userLogin, String content, String photo, String categoryId, String addTime, String place, String eventTime){
     	   this.postText = content;
     	   this.photo = photo;
+    	   this.userLogin = userLogin;
        }
        
        @Override
@@ -51,20 +53,22 @@ public class postElement extends Fragment {
         	    	Intent intent = new Intent(getActivity(), OknoPost.class);
         	    	intent.putExtra("postText",postText);
         	    	intent.putExtra("photo", photo);
+        	    	intent.putExtra("userLogin", userLogin);
         	    	startActivity(intent);
         	    }  			
            });
      
            // Setting currently selected river name in the TextView
-		post=postText;
-		post=truncate(post,60);
-           postContent.setText(post);     
+           post = postText;
+   		   post = truncate(post,60);
+           postContent.setText(post); 
            postContent.setOnClickListener(new View.OnClickListener() {   			
       			@Override
               	public void onClick(View v) {
                   	Intent intent = new Intent(getActivity(), OknoPost.class);
                   	intent.putExtra("postText",postText);
                   	intent.putExtra("photo", photo);
+                  	intent.putExtra("userLogin", userLogin);
                   	startActivity(intent);
                   }     			
       		});
@@ -87,6 +91,7 @@ public class postElement extends Fragment {
                   	Intent intent = new Intent(getActivity(), OknoPost.class);
                   	intent.putExtra("postText",postText);
                   	intent.putExtra("photo", photo);
+                  	intent.putExtra("userLogin", userLogin);
                   	startActivity(intent);
                 }      			
        	   });             
@@ -102,9 +107,7 @@ public class postElement extends Fragment {
            return b;
        }
        
-}
-
-public static String truncate(final String content, final int lastIndex) {
+       public static String truncate(final String content, final int lastIndex) {
 			if(content.length()>60)
 			{
 				String result = content.substring(0, lastIndex);
@@ -115,4 +118,6 @@ public static String truncate(final String content, final int lastIndex) {
 				return result+"...";
 			}
 			else return content;
-    	}
+   	}
+       
+}

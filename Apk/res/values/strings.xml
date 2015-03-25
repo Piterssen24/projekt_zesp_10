@@ -67,6 +67,8 @@
     <string name="stringzglosnaduzycie">Zgłoś nadużycie</string>
     <string name="stringplus"> + </string>
     <string name="stringminus"> - </string>
+    <string name="postLoc"> miejsce: </string>
+    <string name="postDate"> data: </string>
     <string name="stringczytajdalej">czytaj dalej</string>
     <string name="stringautor">autor: </string>
     <string name="stringbuttondodaj">Dodaj Newsa</string>
@@ -75,5 +77,5 @@
     <string name="stringPrompt2">Lokalizacja</string>
     <string name="stringEventDate">Data wydarzenia</string>
     <string name="server2">http://158.75.2.10:10000/PicNewsApp/rest/main</string>
-    <string name="server">http://192.168.1.22:8080/RestWebServiceDemo/rest/main</string>
+    <string name="server">http://192.168.1.19:8080/RestWebServiceDemo/rest/main</string>
 </resources>

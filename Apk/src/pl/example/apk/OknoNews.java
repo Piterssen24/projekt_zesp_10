@@ -76,13 +76,13 @@ public class OknoNews extends Activity implements ScrollViewListener {
     Fragment newpost, newpost2;
     public int idItem;
     public String postId;
-    public String userId;
+    public String userLogin;
     public String content;
     public String photo;
     public String categoryId;
     public String addTime;
     public String place;
-    public String eventTime, count;
+    public String eventTime, count, token;
     public final static String APP_PATH_SD_CARD = "/PicNews";
   	public ProgressBar spinner;
   	static int number = 0;
@@ -103,9 +103,10 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		serwer = getResources().getString(R.string.server);
    		context = getApplicationContext();
    		linearLayout = (LinearLayout) findViewById(R.id.content);
-    
+   		
    		Bundle b = getIntent().getExtras();
    		if(b!=null) {
+   			token = b.getString("token");
    			tagsId = b.getStringArray("tagsId");
    			tags = b.getStringArray("tags");
    			faculties = b.getStringArray("faculties");
@@ -207,6 +208,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
    			return true;
    		case R.id.konto:
    			Intent intentkonto = new Intent(getApplicationContext(), OknoKonto.class);
+   			intentkonto.putExtra("token", token);
    			startActivity(intentkonto); 
          	return true;
    		default:
@@ -229,6 +231,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		Uri u = data.getData();
    		Intent intentPhoto = new Intent(this, OknoNew.class);
    		intentPhoto.putExtra("imgurl", u);
+   		intentPhoto.putExtra("token", token);
    		intentPhoto.putExtra("tags", tags);
    		intentPhoto.putExtra("faculties", faculties);
    		intentPhoto.putExtra("coords", coords);
@@ -245,20 +248,21 @@ public class OknoNews extends Activity implements ScrollViewListener {
    
    	public void handleResponse(String resp) {   
    		try {
+   			FragmentTransaction ft = null;
    			JSONArray jsonarray = new JSONArray(resp);
    			for(int i=0; i<jsonarray.length(); i++){
    				JSONObject jso = jsonarray.getJSONObject(i);
    				if(jso!=null){
    					postId = jso.getString("postId");
-   					userId = jso.getString("userId");
+   					userLogin = jso.getString("userLogin");
    					content = jso.getString("content");
    					photo = jso.getString("photo");
    					categoryId = jso.getString("categoryId");
    					addTime = jso.getString("addTime");
    					place = jso.getString("place");
    					eventTime = jso.getString("eventTime");
-   					newpost = new postElement(postId, userId, content, photo, categoryId, addTime, place, eventTime);
-   					FragmentTransaction ft = getFragmentManager().beginTransaction();
+   					newpost = new postElement(postId, userLogin, content, photo, categoryId, addTime, place, eventTime);
+   					ft = getFragmentManager().beginTransaction();
    					ft.add(R.id.content, newpost, "f1");
    					ft.commit();
    					if(i==jsonarray.length()-1){

@@ -23,6 +23,7 @@ public class OknoPost extends Activity {
 	CharSequence authorTemp;
 	String postText, photo;
 	Bitmap picture;
+	String userLogin;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,7 @@ public class OknoPost extends Activity {
         if(b!=null){
         	postText = b.getString("postText");
         	photo = b.getString("photo");
+        	userLogin = b.getString("userLogin");
         }
         
         picture = decodeBase64(photo);
@@ -47,7 +49,7 @@ public class OknoPost extends Activity {
         content.setText(postText);
         author = (TextView) findViewById(R.id.author);
         authorTemp= author.getText();
-        authorTemp = authorTemp + " Lamia";
+        authorTemp = authorTemp + " " + userLogin;
         author.setText(authorTemp);
         author.setTextColor(Color.parseColor("#CC009900"));
         author.setOnClickListener(new View.OnClickListener() { 			
@@ -64,7 +66,7 @@ public class OknoPost extends Activity {
         byte[] decodedByte = Base64.decode(input, Base64.URL_SAFE);
         return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
     }
-
+    
     @Override
     public void onBackPressed()
     {
@@ -73,5 +75,4 @@ public class OknoPost extends Activity {
         finish();
 
     }
-
 }

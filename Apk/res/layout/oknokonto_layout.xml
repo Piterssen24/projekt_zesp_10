@@ -4,6 +4,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+        
+        <LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
     <LinearLayout
         android:id="@+id/userlayout"
         android:layout_width="match_parent"
@@ -26,7 +36,6 @@
                 android:id="@+id/textViewUserName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/stringwymyslonylogin"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <Button
@@ -38,17 +47,23 @@
         </LinearLayout>
 
     </LinearLayout>
-
-    <ExpandableListView
-				android:id="@+id/expandableList"
-				android:layout_height="wrap_content"
-				android:layout_width="match_parent"
-				android:groupIndicator="@null" /> 
-				
-    <ExpandableListView
-				android:id="@+id/expandableList2"
-				android:layout_height="wrap_content"
-				android:layout_width="match_parent"
-				android:groupIndicator="@null" /> 
     
+    <ExpandableListView
+        android:id="@+id/expandableList"
+        android:layout_width="match_parent"
+        android:layout_height="122dp"
+        android:groupIndicator="@null" />
+
+    <LinearLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+    </LinearLayout>
+    
+     </LinearLayout>
+     
+  </ScrollView>  
+  
 </LinearLayout>
+

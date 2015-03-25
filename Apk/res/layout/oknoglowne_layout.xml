@@ -26,8 +26,8 @@
         android:layout_marginBottom="120dp"
         android:background="#CC009900"
         android:text="@string/stringlogowanie" />
-
-    <ImageView
+    
+     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,5 +35,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="23dp"
         android:src="@drawable/picnews" />
+    
+
 
 </RelativeLayout>
