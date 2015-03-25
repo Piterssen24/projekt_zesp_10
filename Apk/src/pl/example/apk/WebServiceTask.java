@@ -358,13 +358,14 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     				}
     			
     				Toast.makeText(mContext, "Zalogowano!", Toast.LENGTH_LONG).show();
-    				Intent in = new Intent(mContext,OknoNews.class);
-    				in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    				Intent in = new Intent(mContext, OknoNews.class);
     				in.putExtra("token",token);
     				in.putExtra("tagsId", tagId);
     				in.putExtra("tags", tagName);
     				in.putExtra("faculties", fac);
     				in.putExtra("coords", coords);
+    				in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    				in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
     				mContext.startActivity(in);
     			}
     		}
