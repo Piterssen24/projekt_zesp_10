@@ -64,4 +64,14 @@ public class OknoPost extends Activity {
         byte[] decodedByte = Base64.decode(input, Base64.URL_SAFE);
         return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
     }
+
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed(); 
+        startActivity(new Intent(OknoPost.this, OknoNews.class));
+        finish();
+
+    }
+
 }

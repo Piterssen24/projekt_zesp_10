@@ -25,18 +25,8 @@ public class OknoGlowne extends Activity {
         
         actionBar = getActionBar();
         actionBar.hide();
-        buttonWithoutLogin = (Button) findViewById(R.id.buttonWithoutLogin); 
         buttonLogin = (Button) findViewById(R.id.buttonLogin);
         buttonRegistration = (Button) findViewById(R.id.buttonRegistration);
-
-        Bundle b = getIntent().getExtras();  
-        buttonWithoutLogin.setOnClickListener(new View.OnClickListener() {			
-			@Override
-        	public void onClick(View v) {
-            	Intent intent = new Intent(context, OknoNews.class);
-            	startActivity(intent);
-            }		
-		});
         
         buttonLogin.setOnClickListener(new View.OnClickListener() {			
 			@Override
