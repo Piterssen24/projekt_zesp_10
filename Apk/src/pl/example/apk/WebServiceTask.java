@@ -40,6 +40,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     public static final int NEWS_TASK = 3;
     public static final int NEW_TASK = 4; 
     public static final int ACCOUNT_TASK = 5;
+    public static final int AUTHOR_TASK = 6;
     private int taskType, number;
     Fragment newpost, newpost2;
     public int idItem;
@@ -56,7 +57,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     private static final int SOCKET_TIMEOUT = 5000;        
     private Context mContext = null;
     private String processMessage = "Processing...";
-    public String login, password, email, role, url2, location, eventTime, tag;
+    public String login, password, email, role, url2, location, eventTime, tag, userLogin;
     public String serwer = "";
     private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
     private ProgressDialog pDlg = null;
@@ -65,6 +66,8 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
   	public static int id2 = 0;
   	public static int max = 0;
     
+  	
+  	// konstruktor do OknoLog
     public WebServiceTask(int taskType, Context mContext, String processMessage, String login, String password) {
         this.taskType = taskType;
         this.mContext = mContext;
@@ -73,6 +76,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
         this.password = password;
     }
     
+    // konstruktor do OknoRejestracja
     public WebServiceTask(int taskType, Context mContext, String processMessage, String login, String password, String email, String role) {
         this.taskType = taskType;
         this.mContext = mContext;
@@ -83,6 +87,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
         this.role = role;
     }
     
+    // konstruktor do OknoNews
     public WebServiceTask(int taskType, Context mContext, String processMessage, int number) {
         this.taskType = taskType;
         this.mContext = mContext;
@@ -90,6 +95,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
         this.number = number;
     }
     
+    // konstruktor do OknoNew
     public WebServiceTask(int taskType, Context mContext, String processMessage, String content, String photo, String addTime, String place, String eventTime, String tag, String token) {
         this.taskType = taskType;
         this.mContext = mContext;
@@ -103,11 +109,19 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
         this.token = token;
     }
     
-    // konstruktor do okna konto
+    // konstruktor do OknoKonto
     public WebServiceTask(int taskType, Context mContext, String token){
     	this.taskType = taskType;
         this.mContext = mContext;
         this.token = token;
+    }
+    
+    // konstruktor do oknoAutora
+    public WebServiceTask(int taskType, Context mContext, String processMessage, String userLogin){
+    	this.taskType = taskType;
+        this.mContext = mContext;
+        this.processMessage = processMessage;
+        this.userLogin = userLogin;
     }
 
     public void addNameValuePair(String name, String value) {
@@ -132,13 +146,11 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
         String url = urls[0];
         String result = ""; 
         HttpResponse response = doResponse(url);
-        System.out.println("response: " + response);
         if (response == null) {
             return result;
         } else { 
             try {
                 result = inputStreamToString(response.getEntity().getContent());
-                System.out.println("result: " + result);
             } catch (IllegalStateException e) {
                 Log.e(TAG, e.getLocalizedMessage(), e); 
             } catch (IOException e) {
@@ -172,6 +184,10 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
         		pDlg.dismiss();
         		OknoKonto ok = new OknoKonto();
         		ok.handleResponse(response);
+        	case AUTHOR_TASK:
+        		pDlg.dismiss();
+        		oknoAutora oa = new oknoAutora();
+        		oa.handleResponse(response);
     	}
                   
     }
@@ -200,7 +216,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             			jsonr.put("password", password);
             			jsonr.put("email", email);
             			jsonr.put("role", role);
-            			StringEntity se = new StringEntity(jsonr.toString());
+            			StringEntity se = new StringEntity(jsonr.toString(), "UTF-8");
             			httpPost.addHeader("Content-Type","application/json");
             			httpPost.setEntity(se);
             			response = httpClient.execute(httpPost);
@@ -221,7 +237,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             			HttpPost httpPost = new HttpPost(url2);
             			jsonl.put("login", login);
             			jsonl.put("password", password);
-            			StringEntity se = new StringEntity(jsonl.toString());
+            			StringEntity se = new StringEntity(jsonl.toString(), "UTF-8");
             			httpPost.addHeader("Content-Type","application/json");
             			httpPost.setEntity(se);
             			response = httpClient.execute(httpPost);					
@@ -242,7 +258,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
                     try{
       					HttpPost httpPost = new HttpPost(url2);
       					jsonn.put("id",number);
-      					StringEntity se = new StringEntity(jsonn.toString());
+      					StringEntity se = new StringEntity(jsonn.toString(), "UTF-8");
       					httpPost.addHeader("Content-Type","application/json");
       					httpPost.setEntity(se);
       					response = httpClient.execute(httpPost);     					
@@ -288,7 +304,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             		try{
             			HttpPost httpPost = new HttpPost(url2);
             			jsona.put("token", token);
-            			StringEntity se = new StringEntity(jsona.toString());
+            			StringEntity se = new StringEntity(jsona.toString(), "UTF-8");
             			httpPost.addHeader("Content-Type","application/json");
             			httpPost.setEntity(se);
             			response = httpClient.execute(httpPost);
@@ -300,6 +316,26 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             		}
             		HttpGet httpgetaccount = new HttpGet(url);
             		response = httpclient.execute(httpgetaccount);               
+            		break;
+            	case AUTHOR_TASK:
+            		url2 = serwer + "/author2";
+            		HttpConnectionParams.setConnectionTimeout(httpClient.getParams(), 10000);
+            		JSONObject jsonau = new JSONObject();
+            		try{
+            			HttpPost httpPost = new HttpPost(url2);
+            			jsonau.put("userLogin", userLogin);
+            			StringEntity se = new StringEntity(jsonau.toString(), "UTF-8");
+            			httpPost.addHeader("Content-Type","application/json");
+            			httpPost.setEntity(se);
+            			response = httpClient.execute(httpPost);
+            			if(response != null){
+            				InputStream in = response.getEntity().getContent();
+            			}
+            		}catch(Exception e){
+            			e.printStackTrace();
+            		}
+            		HttpGet httpgetauthor = new HttpGet(url);
+            		response = httpclient.execute(httpgetauthor);               
             		break;
             }
        	} catch (Exception e) {

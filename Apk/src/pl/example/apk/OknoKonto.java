@@ -222,8 +222,8 @@ private class WebServiceTask extends AsyncTask<String, Integer, String> {
     public String categoryId, count;
     public String place, token, tags, faculties;
     private static final String TAG = "WebServiceTask";
-    private static final int CONN_TIMEOUT = 5000;        
-    private static final int SOCKET_TIMEOUT = 5000;        
+    private static final int CONN_TIMEOUT = 50000;        
+    private static final int SOCKET_TIMEOUT = 50000;        
     private Context mContext = null;
     private String processMessage = "Processing...";
     public String login, password, email, role, url2, location, eventTime, tag;

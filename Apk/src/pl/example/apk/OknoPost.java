@@ -56,6 +56,7 @@ public class OknoPost extends Activity {
   			@Override
           	public void onClick(View v) {
               	Intent intent = new Intent(getApplicationContext(), oknoAutora.class);
+              	intent.putExtra("userLogin", userLogin); 
               	startActivity(intent);
             }			
   		});   
