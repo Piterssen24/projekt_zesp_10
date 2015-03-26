@@ -39,6 +39,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -57,6 +59,7 @@ public class OknoKonto extends Activity {
     HashMap<String, List<String>> listDataChild;
     HashMap<String, List<String>> listDataChildCheck;
     Fragment newpost;
+    Button editAccount;
     public String serwer = "";
     public String token;
 	public static String login;
@@ -85,6 +88,19 @@ public class OknoKonto extends Activity {
         LayoutParams params = (LayoutParams) yourPicture.getLayoutParams();
         params.width = 120;
         params.height = 200;
+        
+        editAccount = (Button) findViewById(R.id.buttonEdit);
+        editAccount.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(getApplicationContext(), OknoEdytujProfil.class);
+            	startActivity(intent);
+				
+			}
+		});
+        
         // existing height is ok as is, no need to edit it
         yourPicture.setLayoutParams(params);       
         //expandablelist        
@@ -336,6 +352,15 @@ private class WebServiceTask extends AsyncTask<String, Integer, String> {
         } 
         return total.toString();
     }
+}
+
+@Override
+public void onBackPressed()
+{
+    super.onBackPressed(); 
+    startActivity(new Intent(OknoKonto.this, OknoNews.class));
+    finish();
+
 }
     
 }
