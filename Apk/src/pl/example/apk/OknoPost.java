@@ -1,41 +1,84 @@
 package pl.example.apk;
 
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 
 
 public class OknoPost extends Activity {
 
-	TextView content, author;
+	TextView content, author, postDate, postLoc;
 	ImageView photoView;
-	CharSequence authorTemp;
+	CharSequence authorTemp, date, location, loc;
 	String postText, photo;
 	Bitmap picture;
-	String userLogin;
+	String userLogin, place, eventTime;
+	public static String[] faculties, coords;
+	Context context;
+    public StringBuilder strAddress;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.oknopost_layout);
+        context = getApplicationContext();
         
         Bundle b = getIntent().getExtras();
         if(b!=null){
         	postText = b.getString("postText");
         	photo = b.getString("photo");
         	userLogin = b.getString("userLogin");
+        	place = b.getString("place");
+        	eventTime = b.getString("eventTime");
+        	faculties = b.getStringArray("faculties");
+            coords = b.getStringArray("coords");
         }
+        
+        for(int j=0; j<faculties.length; j++) {
+			if(place.equals(coords[j])) {
+				loc = faculties[j];
+				break;
+			} else {
+				Geocoder geocoder= new Geocoder(context, Locale.ENGLISH);
+		        try {
+		              //Place your latitude and longitude
+		        	String[] tokens = place.split(",");
+		        	double lat = Double.parseDouble(tokens[0]);
+		        	double lon = Double.parseDouble(tokens[1]);
+		              List<Address> addresses = geocoder.getFromLocation(lat, lon, 1);
+		              if(addresses != null) {
+		                  Address fetchedAddress = addresses.get(0);
+		                  strAddress = new StringBuilder();
+		                  for(int k=0; k<fetchedAddress.getMaxAddressLineIndex(); k++) {
+		                        strAddress.append(fetchedAddress.getAddressLine(k)).append("\n");
+		                  }
+		                  loc = strAddress.toString();
+		              } 
+		        } catch (IOException e) {
+		              // TODO Auto-generated catch block
+		              e.printStackTrace();
+		        }
+			}
+		}
         
         picture = decodeBase64(photo);
         ActionBar bar = getActionBar();
@@ -44,6 +87,16 @@ public class OknoPost extends Activity {
         
         photoView = (ImageView) findViewById(R.id.picture);
         photoView.setImageBitmap(picture);
+        
+        postDate = (TextView) findViewById(R.id.postDate);
+        date = postDate.getText();
+        date = date + " " + eventTime;
+        postDate.setText(date);
+        
+        postLoc = (TextView) findViewById(R.id.postLoc);
+        location = postLoc.getText();
+        location = location + " " + loc;
+        postLoc.setText(location);
         
         content = (TextView) findViewById(R.id.post);
         content.setText(postText);
@@ -57,6 +110,8 @@ public class OknoPost extends Activity {
           	public void onClick(View v) {
               	Intent intent = new Intent(getApplicationContext(), oknoAutora.class);
               	intent.putExtra("userLogin", userLogin); 
+              	intent.putExtra("faculties", faculties);
+    	    	intent.putExtra("coords", coords);
               	startActivity(intent);
             }			
   		});   

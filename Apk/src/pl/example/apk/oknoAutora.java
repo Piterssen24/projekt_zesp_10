@@ -49,16 +49,22 @@ public class oknoAutora extends Activity {
 	public String removedPostsCount;
 	public String place, postId, content, photo, categoryId, addTime, eventTime;
 	private static final String TAG = "OknoAutora";
+	Context context;
+	public static String[] faculties, coords;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.oknoautora_layout);
+        context = getApplicationContext();
         serwer = getResources().getString(R.string.server);
         Bundle extras= getIntent().getExtras();
         if(extras!=null)
         {
-           userLogin = extras.getString("userLogin");            
+           userLogin = extras.getString("userLogin"); 
+           faculties = extras.getStringArray("faculties");
+           coords = extras.getStringArray("coords");
+           
         }
         
         ActionBar bar = getActionBar();
@@ -100,7 +106,7 @@ public class oknoAutora extends Activity {
    					addTime = jso.getString("addTime");
    					place = jso.getString("place");
    					eventTime = jso.getString("eventTime");
-   					newpost = new postElement(postId, userLogin, content, photo, categoryId, addTime, place, eventTime);
+   					newpost = new postElement(postId, userLogin, content, photo, categoryId, addTime, place, eventTime, faculties, coords);
    					ft = getFragmentManager().beginTransaction();
    					ft.add(R.id.content, newpost, "f1");
    					ft.commit();

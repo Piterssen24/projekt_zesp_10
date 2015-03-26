@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import org.apache.http.HttpResponse;
@@ -22,6 +25,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import android.graphics.Bitmap;
 import org.apache.http.HttpEntity;
+
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -101,6 +107,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
    	protected void onCreate(Bundle savedInstanceState) {
    		super.onCreate(savedInstanceState);
    		setContentView(R.layout.oknonews_layout); 
+   		
    		serwer = getResources().getString(R.string.server);
    		context = getApplicationContext();
    		linearLayout = (LinearLayout) findViewById(R.id.content);
@@ -221,6 +228,8 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		case R.id.konto:
    			Intent intentkonto = new Intent(getApplicationContext(), OknoKonto.class);
    			intentkonto.putExtra("token", token);
+   			intentkonto.putExtra("faculties", faculties);
+	    	intentkonto.putExtra("coords", coords);
    			startActivity(intentkonto);
          	return true;
    		default:
@@ -273,7 +282,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
    					addTime = jso.getString("addTime");
    					place = jso.getString("place");
    					eventTime = jso.getString("eventTime");
-   					newpost = new postElement(postId, userLogin, content, photo, categoryId, addTime, place, eventTime);
+   					newpost = new postElement(postId, userLogin, content, photo, categoryId, addTime, place, eventTime, faculties, coords);
    					ft = getFragmentManager().beginTransaction();
    					ft.add(R.id.content, newpost, "f1");
    					ft.commit();

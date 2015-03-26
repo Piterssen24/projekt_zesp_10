@@ -66,17 +66,21 @@ public class OknoKonto extends Activity {
 	public String place, postId, content, photo, categoryId, addTime, eventTime;
 	private static final String TAG = "OknoKonto";
 	public TextView tv;
+	public static String[] faculties, coords;
+	Context context;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.oknokonto_layout);
-        
+        context = getApplicationContext();
         serwer = getResources().getString(R.string.server);
         
         Bundle b = getIntent().getExtras();
    		if(b!=null) {
    			token = b.getString("token");
+   			faculties = b.getStringArray("faculties");
+   			coords = b.getStringArray("coords");
    		}
         
         ActionBar bar = getActionBar();
@@ -176,7 +180,7 @@ public class OknoKonto extends Activity {
    					addTime = jso.getString("addTime");
    					place = jso.getString("place");
    					eventTime = jso.getString("eventTime");
-   					newpost = new postElement(postId, login, content, photo, categoryId, addTime, place, eventTime);
+   					newpost = new postElement(postId, login, content, photo, categoryId, addTime, place, eventTime, faculties, coords);
    					ft = getFragmentManager().beginTransaction();
    					ft.add(R.id.content, newpost, "f1");
    					ft.commit();
