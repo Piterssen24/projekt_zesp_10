@@ -39,6 +39,7 @@ public class OknoEdytujProfil extends Activity {
 		actionBar.setSplitBackgroundDrawable(new ColorDrawable(Color.parseColor("#009900")));
 		
 		icon = (ImageView) findViewById(R.id.imageIcon);
+//tu powinno byæ icon.setImageBitmap - aktualne zdjêcie u¿ytkownika
 		
 		changePhoto = (Button) findViewById(R.id.buttonEditPicture);
 		changePhoto.setOnClickListener(new OnClickListener() {
