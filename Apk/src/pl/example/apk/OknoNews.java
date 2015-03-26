@@ -82,7 +82,8 @@ public class OknoNews extends Activity implements ScrollViewListener {
     public String categoryId;
     public String addTime;
     public String place;
-    public String eventTime, count, token;
+    public String eventTime, count;
+    public static String role, token;
     public final static String APP_PATH_SD_CARD = "/PicNews";
   	public ProgressBar spinner;
   	static int number = 0;
@@ -93,7 +94,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
    	public ObservableScrollView scrollView;
    	public static int threshold = 982;
    	public String serwer = "";
-   	public String[] tags, faculties, coords, tagsId;
+   	public static String[] tags, faculties, coords, tagsId;
    	private static final String TAG = "OknoLog";
    	
    	@Override
@@ -107,6 +108,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		Bundle b = getIntent().getExtras();
    		if(b!=null) {
    			token = b.getString("token");
+   			role = b.getString("role");
    			tagsId = b.getStringArray("tagsId");
    			tags = b.getStringArray("tags");
    			faculties = b.getStringArray("faculties");
@@ -203,13 +205,17 @@ public class OknoNews extends Activity implements ScrollViewListener {
    			startActivity(intentmapa);  
    			return true;
    		case R.id.news:
-   			Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE); 
-   			startActivityForResult(cameraIntent, 0);
+   			if(role.equals("D")) {
+   				Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE); 
+   				startActivityForResult(cameraIntent, 0);
+   			} else {
+   				Toast.makeText(this, "Nie masz uprawnieñ do wykonania tej operacji!", Toast.LENGTH_LONG).show();
+   			}
    			return true;
    		case R.id.konto:
    			Intent intentkonto = new Intent(getApplicationContext(), OknoKonto.class);
    			intentkonto.putExtra("token", token);
-   			startActivity(intentkonto); 
+   			startActivity(intentkonto);
          	return true;
    		default:
    			return super.onOptionsItemSelected(item);

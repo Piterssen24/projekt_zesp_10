@@ -363,11 +363,12 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     		JSONArray jsonarray = new JSONArray(response);
     		if(jsonarray!=null){
     			token = jsonarray.getString(0);
+    			role = jsonarray.getString(1);
     			if(token.equals("")){
     				Toast.makeText(mContext, "B³êdny login lub has³o!", Toast.LENGTH_LONG).show();
     			} else {
-    				JSONArray jarraytag = jsonarray.getJSONArray(1);
-    				JSONArray jarrayfac = jsonarray.getJSONArray(2);
+    				JSONArray jarraytag = jsonarray.getJSONArray(2);
+    				JSONArray jarrayfac = jsonarray.getJSONArray(3);
     			
     				tagId = new String[jarraytag.length()];
     				for(int i=0; i<jarraytag.length(); i++) {
@@ -396,6 +397,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     				Toast.makeText(mContext, "Zalogowano!", Toast.LENGTH_LONG).show();
     				Intent in = new Intent(mContext, OknoNews.class);
     				in.putExtra("token",token);
+    				in.putExtra("role", role);
     				in.putExtra("tagsId", tagId);
     				in.putExtra("tags", tagName);
     				in.putExtra("faculties", fac);
