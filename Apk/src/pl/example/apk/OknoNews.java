@@ -150,8 +150,14 @@ public class OknoNews extends Activity implements ScrollViewListener {
     
    		// Setting DrawerToggle on DrawerLayout
    		dLayout.setDrawerListener(mDrawerToggle);
+   		String[] list = new String[tags.length + 2];
+   		list[0] = "Wszystkie";
+   		list[1] = "Moje ulubione";
+   		for(int i=0; i<tags.length; i++){
+   			list[i+2] = tags[i];
+   		}
     	// Creating an ArrayAdapter to add items to the listview mDrawerList
-   		adapter = new ArrayAdapter<String>(getBaseContext(), R.layout.drawer_list_item , getResources().getStringArray(R.array.rivers));
+   		adapter = new ArrayAdapter<String>(getBaseContext(), R.layout.drawer_list_item , list);
    		// Setting the adapter on mDrawerList
    		dList.setAdapter(adapter);    
    		// Setting item click listener for the listview mDrawerList
