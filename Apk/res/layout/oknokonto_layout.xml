@@ -22,6 +22,7 @@
 
         <ImageView
             android:id="@+id/userPhoto"
+            android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/gaz3" />
@@ -30,29 +31,47 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
             android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/textViewUserName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="15dp"
+                android:layout_gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <Button
                 android:id="@+id/buttonEdit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="30dp"
                 android:text="@string/stringedycja" />
 
         </LinearLayout>
 
     </LinearLayout>
     
-    <ExpandableListView
-        android:id="@+id/expandableList"
-        android:layout_width="match_parent"
-        android:layout_height="122dp"
-        android:groupIndicator="@null" />
+    <TextView
+        android:id="@+id/popup1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:textSize="18sp"
+        android:text="@string/popup1" />
+    
+    <TextView
+        android:id="@+id/popup2"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="10dp"
+        android:textSize="18sp"
+        android:layout_marginBottom="20dp"
+        android:layout_height="wrap_content"
+        android:text="@string/popup2" />
 
     <LinearLayout
         android:id="@+id/content"

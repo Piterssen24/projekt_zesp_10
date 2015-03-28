@@ -1,5 +1,7 @@
 package pl.example.apk;
 
+import java.util.ArrayList;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
@@ -10,13 +12,22 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class OknoEdytujProfil extends Activity {
 	
@@ -27,6 +38,7 @@ public class OknoEdytujProfil extends Activity {
 	Button changePhoto, submit;
 	Bitmap yourSelectedImage, newImage;
 	ImageView icon;
+	MyCustomAdapter dataAdapter = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +51,6 @@ public class OknoEdytujProfil extends Activity {
 		actionBar.setSplitBackgroundDrawable(new ColorDrawable(Color.parseColor("#009900")));
 		
 		icon = (ImageView) findViewById(R.id.imageIcon);
-//tu powinno byæ icon.setImageBitmap - aktualne zdjêcie u¿ytkownika
 		
 		changePhoto = (Button) findViewById(R.id.buttonEditPicture);
 		changePhoto.setOnClickListener(new OnClickListener() {
@@ -56,15 +67,34 @@ public class OknoEdytujProfil extends Activity {
 		});
 		
 		lv = (ListView) findViewById(R.id.listOfTags);
-		//tu trzeba pobraæ listê tagów z bazy 
-		modelItems = new TagCheckModel[5];
-		modelItems[0] = new TagCheckModel("pizza", 0);
-		modelItems[1] = new TagCheckModel("burger", 1);
-		modelItems[2] = new TagCheckModel("olives", 1); 
-		modelItems[3] = new TagCheckModel("orange", 0); 
-		modelItems[4] = new TagCheckModel("tomato", 1);
-		CustomAdapter adapter = new CustomAdapter(this, modelItems);
-		lv.setAdapter(adapter);
+		
+		//Array list of countries
+		  ArrayList<TagCheckModel> listOfTags = new ArrayList<TagCheckModel>();
+		  TagCheckModel tcm = new TagCheckModel("Afghanistan",false);
+		  listOfTags.add(tcm);
+		  tcm = new TagCheckModel("Albania",true);
+		  listOfTags.add(tcm);
+		  tcm = new TagCheckModel("Algeria",false);
+		  listOfTags.add(tcm);
+		  tcm = new TagCheckModel("American Samoa",true);
+		 
+		  //create an ArrayAdaptar from the String Array
+		  dataAdapter = new MyCustomAdapter(this,
+		    R.layout.edytujprofil_rowlayout, listOfTags);
+		  // Assign adapter to ListView
+		  lv.setAdapter(dataAdapter);
+		 
+		 
+		  lv.setOnItemClickListener(new OnItemClickListener() {
+		   public void onItemClick(AdapterView<?> parent, View view,
+		     int position, long id) {
+		    // When clicked, show a toast with the TextView text
+		    TagCheckModel tcm = (TagCheckModel) parent.getItemAtPosition(position);
+		    Toast.makeText(getApplicationContext(),
+		      "Clicked on Row: " + tcm.getName()+position, 
+		      Toast.LENGTH_LONG).show();
+		   }
+		  });
 		
 		submit = (Button) findViewById(R.id.buttonAcceptChanges);
 		submit.setOnClickListener(new OnClickListener() {
@@ -111,7 +141,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	    }
 
 	};
-	
+
 	@Override
     public void onBackPressed()
     {
@@ -120,5 +150,66 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data)
         finish();
 
     }
+	
+	private class MyCustomAdapter extends ArrayAdapter<TagCheckModel> {
+		 
+		  private ArrayList<TagCheckModel> listOfTags;
+		 
+		  public MyCustomAdapter(Context context, int textViewResourceId, 
+		    ArrayList<TagCheckModel> listOfTags) {
+		   super(context, textViewResourceId, listOfTags);
+		   this.listOfTags = new ArrayList<TagCheckModel>();
+		   this.listOfTags.addAll(listOfTags);
+		  }
+		 
+		  private class ViewHolder {
+		   CheckBox name;
+		  }
+		 
+		  @Override
+		  public View getView(int position, View convertView, ViewGroup parent) {
+		 
+		   ViewHolder holder = null;
+		   Log.v("ConvertView", String.valueOf(position));
+		   final int id = position;
+		 
+		   if (convertView == null) {
+		   LayoutInflater vi = (LayoutInflater)getSystemService(
+		     Context.LAYOUT_INFLATER_SERVICE);
+		   convertView = vi.inflate(R.layout.edytujprofil_rowlayout, null);
+		 
+		   holder = new ViewHolder();
+		   holder.name = (CheckBox) convertView.findViewById(R.id.checkBoxTag);
+		   convertView.setTag(holder);
+		 
+		    holder.name.setOnClickListener( new View.OnClickListener() {  
+		     public void onClick(View v) {  
+		      CheckBox cb = (CheckBox) v ;  
+		      TagCheckModel country = (TagCheckModel) cb.getTag();  
+		      Toast.makeText(getApplicationContext(),
+		       "Clicked on Checkbox: " + cb.getText() +
+		       " is " + cb.isChecked()+id, 
+		       Toast.LENGTH_LONG).show();
+		      country.setSelected(cb.isChecked());
+		     }  
+		    });  
+		   } 
+		   else {
+		    holder = (ViewHolder) convertView.getTag();
+		   }
+		 
+		   TagCheckModel country = listOfTags.get(position);
+		   holder.name.setText(country.getName());
+		   holder.name.setChecked(country.isSelected());
+		   holder.name.setTag(country);
+		 
+		   return convertView;
+		 
+		  }
+		 
+		 
+	}
+	
+	
 
 }

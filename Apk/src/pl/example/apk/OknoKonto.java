@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
+import android.view.View.OnClickListener;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -37,12 +37,15 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
@@ -51,7 +54,6 @@ public class OknoKonto extends Activity {
 	
 	ImageView yourPicture;
 	ExpandableListAdapter listAdapter;
-	ExpandableListAdapterCheck listAdapterCheck;
     ExpandableListView expListView;
     ExpandableListView expListView2;
     ArrayList<String> listDataHeader;
@@ -60,6 +62,8 @@ public class OknoKonto extends Activity {
     HashMap<String, List<String>> listDataChildCheck;
     Fragment newpost;
     Button editAccount;
+    PopupMenu menu1, menu2;
+    TextView list1, list2;
     public String serwer = "";
     public String token;
 	public static String login;
@@ -68,6 +72,7 @@ public class OknoKonto extends Activity {
 	public TextView tv;
 	public static String[] faculties, coords;
 	Context context;
+
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,53 +111,71 @@ public class OknoKonto extends Activity {
 		});
         
         // existing height is ok as is, no need to edit it
-        yourPicture.setLayoutParams(params);       
-        //expandablelist        
-     // get the listview
-        expListView = (ExpandableListView) findViewById(R.id.expandableList); 
-        // preparing list data
-        // Adding child data
-        listDataHeader = new ArrayList<String>();
-        listDataHeader.add("Typy news'ów");
-        listDataHeader.add("Obserwowani dziennikarze");
-        listDataHeader.add("Obserwuj¹cy u¿ytkownicy");
- 
-        // Adding child data
-        List<String> typy = new ArrayList<String>();
-        typy.add("Sport");
-        typy.add("Kultura");
-        typy.add("Utrudnienia na drodze");
-        typy.add("Polityczne");
-        typy.add("Charytatywne");
-        typy.add("Imprezy");
-        typy.add("12 Angry Men");
- 
-        List<String> obserwowani = new ArrayList<String>();
-        obserwowani.add("The Conjuring");
-        obserwowani.add("Despicable Me 2");
-        obserwowani.add("Turbo");
-        obserwowani.add("Grown Ups 2");
-        obserwowani.add("Red 2");
-        obserwowani.add("The Wolverine");
- 
-        List<String> obserwujacy = new ArrayList<String>();
-        obserwujacy.add("2 Guns");
-        obserwujacy.add("The Smurfs 2");
-        obserwujacy.add("The Spectacular Now");
-        obserwujacy.add("The Canyons");
-        obserwujacy.add("Europa Report");
- 
-        listDataChild = new HashMap<String, List<String>>();
-        listDataChild.put(listDataHeader.get(0), typy); // Header, Child data
-        listDataChild.put(listDataHeader.get(1), obserwowani);
-        listDataChild.put(listDataHeader.get(2), obserwujacy);
- 
-        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
- 
-        // setting list adapter
-        expListView.setAdapter(listAdapter);
-     
-        //endofexpandablelist
+        yourPicture.setLayoutParams(params);
+        
+        list1 = (TextView) findViewById(R.id.popup1);
+        list2 = (TextView) findViewById(R.id.popup2);
+        
+        //dodanie do tekstu liczbu wybranych tagów i ulubionych u¿ytkowników - zsumowaæ z bazy
+        String s1,s2;
+        s1=list1.getText().toString();
+        int liczbatagow=5, liczbaulubionych=6;
+        s1+=" ("+liczbatagow+")";
+        list1.setText(s1);
+        
+        s2=list2.getText().toString();
+        s2+=" ("+liczbaulubionych+")";
+        list2.setText(s2);
+        
+        list1.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				menu1 = new PopupMenu(OknoKonto.this, v);
+				//dodanie kolejnych nazw tagów
+				menu1.getMenu().add("sport");
+				menu1.getMenu().add("konkurs");
+				menu1.getMenu().add("impreza");
+				menu1.getMenu().add("koncert");
+				menu1.getMenu().add("wyk³ad");
+				menu1.show();
+				
+			}
+		});
+        
+ list2.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				menu2 = new PopupMenu(OknoKonto.this, v);
+				//dodanie kolejnych nazw u¿ytkowników
+				menu2.getMenu().add(0,0,0,"Julka                     usuñ");
+				menu2.getMenu().add(0,1,0,"Dominika              usuñ");
+				menu2.getMenu().add(0,2,0,"Sebastian             usuñ");
+				menu2.getMenu().add(0,3,0,"Piotr                      usuñ");
+				menu2.getMenu().add(0,4,0,"Bartek                   usuñ");
+				menu2.getMenu().add(0,5,0,"Lamia                 usuñ");
+				menu2.getMenu().add(0,6,0,"Julka                 usuñ");
+				menu2.getMenu().add(0,7,0,"Dominika              usuñ");
+				menu2.getMenu().add(0,8,0,"Sebastian             usuñ");
+				menu2.getMenu().add(0,9,0,"Piotr                 usuñ");
+				menu2.getMenu().add(0,10,0,"Bartek                usuñ");
+				menu2.getMenu().add(0,11,0,"Lamia                 usuñ");
+				menu2.show();
+				
+				menu2.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {  
+		             public boolean onMenuItemClick(MenuItem item) {  
+		              Toast.makeText(OknoKonto.this,"Usun¹³eœ : " + item.getItemId(),Toast.LENGTH_SHORT).show();  
+		              menu2.getMenu().removeItem(item.getItemId());
+		              menu2.show();
+		              return true;  
+		             }  
+		            });  
+				
+			}
+		});
         
         String sampleURL = serwer + "/account";
    		WebServiceTask wst = new WebServiceTask(WebServiceTask.ACCOUNT_TASK, this, token);   
@@ -207,10 +230,11 @@ public class OknoKonto extends Activity {
         		startActivity(intent);
             return true;
         case R.id.map:
-           
+        	Intent intentmapa = new Intent(getApplicationContext(), OknoMapa.class);
+   			startActivity(intentmapa);           
             return true;
         case R.id.news:
-            
+        	
             return true;
         case R.id.konto:
       	  Intent intentkonto = new Intent(getApplicationContext(), OknoKonto.class);

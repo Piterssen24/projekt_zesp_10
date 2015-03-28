@@ -1,18 +1,28 @@
 package pl.example.apk;
 
-public class TagCheckModel{
- String name;
- int value; /* 0 -&gt; checkbox disable, 1 -&gt; checkbox enable */
- 
- TagCheckModel(String name, int value){
- this.name = name;
- this.value = value;
- }
- public String getName(){
- return this.name;
- }
- public int getValue(){
- return this.value;
- }
- 
-}
+public class TagCheckModel {
+	  
+	 String name = null;
+	 boolean selected = false;
+	  
+	 public TagCheckModel(String name, boolean selected) {
+	  super();
+	  this.name = name;
+	  this.selected = selected;
+	 }
+	  
+	 public String getName() {
+	  return name;
+	 }
+	 public void setName(String name) {
+	  this.name = name;
+	 }
+	 
+	 public boolean isSelected() {
+	  return selected;
+	 }
+	 public void setSelected(boolean selected) {
+	  this.selected = selected;
+	 }
+	  
+	}
