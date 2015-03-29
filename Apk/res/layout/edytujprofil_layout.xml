@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
     android:orientation="vertical" >
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+ 	    android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
 
     <TextView
         android:id="@+id/textViewEditPicture"
@@ -23,19 +33,18 @@
     
    <ImageView
        android:id="@+id/imageIcon"
+       android:layout_width="120dp"
+       android:layout_height="200dp"
+       android:layout_marginRight="10dp"
+       android:layout_marginTop="15dp" />
+
+   <Button
+       android:id="@+id/buttonEditPicture"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:layout_marginRight="10dp"
-       android:layout_marginTop="15dp"
-       android:src="@drawable/gaz3min" />
-    
-    <Button
-        android:id="@+id/buttonEditPicture"
-        android:layout_width="wrap_content"
-        android:gravity="center"
-        android:layout_marginTop="10dp"
-        android:layout_height="wrap_content"
-        android:text="@string/choosePicture" />
+       android:layout_marginTop="10dp"
+       android:gravity="center"
+       android:text="@string/choosePicture" />
     
     </LinearLayout>
 
@@ -48,10 +57,10 @@
         android:layout_marginTop="10dp"
         android:text="@string/favouriteTags" />
 
-    <ListView 
-        android:id="@+id/listOfTags" 
+    <ListView
+        android:id="@+id/listOfTags"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="255dp" />
 
     <Button
         android:id="@+id/buttonAcceptChanges"
@@ -60,5 +69,8 @@
         android:layout_marginTop="10dp"
         android:gravity="center"
         android:text="@string/acceptChanges" />
+    
+    </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

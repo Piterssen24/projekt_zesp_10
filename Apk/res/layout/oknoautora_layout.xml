@@ -24,11 +24,8 @@
 
         <ImageView
             android:id="@+id/userAuthorPhoto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxHeight="200dp"
-            android:maxWidth="100dp"
-            android:src="@drawable/gaz3min" />
+            android:layout_width="120dp"
+            android:layout_height="200dp" />
         
         <TextView 
             android:id="@+id/textViewAuthorName"  

@@ -28,11 +28,14 @@ import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -51,6 +54,8 @@ public class oknoAutora extends Activity {
 	private static final String TAG = "OknoAutora";
 	Context context;
 	public static String[] faculties, coords;
+	public String photou;
+	Bitmap userPhoto;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +80,7 @@ public class oknoAutora extends Activity {
         postsNumberDeleted = (TextView) findViewById(R.id.textViewPostsCounterDeleted);
         userRate = (TextView) findViewById(R.id.textViewCounterRates);
         author = (TextView) findViewById(R.id.textViewAuthorName);
+        yourPicture = (ImageView) findViewById(R.id.userAuthorPhoto);
         
         author.setText(userLogin);
         //postsNumber.setText("10");
@@ -96,7 +102,15 @@ public class oknoAutora extends Activity {
    			if(jarray!=null){
     			JSONArray jarrayPosts = jarray.getJSONArray(0);
     			String postsCount = jarray.getString(1);
+    			photou = jarray.getString(2);
     			postsNumber.setText(postsCount);
+    			if(userPhoto!=null)
+    			{
+    	        	 userPhoto.recycle();
+    	        	 userPhoto = null;
+    	        }
+    	        userPhoto = decodeBase64(photou);
+    	        yourPicture.setImageBitmap(userPhoto);
     			for(int i=0; i<jarrayPosts.length(); i++){
     				JSONObject jso = jarrayPosts.getJSONObject(i);
    					postId = jso.getString("postId");
@@ -240,5 +254,14 @@ public class oknoAutora extends Activity {
             } 
             return total.toString();
         }
+    }
+    
+    public static Bitmap decodeBase64(String input) 
+    {
+        byte[] decodedByte;
+        decodedByte = Base64.decode(input, Base64.URL_SAFE);
+        Bitmap b = BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
+        decodedByte = null;
+        return b;
     }
 }

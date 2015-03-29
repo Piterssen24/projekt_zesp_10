@@ -8,15 +8,21 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import android.view.View;
+import android.widget.Button;
 import android.view.View.OnClickListener;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import android.view.LayoutInflater;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -32,20 +38,18 @@ import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
@@ -53,6 +57,7 @@ import android.widget.LinearLayout.LayoutParams;
 public class OknoKonto extends Activity {
 	
 	ImageView yourPicture;
+	Button editAccount;
 	ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
     ExpandableListView expListView2;
@@ -60,19 +65,19 @@ public class OknoKonto extends Activity {
     ArrayList<String> listDataHeaderCheck;
     HashMap<String, List<String>> listDataChild;
     HashMap<String, List<String>> listDataChildCheck;
-    Fragment newpost;
-    Button editAccount;
     PopupMenu menu1, menu2;
     TextView list1, list2;
+    Fragment newpost;
     public String serwer = "";
-    public String token;
+    public static String token;
 	public static String login;
 	public String place, postId, content, photo, categoryId, addTime, eventTime;
 	private static final String TAG = "OknoKonto";
 	public TextView tv;
-	public static String[] faculties, coords;
+	public static String[] faculties, coords, favUserId, favCategoryId, tags, tagsId;
 	Context context;
-
+	public String photou;
+	Bitmap userPhoto;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +91,10 @@ public class OknoKonto extends Activity {
    			token = b.getString("token");
    			faculties = b.getStringArray("faculties");
    			coords = b.getStringArray("coords");
+   			tags = b.getStringArray("tags");
+   			tagsId = b.getStringArray("tagsId");
+   			favUserId = b.getStringArray("favUserId");
+   			favCategoryId = b.getStringArray("favCategoryId");
    		}
         
         ActionBar bar = getActionBar();
@@ -105,21 +114,73 @@ public class OknoKonto extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(getApplicationContext(), OknoEdytujProfil.class);
+				intent.putExtra("photou", photou);
+				intent.putExtra("favUserId", favUserId);
+				intent.putExtra("favCategoryId", favCategoryId);
+				intent.putExtra("tags", tags);
+				intent.putExtra("token", token);
+				intent.putExtra("tagsId", tagsId);
             	startActivity(intent);
 				
 			}
 		});
-        
         // existing height is ok as is, no need to edit it
+        //yourPicture.setLayoutParams(params);       
+/*
+        expListView = (ExpandableListView) findViewById(R.id.expandableList); 
+        // preparing list data
+        // Adding child data
+        listDataHeader = new ArrayList<String>();
+        listDataHeader.add("Typy news'Ã³w");
+        listDataHeader.add("Obserwowani dziennikarze");
+        listDataHeader.add("ObserwujÄ…cy uÅ¼ytkownicy");
+ 
+        // Adding child data
+        List<String> typy = new ArrayList<String>();
+        typy.add("Sport");
+        typy.add("Kultura");
+        typy.add("Utrudnienia na drodze");
+        typy.add("Polityczne");
+        typy.add("Charytatywne");
+        typy.add("Imprezy");
+        typy.add("12 Angry Men");
+ 
+        List<String> obserwowani = new ArrayList<String>();
+        obserwowani.add("The Conjuring");
+        obserwowani.add("Despicable Me 2");
+        obserwowani.add("Turbo");
+        obserwowani.add("Grown Ups 2");
+        obserwowani.add("Red 2");
+        obserwowani.add("The Wolverine");
+ 
+        List<String> obserwujacy = new ArrayList<String>();
+        obserwujacy.add("2 Guns");
+        obserwujacy.add("The Smurfs 2");
+        obserwujacy.add("The Spectacular Now");
+        obserwujacy.add("The Canyons");
+        obserwujacy.add("Europa Report");
+ 
+        listDataChild = new HashMap<String, List<String>>();
+        listDataChild.put(listDataHeader.get(0), typy); // Header, Child data
+        listDataChild.put(listDataHeader.get(1), obserwowani);
+        listDataChild.put(listDataHeader.get(2), obserwujacy);
+ 
+        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+ 
+        // setting list adapter
+        expListView.setAdapter(listAdapter);
+     
+        //endofexpandablelist*/
+        
         yourPicture.setLayoutParams(params);
         
         list1 = (TextView) findViewById(R.id.popup1);
         list2 = (TextView) findViewById(R.id.popup2);
         
-        //dodanie do tekstu liczbu wybranych tagów i ulubionych u¿ytkowników - zsumowaæ z bazy
+        //dodanie do tekstu liczbu wybranych tagï¿½w i ulubionych uï¿½ytkownikï¿½w - zsumowaï¿½ z bazy
         String s1,s2;
         s1=list1.getText().toString();
-        int liczbatagow=5, liczbaulubionych=6;
+        int liczbatagow=favCategoryId.length, liczbaulubionych=6;
         s1+=" ("+liczbatagow+")";
         list1.setText(s1);
         
@@ -133,41 +194,42 @@ public class OknoKonto extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				menu1 = new PopupMenu(OknoKonto.this, v);
-				//dodanie kolejnych nazw tagów
-				menu1.getMenu().add("sport");
-				menu1.getMenu().add("konkurs");
-				menu1.getMenu().add("impreza");
-				menu1.getMenu().add("koncert");
-				menu1.getMenu().add("wyk³ad");
+				//dodanie kolejnych nazw tagï¿½w
+				for(int i=0; i<favCategoryId.length;i++){
+					for(int j=0; j<tags.length; j++){
+						if(favCategoryId[i].equals(tagsId[j])){
+							menu1.getMenu().add(tags[j].toString());
+						}
+					}
+				}
 				menu1.show();
 				
 			}
 		});
         
- list2.setOnClickListener(new OnClickListener() {
+        list2.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				menu2 = new PopupMenu(OknoKonto.this, v);
-				//dodanie kolejnych nazw u¿ytkowników
-				menu2.getMenu().add(0,0,0,"Julka                     usuñ");
-				menu2.getMenu().add(0,1,0,"Dominika              usuñ");
-				menu2.getMenu().add(0,2,0,"Sebastian             usuñ");
-				menu2.getMenu().add(0,3,0,"Piotr                      usuñ");
-				menu2.getMenu().add(0,4,0,"Bartek                   usuñ");
-				menu2.getMenu().add(0,5,0,"Lamia                 usuñ");
-				menu2.getMenu().add(0,6,0,"Julka                 usuñ");
-				menu2.getMenu().add(0,7,0,"Dominika              usuñ");
-				menu2.getMenu().add(0,8,0,"Sebastian             usuñ");
-				menu2.getMenu().add(0,9,0,"Piotr                 usuñ");
-				menu2.getMenu().add(0,10,0,"Bartek                usuñ");
-				menu2.getMenu().add(0,11,0,"Lamia                 usuñ");
+				//dodanie kolejnych nazw uï¿½ytkownikï¿½w
+				menu2.getMenu().add(0,0,0,"Julka                     usuÅ„");
+				menu2.getMenu().add(0,1,0,"Dominika              usuÅ„");
+				menu2.getMenu().add(0,2,0,"Sebastian             usuÅ„");
+				menu2.getMenu().add(0,3,0,"Piotr                      usuÅ„");
+				menu2.getMenu().add(0,4,0,"Bartek                   usuÅ„");
+				menu2.getMenu().add(0,5,0,"Lamia                 usuÅ„");
+				menu2.getMenu().add(0,6,0,"Julka                 usuÅ„");
+				menu2.getMenu().add(0,7,0,"Dominika              usuÅ„");
+				menu2.getMenu().add(0,8,0,"Sebastian             usuÅ„");
+				menu2.getMenu().add(0,9,0,"Piotr                 usuÅ„");
+				menu2.getMenu().add(0,10,0,"Bartek                usuÅ„");
+				menu2.getMenu().add(0,11,0,"Lamia                 usuÅ„");
 				menu2.show();
-				
 				menu2.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {  
 		             public boolean onMenuItemClick(MenuItem item) {  
-		              Toast.makeText(OknoKonto.this,"Usun¹³eœ : " + item.getItemId(),Toast.LENGTH_SHORT).show();  
+		              Toast.makeText(OknoKonto.this,"Usunï¿½ï¿½eï¿½ : " + item.getItemId(),Toast.LENGTH_SHORT).show();  
 		              menu2.getMenu().removeItem(item.getItemId());
 		              menu2.show();
 		              return true;  
@@ -191,9 +253,16 @@ public class OknoKonto extends Activity {
    			JSONArray jsonarray = new JSONArray(response);
    			if(jsonarray!=null){
     			login = jsonarray.getString(1);
-    			System.out.println("login: " + login);
     			tv.setText(login);
     			JSONArray jarrayPosts = jsonarray.getJSONArray(0);
+    			photou = jsonarray.getString(2);
+    			if(userPhoto!=null)
+    			{
+    	        	 userPhoto.recycle();
+    	        	 userPhoto = null;
+    	        }
+    	        userPhoto = decodeBase64(photou);
+    	        yourPicture.setImageBitmap(userPhoto);
     			for(int i=0; i<jarrayPosts.length(); i++){
     				JSONObject jso = jarrayPosts.getJSONObject(i);
    					postId = jso.getString("postId");
@@ -231,10 +300,10 @@ public class OknoKonto extends Activity {
             return true;
         case R.id.map:
         	Intent intentmapa = new Intent(getApplicationContext(), OknoMapa.class);
-   			startActivity(intentmapa);           
+   			startActivity(intentmapa); 
             return true;
         case R.id.news:
-        	
+            
             return true;
         case R.id.konto:
       	  Intent intentkonto = new Intent(getApplicationContext(), OknoKonto.class);
@@ -248,6 +317,15 @@ public class OknoKonto extends Activity {
     //explist    
     //enxplist           
 
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed(); 
+        startActivity(new Intent(OknoKonto.this, OknoNews.class));
+        finish();
+
+    }
+    
 private class WebServiceTask extends AsyncTask<String, Integer, String> {
     public static final int LOG_TASK = 1;
     public static final int REGISTER_TASK = 2;  
@@ -266,8 +344,8 @@ private class WebServiceTask extends AsyncTask<String, Integer, String> {
     public String categoryId, count;
     public String place, token, tags, faculties;
     private static final String TAG = "WebServiceTask";
-    private static final int CONN_TIMEOUT = 50000;        
-    private static final int SOCKET_TIMEOUT = 50000;        
+    private static final int CONN_TIMEOUT = 100000;        
+    private static final int SOCKET_TIMEOUT = 100000;        
     private Context mContext = null;
     private String processMessage = "Processing...";
     public String login, password, email, role, url2, location, eventTime, tag;
@@ -382,13 +460,13 @@ private class WebServiceTask extends AsyncTask<String, Integer, String> {
     }
 }
 
-@Override
-public void onBackPressed()
+public static Bitmap decodeBase64(String input) 
 {
-    super.onBackPressed(); 
-    startActivity(new Intent(OknoKonto.this, OknoNews.class));
-    finish();
-
+    byte[] decodedByte;
+    decodedByte = Base64.decode(input, Base64.URL_SAFE);
+    Bitmap b = BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
+    decodedByte = null;
+    return b;
 }
-    
+
 }

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
+
 import pl.example.apk.*;
 import android.app.Activity;
 import android.app.Fragment;
@@ -41,6 +43,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     public static final int NEW_TASK = 4; 
     public static final int ACCOUNT_TASK = 5;
     public static final int AUTHOR_TASK = 6;
+    public static final int EDIT_TASK = 7;
     private int taskType, number;
     Fragment newpost, newpost2;
     public int idItem;
@@ -53,8 +56,8 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     public String categoryId, count;
     public String place, token, tags, faculties;
     private static final String TAG = "WebServiceTask";
-    private static final int CONN_TIMEOUT = 5000;        
-    private static final int SOCKET_TIMEOUT = 5000;        
+    private static final int CONN_TIMEOUT = 10000;        
+    private static final int SOCKET_TIMEOUT = 10000;        
     private Context mContext = null;
     private String processMessage = "Processing...";
     public String login, password, email, role, url2, location, eventTime, tag, userLogin;
@@ -62,6 +65,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
     private ProgressDialog pDlg = null;
     public String [] coords, fac, tagName, tagId;
+    public List<Integer> favouritesTags;
     public static int id = 0; 
   	public static int id2 = 0;
   	public static int max = 0;
@@ -122,6 +126,16 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
         this.mContext = mContext;
         this.processMessage = processMessage;
         this.userLogin = userLogin;
+    }
+    
+    //konstruktor do OknoEdytujProfil
+    public WebServiceTask(int taskType, Context mContext, String processMessage, String photo, String token, List<Integer> favouritesTags){
+    	this.taskType = taskType;
+        this.mContext = mContext;
+        this.processMessage = processMessage;
+        this.token = token;
+        this.photo = photo;
+        this.favouritesTags = favouritesTags;
     }
 
     public void addNameValuePair(String name, String value) {
@@ -188,6 +202,9 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
         		pDlg.dismiss();
         		oknoAutora oa = new oknoAutora();
         		oa.handleResponse(response);
+        	case EDIT_TASK:
+        		pDlg.dismiss();
+        		handleResponseEDIT(response);
     	}
                   
     }
@@ -337,6 +354,33 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             		HttpGet httpgetauthor = new HttpGet(url);
             		response = httpclient.execute(httpgetauthor);               
             		break;
+            	case EDIT_TASK: 
+            		url2 = serwer + "/edit2";
+            		HttpConnectionParams.setConnectionTimeout(httpClient.getParams(), 10000);
+                    JSONArray jsone = new JSONArray();
+                    try{
+      					HttpPost httpPost = new HttpPost(url2);
+      					JSONArray j = new JSONArray();
+            			for(int i=0; i<favouritesTags.size(); i++){
+            				j.put(favouritesTags.get(i));
+            			}
+      					jsone.put(token);
+      					jsone.put(photo);
+      					jsone.put(j);
+      					System.out.println("json:" + jsone);
+      					StringEntity se = new StringEntity(jsone.toString(), "UTF-8");
+      					httpPost.addHeader("Content-Type","application/json");
+      					httpPost.setEntity(se);
+      					response = httpClient.execute(httpPost);     					
+      					if(response != null){
+      						InputStream in = response.getEntity().getContent();
+      					}
+                    }catch(Exception e){
+      					e.printStackTrace();
+      				}
+                    HttpGet httpgetedit = new HttpGet(url);
+                    response = httpclient.execute(httpgetedit);               
+                    break;
             }
        	} catch (Exception e) {
         		Log.e(TAG, e.getLocalizedMessage(), e);
@@ -435,6 +479,22 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
         	mContext.startActivity(i);   	
         } else {
         	Toast.makeText(mContext, "B³¹d! Nie uda³o siê dodaæ posta!", Toast.LENGTH_LONG).show();
+        	android.os.SystemClock.sleep(2000);
+        	Intent i = new Intent(mContext,OknoNews.class);
+        	//i.putExtra("Token",response);
+        	mContext.startActivity(i);
+        }
+    }
+    
+    public void handleResponseEDIT(String response) {   
+        if(response.equals("TRUE")){
+        	Toast.makeText(mContext, "Pomyslnie zastosowano zmiany!", Toast.LENGTH_LONG).show();
+        	android.os.SystemClock.sleep(2000);
+        	Intent i = new Intent(mContext,OknoNews.class);
+        	//i.putExtra("Token",response);
+        	mContext.startActivity(i);   	
+        } else {
+        	Toast.makeText(mContext, "B³¹d! Nie uda³o siê zastosowaæ zmian!", Toast.LENGTH_LONG).show();
         	android.os.SystemClock.sleep(2000);
         	Intent i = new Intent(mContext,OknoNews.class);
         	//i.putExtra("Token",response);

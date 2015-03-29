@@ -100,7 +100,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
    	public ObservableScrollView scrollView;
    	public static int threshold = 982;
    	public String serwer = "";
-   	public static String[] tags, faculties, coords, tagsId;
+   	public static String[] tags, faculties, coords, tagsId, favUserId, favCategoryId;
    	private static final String TAG = "OknoLog";
    	
    	@Override
@@ -198,7 +198,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
     
    		idItem = 0;
    		String sampleURL = serwer + "/news";
-   		WebServiceTask wst = new WebServiceTask(WebServiceTask.NEWS_TASK, this, "Loading posts...", idItem);   
+   		WebServiceTask wst = new WebServiceTask(WebServiceTask.NEWS_TASK, this, "Loading posts...", idItem, token);   
    		wst.execute(new String[] { sampleURL }); 
    	}
 
@@ -230,6 +230,10 @@ public class OknoNews extends Activity implements ScrollViewListener {
    			intentkonto.putExtra("token", token);
    			intentkonto.putExtra("faculties", faculties);
 	    	intentkonto.putExtra("coords", coords);
+	    	intentkonto.putExtra("tags", tags);
+	    	intentkonto.putExtra("tagsId", tagsId);
+	    	intentkonto.putExtra("favUserId", favUserId);
+	    	intentkonto.putExtra("favCategoryId", favCategoryId);
    			startActivity(intentkonto);
          	return true;
    		default:
@@ -269,10 +273,23 @@ public class OknoNews extends Activity implements ScrollViewListener {
    
    	public void handleResponse(String resp) {   
    		try {
+   			System.out.println(resp);
    			FragmentTransaction ft = null;
    			JSONArray jsonarray = new JSONArray(resp);
-   			for(int i=0; i<jsonarray.length(); i++){
-   				JSONObject jso = jsonarray.getJSONObject(i);
+   			JSONArray jarrayPosts = jsonarray.getJSONArray(1);
+			JSONArray jarrayFav = jsonarray.getJSONArray(0);
+			favUserId = new String[jarrayFav.length()];
+			favCategoryId = new String[jarrayFav.length()];
+			for(int i=0; i<jarrayFav.length(); i++){
+				JSONObject jso = jarrayFav.getJSONObject(i);
+				System.out.println("rozmiar: " + jso);
+				if(jso!=null){
+					favUserId[i] = jso.getString("favUserId");
+					favCategoryId[i] = jso.getString("favCategoryId");
+				}
+			}
+   			for(int i=0; i<jarrayPosts.length(); i++){
+   				JSONObject jso = jarrayPosts.getJSONObject(i);
    				if(jso!=null){
    					postId = jso.getString("postId");
    					userLogin = jso.getString("userLogin");
@@ -303,7 +320,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		if (y == threshold ) {
    			number = id2;
    			String sampleURL = serwer + "/news";
-   			WebServiceTask wst = new WebServiceTask(WebServiceTask.NEWS_TASK, OknoNews.this , "Loading posts...", number);   
+   			WebServiceTask wst = new WebServiceTask(WebServiceTask.NEWS_TASK, OknoNews.this , "Loading posts...", number, token);   
    			wst.execute(new String[] { sampleURL });    
    			threshold = threshold + 1600;
    		}
@@ -319,14 +336,16 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		private static final int SOCKET_TIMEOUT = 5000;  
    		private int taskType, number;
    		private Context mContext = null;
+   		private String token;
    		private String processMessage = "Processing...";
    		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
    		private ProgressDialog pDlg = null;
-   		public WebServiceTask(int taskType, Context mContext, String processMessage, int number){
+   		public WebServiceTask(int taskType, Context mContext, String processMessage, int number, String token){
    			this.taskType = taskType;
    			this.mContext = mContext;
    			this.processMessage = processMessage;
    			this.number = number;
+   			this.token = token;
    		}
       
    		public void addNameValuePair(String name, String value) {
@@ -394,6 +413,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
                 try{
                 	HttpPost httpPost = new HttpPost(url2);
   					json.put("id",number);
+  					json.put("token", token);
   					StringEntity se = new StringEntity(json.toString());
   					httpPost.addHeader("Content-Type","application/json");
   					httpPost.setEntity(se);
