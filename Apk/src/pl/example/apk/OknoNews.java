@@ -211,6 +211,8 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		switch (item.getItemId()) {
    		case R.id.home:
     	  	Intent intent = new Intent(getApplicationContext(), OknoNews.class);
+    	  	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
       		startActivity(intent);
       		return true;
    		case R.id.map:
@@ -331,9 +333,9 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		public static final int NEWS_TASK = 2;
    		private static final String TAG = "WebServiceTask";
    		// connection timeout, in milliseconds (waiting to connect)
-   		private static final int CONN_TIMEOUT = 5000;        
+   		private static final int CONN_TIMEOUT = 50000;        
    		// socket timeout, in milliseconds (waiting for data)
-   		private static final int SOCKET_TIMEOUT = 5000;  
+   		private static final int SOCKET_TIMEOUT = 50000;  
    		private int taskType, number;
    		private Context mContext = null;
    		private String token;

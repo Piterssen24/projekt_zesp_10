@@ -296,6 +296,8 @@ public class OknoKonto extends Activity {
         switch (item.getItemId()) {
         case R.id.home:
       	  	Intent intent = new Intent(getApplicationContext(), OknoNews.class);
+      	  	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
         		startActivity(intent);
             return true;
         case R.id.map:

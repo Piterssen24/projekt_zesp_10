@@ -4,11 +4,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+
 import android.view.Gravity;
 import android.widget.LinearLayout;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Scanner;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import android.widget.Spinner;
@@ -148,7 +153,7 @@ public class OknoNew extends FragmentActivity {
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
         dateView.setText(String.valueOf(year)+"/"+String.valueOf(month+1)+"/"+String.valueOf(day));
-    	date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    	date = new SimpleDateFormat("yyyy-MM-dd");
         addTime = date.format(new Date());
         
         categories = (Spinner) findViewById(R.id.listOfCategories);
@@ -308,7 +313,7 @@ public class OknoNew extends FragmentActivity {
     		else locManager.requestLocationUpdates( LocationManager.NETWORK_PROVIDER, 0, 0, myLocationListener); 		   	
     }   
     
-    public void addNewPost(View vw){ 
+    public void addNewPost(View vw) { 
     	photo =  encodeTobase64(bitmap); 
     	bitmap.recycle();
     	bitmap = null;
@@ -338,11 +343,15 @@ public class OknoNew extends FragmentActivity {
         	Toast.makeText(this, "Pomyslnie dodano posta!", Toast.LENGTH_LONG).show();
         	android.os.SystemClock.sleep(2000);
         	Intent i = new Intent(this, OknoNews.class);
+        	i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
         	startActivity(i);        	
         } else {
         	Toast.makeText(this, "B³¹d! Nie uda³o siê dodaæ posta!", Toast.LENGTH_LONG).show();
         	android.os.SystemClock.sleep(2000);
         	Intent i = new Intent(this, OknoNews.class);
+        	i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
         	startActivity(i);
         }
     }
