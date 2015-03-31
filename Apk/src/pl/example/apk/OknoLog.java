@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -28,6 +30,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -39,6 +42,7 @@ public class OknoLog extends Activity {
 	private EditText elogin, epassword;
 	public String login, password;
 	public String serwer = "";
+	String name, pass;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +59,18 @@ public class OknoLog extends Activity {
     }
     
     public void retrieveSampleData(View vw) {
+    	 	
     	login = elogin.getText().toString();
     	password = epassword.getText().toString();
-        String sampleURL = serwer + "/login";
+    	String sampleURL = serwer + "/login";
+        
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(OknoLog.this); //Get the preferences
+        Editor edit = prefs.edit(); //Needed to edit the preferences
+        edit.putString("name", login);  //add a String
+        edit.putString("passwd", password);
+        edit.putBoolean("rememberCredentials", true); //add a boolean
+        edit.commit();  // save the edits. 
+ 
         WebServiceTask wst = new WebServiceTask(WebServiceTask.LOG_TASK, this, "Logging...", login, password);   
         wst.execute(new String[] { sampleURL });       
     }

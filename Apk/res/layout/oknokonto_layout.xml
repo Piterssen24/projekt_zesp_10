@@ -23,8 +23,8 @@
         <ImageView
             android:id="@+id/userPhoto"
             android:layout_marginLeft="10dp"
-            android:layout_width="120dp"
-            android:layout_height="200dp" />
+            android:layout_width="100dp"
+            android:layout_height="180dp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -32,23 +32,37 @@
             android:layout_gravity="center"
             android:layout_marginLeft="10dp"
             android:orientation="vertical" >
-
+            
             <TextView
                 android:id="@+id/textViewUserName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:layout_marginLeft="15dp"
                 android:layout_gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
+             <LinearLayout
+        		android:layout_width="wrap_content"
+        		android:layout_height="match_parent"
+        		android:orientation="horizontal" >
+    		
+            
             <Button
                 android:id="@+id/buttonEdit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:layout_marginLeft="30dp"
                 android:text="@string/stringedycja" />
+            
+            <Button
+                android:id="@+id/buttonLogOut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:text="@string/LogOut" />
+            
+            </LinearLayout>
 
         </LinearLayout>
 
