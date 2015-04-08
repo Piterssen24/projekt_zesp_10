@@ -64,7 +64,6 @@
             			android:layout_weight="1"
             			android:textColor="#CC009900"
             			android:gravity="center_horizontal"
-            			android:text="@string/stringzglosnaduzycie"
                  	/>
                     <TextView 
                         android:id="@+id/readMore" 

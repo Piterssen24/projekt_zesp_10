@@ -299,7 +299,7 @@ public class OknoKonto extends Activity {
    					addTime = jso.getString("addTime");
    					place = jso.getString("place");
    					eventTime = jso.getString("eventTime");
-   					newpost = new postElement(postId, login, content, photo, categoryId, addTime, place, eventTime, faculties, coords);
+   					newpost = new postElement(token, postId, login, content, photo, categoryId, addTime, place, eventTime, faculties, coords, "Konto");
    					ft = getFragmentManager().beginTransaction();
    					ft.add(R.id.content, newpost, "f1");
    					ft.commit();

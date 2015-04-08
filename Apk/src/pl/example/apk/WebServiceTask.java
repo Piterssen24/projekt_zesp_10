@@ -46,6 +46,8 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     public static final int EDIT_TASK = 7;
     public static final int NEWSFILTERED_TASK = 8;
 	public static final int NEWSFAVOURITES_TASK = 9;
+	public static final int POSTDELETE_TASK = 10;
+	public static final int POSTREPORT_TASK = 11;
     private int taskType, number;
     Fragment newpost, newpost2;
     public int idItem;
@@ -95,11 +97,20 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
         this.userPhoto = userPhoto;
     }
     
-    // konstruktor do OknoNews
+    // konstruktor do OknoNews i postElement zg³oœ nadu¿ycie
     public WebServiceTask(int taskType, Context mContext, String processMessage, int number) {
         this.taskType = taskType;
         this.mContext = mContext;
         this.processMessage = processMessage;
+        this.number = number;
+    }
+    
+    //konstruktor do postElement usuñ posta
+    public WebServiceTask(int taskType, Context mContext, String processMessage, String token, int number) {
+        this.taskType = taskType;
+        this.mContext = mContext;
+        this.processMessage = processMessage;
+        this.token = token;
         this.number = number;
     }
     
@@ -202,13 +213,24 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
         		pDlg.dismiss();
         		OknoKonto ok = new OknoKonto();
         		ok.handleResponse(response);
+        		break;
         	case AUTHOR_TASK:
         		pDlg.dismiss();
         		oknoAutora oa = new oknoAutora();
         		oa.handleResponse(response);
+        		break;
         	case EDIT_TASK:
         		pDlg.dismiss();
         		handleResponseEDIT(response);
+        		break;
+        	case POSTDELETE_TASK:
+        		pDlg.dismiss();
+        		handleResponsePOSTDELETE(response);
+        		break;
+        	case POSTREPORT_TASK:
+        		pDlg.dismiss();
+        		handleResponsePOSTREPORT(response);
+        		break;
     	}
                   
     }
@@ -386,6 +408,49 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
                     HttpGet httpgetedit = new HttpGet(url);
                     response = httpclient.execute(httpgetedit);               
                     break;
+            	case POSTDELETE_TASK: 
+            		url2 = serwer + "/removePost2";
+            		HttpConnectionParams.setConnectionTimeout(httpClient.getParams(), 10000);
+                    JSONObject jsonpd = new JSONObject();
+                    try{
+      					HttpPost httpPost = new HttpPost(url2);
+      					jsonpd.put("token", token);
+      					jsonpd.put("postId", number);
+      					System.out.println("json:" + jsonpd);
+      					StringEntity se = new StringEntity(jsonpd.toString(), "UTF-8");
+      					httpPost.addHeader("Content-Type","application/json");
+      					httpPost.setEntity(se);
+      					response = httpClient.execute(httpPost);     					
+      					if(response != null){
+      						InputStream in = response.getEntity().getContent();
+      					}
+                    }catch(Exception e){
+      					e.printStackTrace();
+      				}
+                    HttpGet httpgetpostd = new HttpGet(url);
+                    response = httpclient.execute(httpgetpostd);               
+                    break;
+            	case POSTREPORT_TASK: 
+            		url2 = serwer + "/report2";
+            		HttpConnectionParams.setConnectionTimeout(httpClient.getParams(), 10000);
+                    JSONObject jsonpr = new JSONObject();
+                    try{
+      					HttpPost httpPost = new HttpPost(url2);
+      					jsonpr.put("postId", number);
+      					System.out.println("json:" + jsonpr);
+      					StringEntity se = new StringEntity(jsonpr.toString(), "UTF-8");
+      					httpPost.addHeader("Content-Type","application/json");
+      					httpPost.setEntity(se);
+      					response = httpClient.execute(httpPost);     					
+      					if(response != null){
+      						InputStream in = response.getEntity().getContent();
+      					}
+                    }catch(Exception e){
+      					e.printStackTrace();
+      				}
+                    HttpGet httpgetpostr = new HttpGet(url);
+                    response = httpclient.execute(httpgetpostr);               
+                    break;
             }
        	} catch (Exception e) {
         		Log.e(TAG, e.getLocalizedMessage(), e);
@@ -496,7 +561,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     
     public void handleResponseEDIT(String response) {   
         if(response.equals("TRUE")){
-        	Toast.makeText(mContext, "Pomyslnie zastosowano zmiany!", Toast.LENGTH_LONG).show();
+        	Toast.makeText(mContext, "Pomyœlnie zastosowano zmiany!", Toast.LENGTH_LONG).show();
         	android.os.SystemClock.sleep(2000);
         	Intent i = new Intent(mContext,OknoNews.class);
         	//i.putExtra("Token",response);
@@ -507,6 +572,32 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
         	Intent i = new Intent(mContext,OknoNews.class);
         	//i.putExtra("Token",response);
         	mContext.startActivity(i);
+        }
+    }
+    
+    public void handleResponsePOSTDELETE(String response) {   
+        if(response.equals("TRUE")){
+        	Toast.makeText(mContext, "Pomyœlnie usuniêto posta!", Toast.LENGTH_LONG).show();
+        	android.os.SystemClock.sleep(2000);
+        	Intent i = new Intent(mContext,OknoKonto.class);
+        	//i.putExtra("Token",response);
+        	mContext.startActivity(i);   	
+        } else {
+        	Toast.makeText(mContext, "B³¹d! Nie uda³o siê usun¹æ posta!", Toast.LENGTH_LONG).show();
+        	android.os.SystemClock.sleep(2000);
+        	Intent i = new Intent(mContext,OknoKonto.class);
+        	//i.putExtra("Token",response);
+        	mContext.startActivity(i);
+        }
+    }
+    
+    public void handleResponsePOSTREPORT(String response) {   
+        if(response.equals("TRUE")){
+        	Toast.makeText(mContext, "Pomyœlnie zg³oszono nadu¿ycie!", Toast.LENGTH_LONG).show();
+        	//android.os.SystemClock.sleep(2000);  	
+        } else {
+        	Toast.makeText(mContext, "B³¹d! Nie uda³o siê wykonaæ operacji!", Toast.LENGTH_LONG).show();
+        	//android.os.SystemClock.sleep(2000);
         }
     }
 }

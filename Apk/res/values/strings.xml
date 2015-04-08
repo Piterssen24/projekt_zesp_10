@@ -76,6 +76,14 @@
     <string name="stringPrompt1">Kategorie</string>
     <string name="stringPrompt2">Lokalizacja</string>
     <string name="stringEventDate">Data wydarzenia</string>
-    <string name="server2">http://158.75.2.10:10000/PicNewsApp/rest/main</string>
-    <string name="server">http://192.168.1.19:8080/RestWebServiceDemo/rest/main</string>
+    <string name="editPicture">Edytuj zdjęcie</string>
+    <string name="choosePicture">Wybierz zdjęcie</string>
+    <string name="favouriteTags">Ulubione tagi</string>
+    <string name="acceptChanges">Zapisz zmiany</string>
+    <string name="popup1">"Ulubione tagi"</string>
+    <string name="popup2">"Obserwowani dziennikarze"</string>
+    <string name="LogOut">"Wyloguj"</string>
+    <string name="deletePost">"Usuń</string>
+    <string name="server">http://158.75.2.10:10000/PicNewsApp/rest/main</string>
+    <string name="server2">http://192.168.1.18:8080/RestWebServiceDemo/rest/main</string>
 </resources>

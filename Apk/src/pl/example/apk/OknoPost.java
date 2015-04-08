@@ -35,6 +35,7 @@ public class OknoPost extends Activity {
 	public static String[] faculties, coords;
 	Context context;
     public StringBuilder strAddress;
+    public static String token;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,7 @@ public class OknoPost extends Activity {
         	eventTime = b.getString("eventTime");
         	faculties = b.getStringArray("faculties");
             coords = b.getStringArray("coords");
+            token = b.getString("token");
         }
         
         for(int j=0; j<faculties.length; j++) {
@@ -112,6 +114,7 @@ public class OknoPost extends Activity {
               	intent.putExtra("userLogin", userLogin); 
               	intent.putExtra("faculties", faculties);
     	    	intent.putExtra("coords", coords);
+    	    	intent.putExtra("token", token);
               	startActivity(intent);
             }			
   		});   

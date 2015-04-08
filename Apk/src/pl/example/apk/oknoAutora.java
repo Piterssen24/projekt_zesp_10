@@ -56,6 +56,7 @@ public class oknoAutora extends Activity {
 	public static String[] faculties, coords;
 	public String photou;
 	Bitmap userPhoto;
+	public static String token;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,7 @@ public class oknoAutora extends Activity {
            userLogin = extras.getString("userLogin"); 
            faculties = extras.getStringArray("faculties");
            coords = extras.getStringArray("coords");
+           token = extras.getString("token");
            
         }
         
@@ -120,7 +122,7 @@ public class oknoAutora extends Activity {
    					addTime = jso.getString("addTime");
    					place = jso.getString("place");
    					eventTime = jso.getString("eventTime");
-   					newpost = new postElement(postId, userLogin, content, photo, categoryId, addTime, place, eventTime, faculties, coords);
+   					newpost = new postElement(token, postId, userLogin, content, photo, categoryId, addTime, place, eventTime, faculties, coords, "Autora");
    					ft = getFragmentManager().beginTransaction();
    					ft.add(R.id.content, newpost, "f1");
    					ft.commit();

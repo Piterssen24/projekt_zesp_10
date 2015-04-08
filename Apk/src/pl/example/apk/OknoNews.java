@@ -335,7 +335,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
    					addTime = jso.getString("addTime");
    					place = jso.getString("place");
    					eventTime = jso.getString("eventTime");
-   					newpost = new postElement(postId, userLogin, content, photo, categoryId, addTime, place, eventTime, faculties, coords);
+   					newpost = new postElement(token, postId, userLogin, content, photo, categoryId, addTime, place, eventTime, faculties, coords, "News");
    					ft = getFragmentManager().beginTransaction();
    					ft.add(R.id.content, newpost, "f1");
    					ft.commit();
