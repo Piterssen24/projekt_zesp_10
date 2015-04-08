@@ -1,6 +1,7 @@
 package pl.example.apk;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,10 +25,13 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -42,6 +46,7 @@ public class OknoRejestracja extends Activity {
 	public String role, login, password, repassword, email;
 	private EditText elogin, epassword, erepassword, eemail;
 	public String serwer = "";
+	public String userPhoto;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +71,8 @@ public class OknoRejestracja extends Activity {
     	password = epassword.getText().toString();
     	repassword = erepassword.getText().toString();
     	email = eemail.getText().toString();
+    	Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.gaz3min); 
+    	userPhoto = encodeTobase64(bmp);
     	
     	elogin.setText("");
     	epassword.setText("");
@@ -76,10 +83,24 @@ public class OknoRejestracja extends Activity {
     		Toast.makeText(this, "Pola nie mog¹ byæ puste!", Toast.LENGTH_LONG).show();
     	}else if(password.equals(repassword)){
     			role = "D";
-    		WebServiceTask wst = new WebServiceTask(WebServiceTask.REGISTER_TASK, this, "Registering...", login, password, email, role);   
+    		WebServiceTask wst = new WebServiceTask(WebServiceTask.REGISTER_TASK, this, "Registering...", login, password, email, role, userPhoto);   
         	wst.execute(new String[] { sampleURL });
     	}else{
     		Toast.makeText(this, "Has³a siê nie zgadzaj¹!", Toast.LENGTH_LONG).show();
     	}	
+    }
+    
+    public static String encodeTobase64(Bitmap image)
+    {
+    	Bitmap immagex = image;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();  
+        immagex.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        immagex.recycle();
+        immagex = null;
+        byte[] b = null;
+        b = baos.toByteArray();
+        String imageEncoded = Base64.encodeToString(b,Base64.DEFAULT);
+        b = null;
+        return imageEncoded;
     }
 }

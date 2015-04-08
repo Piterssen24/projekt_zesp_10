@@ -89,11 +89,13 @@ public class OknoNews extends Activity implements ScrollViewListener {
     public String addTime;
     public String place;
     public String eventTime, count;
+    public String[] list;
+    public static int maxPostId;
     public static String role, token;
     public final static String APP_PATH_SD_CARD = "/PicNews";
   	public ProgressBar spinner;
   	static int number = 0;
-  	public static int id = 0; 
+  	public static int lastId = 0; 
   	public static int id2 = 0;
   	public static int max = 0; 
   	static boolean loadingMore = false;
@@ -102,6 +104,8 @@ public class OknoNews extends Activity implements ScrollViewListener {
    	public String serwer = "";
    	public static String[] tags, faculties, coords, tagsId, favUserId, favCategoryId;
    	private static final String TAG = "OknoLog";
+   	public static int pos, variant;
+   	public static boolean over = false;
    	
    	@Override
    	protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +119,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		Bundle b = getIntent().getExtras();
    		if(b!=null) {
    			token = b.getString("token");
+   			maxPostId = b.getInt("maxPostId");
    			role = b.getString("role");
    			tagsId = b.getStringArray("tagsId");
    			tags = b.getStringArray("tags");
@@ -157,7 +162,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
     
    		// Setting DrawerToggle on DrawerLayout
    		dLayout.setDrawerListener(mDrawerToggle);
-   		String[] list = new String[tags.length + 2];
+   		list = new String[tags.length + 2];
    		list[0] = "Wszystkie";
    		list[1] = "Moje ulubione";
    		for(int i=0; i<tags.length; i++){
@@ -166,15 +171,18 @@ public class OknoNews extends Activity implements ScrollViewListener {
     	// Creating an ArrayAdapter to add items to the listview mDrawerList
    		adapter = new ArrayAdapter<String>(getBaseContext(), R.layout.drawer_list_item , list);
    		// Setting the adapter on mDrawerList
-   		dList.setAdapter(adapter);    
+   		dList.setAdapter(adapter);   
+   		
+   		//dList.getSelectedItem()
+   		
    		// Setting item click listener for the listview mDrawerList
    		dList.setOnItemClickListener(new OnItemClickListener() {
    			@Override
    			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Getting an array of rivers
-                String[] rivers = getResources().getStringArray(R.array.rivers);
-                //Currently selected river
-                getActionBar().setTitle(rivers[position]);
+                //String[] rivers = getResources().getStringArray(R.array.rivers);
+         /*       //Currently selected river
+                getActionBar().setTitle(list[position]);
                 // Creating a fragment object
                 DetailFragment rFragment = new DetailFragment();
                 // Creating a Bundle object
@@ -190,15 +198,39 @@ public class OknoNews extends Activity implements ScrollViewListener {
                 // Adding a fragment to the fragment transaction
                 ft.replace(R.id.contentFrame, rFragment);
                 // Committing the transaction
-                ft.commit();
+                ft.commit();*/
                 // Closing the drawer
+   				linearLayout.removeAllViews();
                 dLayout.closeDrawer(mDrawerLinear);
+                switch (position) {
+                case 0:
+
+                	variant = 1;
+               		String sampleURL = serwer + "/news";
+               		WebServiceTask wst = new WebServiceTask(WebServiceTask.NEWS_TASK, OknoNews.this, "Loading posts...", maxPostId, token);   
+               		wst.execute(new String[] { sampleURL }); 
+                	break;
+                case 1:
+                	variant = 2;
+               		sampleURL = serwer + "/newsFavourites";
+               		wst = new WebServiceTask(WebServiceTask.NEWSFAVOURITES_TASK, OknoNews.this, "Loading posts...", maxPostId, token, favCategoryId);   
+               		wst.execute(new String[] { sampleURL }); 
+                	break;
+                default:
+                	variant = 3;
+               		sampleURL = serwer + "/newsFiltered";
+               		pos = position - 2;
+               		wst = new WebServiceTask(WebServiceTask.NEWSFILTERED_TASK, OknoNews.this, "Loading posts...", maxPostId, token, tagsId[pos]);   
+               		wst.execute(new String[] { sampleURL }); 
+                	break;
+                }
    			}
    		});
     
-   		idItem = 0;
+   		//idItem = 0;
+   		variant = 0;
    		String sampleURL = serwer + "/news";
-   		WebServiceTask wst = new WebServiceTask(WebServiceTask.NEWS_TASK, this, "Loading posts...", idItem, token);   
+   		WebServiceTask wst = new WebServiceTask(WebServiceTask.NEWS_TASK, this, "Loading posts...", maxPostId, token);   
    		wst.execute(new String[] { sampleURL }); 
    	}
 
@@ -217,6 +249,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
       		return true;
    		case R.id.map:
    			Intent intentmapa = new Intent(getApplicationContext(), OknoMapa.class);
+   			intentmapa.putExtra("token", token);
    			startActivity(intentmapa);  
    			return true;
    		case R.id.news:
@@ -296,6 +329,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
    					postId = jso.getString("postId");
    					userLogin = jso.getString("userLogin");
    					content = jso.getString("content");
+   					content = postId + content;
    					photo = jso.getString("photo");
    					categoryId = jso.getString("categoryId");
    					addTime = jso.getString("addTime");
@@ -305,32 +339,58 @@ public class OknoNews extends Activity implements ScrollViewListener {
    					ft = getFragmentManager().beginTransaction();
    					ft.add(R.id.content, newpost, "f1");
    					ft.commit();
-   					if(i==jsonarray.length()-1){
-   						count = jso.getString("count");
-   						id = Integer.parseInt(count);
-   						id2 = id2 + id;	       
+   					//if(i == jsonarray.length()-1){
+   						lastId = Integer.parseInt(postId);
+   						lastId = lastId - 1;
+   						System.out.println("lastId: " + lastId);
+   					//}
+   					if(postId.equals("1")){
+   						over = true;
    					}
    				}
    			}
    		} catch (Exception e) {
    			Log.e(TAG, e.getLocalizedMessage(), e);
    		}
+   		loadingMore = false;
    	}
    
    	@Override
    	public void onScrollEnded(ObservableScrollView scrollView, int x, int y, int oldx,   int oldy) {
-   		if (y == threshold ) {
-   			number = id2;
-   			String sampleURL = serwer + "/news";
-   			WebServiceTask wst = new WebServiceTask(WebServiceTask.NEWS_TASK, OknoNews.this , "Loading posts...", number, token);   
-   			wst.execute(new String[] { sampleURL });    
-   			threshold = threshold + 1600;
+   		if(loadingMore == false){
+   			loadingMore = true;
+   		if(over == false){
+   			switch (variant) {
+   				case 0:
+   					String sampleURL = serwer + "/news";
+               		WebServiceTask wst = new WebServiceTask(WebServiceTask.NEWS_TASK, OknoNews.this, "Loading posts...", lastId, token);   
+               		wst.execute(new String[] { sampleURL });    
+   					break;
+   				case 1:
+   					sampleURL = serwer + "/news";
+               		wst = new WebServiceTask(WebServiceTask.NEWS_TASK, OknoNews.this, "Loading posts...", lastId, token);   
+               		wst.execute(new String[] { sampleURL });    
+   					break;
+   				case 2:
+               		sampleURL = serwer + "/newsFavourites";
+               		wst = new WebServiceTask(WebServiceTask.NEWSFAVOURITES_TASK, OknoNews.this, "Loading posts...", lastId, token, favCategoryId);   
+               		wst.execute(new String[] { sampleURL }); 
+                	break;
+   				case 3:
+               		sampleURL = serwer + "/newsFiltered";
+               		wst = new WebServiceTask(WebServiceTask.NEWSFILTERED_TASK, OknoNews.this, "Loading posts...", lastId, token, tagsId[pos]);   
+               		wst.execute(new String[] { sampleURL }); 
+                	break;
+   			}
+   		}	
    		}
    	}
    
    	private class WebServiceTask extends AsyncTask<String, Integer, String> {
    		public static final int POST_TASK = 1;
    		public static final int NEWS_TASK = 2;
+   		public static final int NEWSFILTERED_TASK = 3;
+   		public static final int NEWSFAVOURITES_TASK = 4;
    		private static final String TAG = "WebServiceTask";
    		// connection timeout, in milliseconds (waiting to connect)
    		private static final int CONN_TIMEOUT = 50000;        
@@ -342,12 +402,32 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		private String processMessage = "Processing...";
    		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
    		private ProgressDialog pDlg = null;
+   		private String[] favCategoryId;
+   		private String tag;
    		public WebServiceTask(int taskType, Context mContext, String processMessage, int number, String token){
    			this.taskType = taskType;
    			this.mContext = mContext;
    			this.processMessage = processMessage;
    			this.number = number;
    			this.token = token;
+   		}
+   		
+   		public WebServiceTask(int taskType, Context mContext, String processMessage, int number, String token, String[] favCategoryId){
+   			this.taskType = taskType;
+   			this.mContext = mContext;
+   			this.processMessage = processMessage;
+   			this.number = number;
+   			this.token = token;
+   			this.favCategoryId = favCategoryId;
+   		}
+   		
+   		public WebServiceTask(int taskType, Context mContext, String processMessage, int number, String token, String tag){
+   			this.taskType = taskType;
+   			this.mContext = mContext;
+   			this.processMessage = processMessage;
+   			this.number = number;
+   			this.token = token;
+   			this.tag = tag;
    		}
       
    		public void addNameValuePair(String name, String value) {
@@ -405,11 +485,13 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		private HttpResponse doResponse(String url) {  
    			// Use our connection and data timeouts as parameters for our
    			// DefaultHttpClient
-   			String url2 = serwer + "/news2";
    			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+   			HttpClient httpClient = new DefaultHttpClient();
    			HttpResponse response = null;
-   			try {                          	               	
-   				HttpClient httpClient = new DefaultHttpClient();
+   			try {        
+   				switch (taskType) {
+            	case NEWS_TASK:
+            		String url2 = serwer + "/news2";
    				HttpConnectionParams.setConnectionTimeout(httpClient.getParams(), 10000);
                 JSONObject json = new JSONObject();
                 try{
@@ -428,7 +510,62 @@ public class OknoNews extends Activity implements ScrollViewListener {
   					//createDialog("Error", "Cannot Estabilish Connection");
   				}
                   	HttpGet httpget = new HttpGet(url);
-                  	response = httpclient.execute(httpget);           
+                  	response = httpclient.execute(httpget);
+                  	break;
+                  	
+            	case NEWSFILTERED_TASK:
+            		url2 = serwer + "/newsFiltered2";
+       				HttpConnectionParams.setConnectionTimeout(httpClient.getParams(), 10000);
+                    json = new JSONObject();
+                    try{
+                    	HttpPost httpPost = new HttpPost(url2);
+      					json.put("id", number);
+      					json.put("token", token);
+      					json.put("tag", tag);
+      					StringEntity se = new StringEntity(json.toString());
+      					httpPost.addHeader("Content-Type","application/json");
+      					httpPost.setEntity(se);
+      					response = httpClient.execute(httpPost);				
+      					if(response != null){
+      						InputStream in = response.getEntity().getContent();
+      					}
+      				}catch(Exception e){
+      					e.printStackTrace();
+      					//createDialog("Error", "Cannot Estabilish Connection");
+      				}
+                      	httpget = new HttpGet(url);
+                      	response = httpclient.execute(httpget);
+                      	break;
+                      	
+            		case NEWSFAVOURITES_TASK:
+                      	url2 = serwer + "/newsFavourites2";
+           				HttpConnectionParams.setConnectionTimeout(httpClient.getParams(), 10000);
+                        JSONArray ja = new JSONArray();
+                        try{
+                        	HttpPost httpPost = new HttpPost(url2);
+                        	JSONArray j = new JSONArray();
+                        	for(int i=0; i<favCategoryId.length; i++){
+                				j.put(favCategoryId[i]);
+                			}
+          					ja.put(number);
+          					ja.put(token);
+          					ja.put(j);
+          					StringEntity se = new StringEntity(ja.toString());
+          					httpPost.addHeader("Content-Type","application/json");
+          					httpPost.setEntity(se);
+          					response = httpClient.execute(httpPost);				
+          					if(response != null){
+          						InputStream in = response.getEntity().getContent();
+          					}
+          				}catch(Exception e){
+          					e.printStackTrace();
+          					//createDialog("Error", "Cannot Estabilish Connection");
+          				}
+                          	httpget = new HttpGet(url);
+                          	response = httpclient.execute(httpget);
+                          	break;
+                      	
+   				}
    			} catch (Exception e) {
    				Log.e(TAG, e.getLocalizedMessage(), e);
    			}

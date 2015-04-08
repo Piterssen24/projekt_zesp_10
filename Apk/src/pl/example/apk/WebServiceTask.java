@@ -44,6 +44,8 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     public static final int ACCOUNT_TASK = 5;
     public static final int AUTHOR_TASK = 6;
     public static final int EDIT_TASK = 7;
+    public static final int NEWSFILTERED_TASK = 8;
+	public static final int NEWSFAVOURITES_TASK = 9;
     private int taskType, number;
     Fragment newpost, newpost2;
     public int idItem;
@@ -56,11 +58,11 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     public String categoryId, count;
     public String place, token, tags, faculties;
     private static final String TAG = "WebServiceTask";
-    private static final int CONN_TIMEOUT = 10000;        
-    private static final int SOCKET_TIMEOUT = 10000;        
+    private static final int CONN_TIMEOUT = 50000;        
+    private static final int SOCKET_TIMEOUT = 50000;        
     private Context mContext = null;
     private String processMessage = "Processing...";
-    public String login, password, email, role, url2, location, eventTime, tag, userLogin;
+    public String login, password, email, role, url2, location, eventTime, tag, userLogin, userPhoto;
     public String serwer = "";
     private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
     private ProgressDialog pDlg = null;
@@ -69,6 +71,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     public static int id = 0; 
   	public static int id2 = 0;
   	public static int max = 0;
+  	public static int maxPostId;
     
   	
   	// konstruktor do OknoLog
@@ -81,7 +84,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     }
     
     // konstruktor do OknoRejestracja
-    public WebServiceTask(int taskType, Context mContext, String processMessage, String login, String password, String email, String role) {
+    public WebServiceTask(int taskType, Context mContext, String processMessage, String login, String password, String email, String role, String userPhoto) {
         this.taskType = taskType;
         this.mContext = mContext;
         this.processMessage = processMessage;
@@ -89,6 +92,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
         this.password = password;
         this.email = email;
         this.role = role;
+        this.userPhoto = userPhoto;
     }
     
     // konstruktor do OknoNews
@@ -233,6 +237,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             			jsonr.put("password", password);
             			jsonr.put("email", email);
             			jsonr.put("role", role);
+            			jsonr.put("userPhoto", userPhoto);
             			StringEntity se = new StringEntity(jsonr.toString(), "UTF-8");
             			httpPost.addHeader("Content-Type","application/json");
             			httpPost.setEntity(se);
@@ -404,10 +409,12 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     
     public final void handleResponseLOG(String response) {  
     	try {
+    		System.out.println(response);
     		JSONArray jsonarray = new JSONArray(response);
     		if(jsonarray!=null){
     			token = jsonarray.getString(0);
     			role = jsonarray.getString(1);
+    			maxPostId = jsonarray.getInt(4);
     			if(token.equals("")){
     				Toast.makeText(mContext, "B³êdny login lub has³o!", Toast.LENGTH_LONG).show();
     			} else {
@@ -441,6 +448,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     				Toast.makeText(mContext, "Zalogowano!", Toast.LENGTH_LONG).show();
     				Intent in = new Intent(mContext, OknoNews.class);
     				in.putExtra("token",token);
+    				in.putExtra("maxPostId", maxPostId);
     				in.putExtra("role", role);
     				in.putExtra("tagsId", tagId);
     				in.putExtra("tags", tagName);
