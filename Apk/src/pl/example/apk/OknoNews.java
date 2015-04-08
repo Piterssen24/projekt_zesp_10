@@ -98,14 +98,14 @@ public class OknoNews extends Activity implements ScrollViewListener {
   	public static int lastId = 0; 
   	public static int id2 = 0;
   	public static int max = 0; 
-  	static boolean loadingMore = false;
+  	public boolean loadingMore = false;
    	public ObservableScrollView scrollView;
    	public static int threshold = 982;
    	public String serwer = "";
    	public static String[] tags, faculties, coords, tagsId, favUserId, favCategoryId;
    	private static final String TAG = "OknoLog";
-   	public static int pos, variant;
-   	public static boolean over = false;
+   	public int pos, variant;
+   	public boolean over = false;
    	
    	@Override
    	protected void onCreate(Bundle savedInstanceState) {
@@ -204,20 +204,22 @@ public class OknoNews extends Activity implements ScrollViewListener {
                 dLayout.closeDrawer(mDrawerLinear);
                 switch (position) {
                 case 0:
-
                 	variant = 1;
+                	over = false;
                		String sampleURL = serwer + "/news";
                		WebServiceTask wst = new WebServiceTask(WebServiceTask.NEWS_TASK, OknoNews.this, "Loading posts...", maxPostId, token);   
                		wst.execute(new String[] { sampleURL }); 
                 	break;
                 case 1:
                 	variant = 2;
+                	over = false;
                		sampleURL = serwer + "/newsFavourites";
                		wst = new WebServiceTask(WebServiceTask.NEWSFAVOURITES_TASK, OknoNews.this, "Loading posts...", maxPostId, token, favCategoryId);   
                		wst.execute(new String[] { sampleURL }); 
                 	break;
                 default:
                 	variant = 3;
+                	over = false;
                		sampleURL = serwer + "/newsFiltered";
                		pos = position - 2;
                		wst = new WebServiceTask(WebServiceTask.NEWSFILTERED_TASK, OknoNews.this, "Loading posts...", maxPostId, token, tagsId[pos]);   
