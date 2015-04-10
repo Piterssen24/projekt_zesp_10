@@ -4,10 +4,12 @@ package pl.example.apk;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-
+import android.view.View.OnClickListener;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,7 +20,10 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
@@ -88,7 +93,35 @@ public class OknoPost extends Activity {
         bar.setTitle("PicNews");
         
         photoView = (ImageView) findViewById(R.id.picture);
-        photoView.setImageBitmap(picture);
+        photoView.setImageBitmap(picture);  
+        photoView.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub				
+				Dialog builder = new Dialog(OknoPost.this);
+  			    builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+  			    builder.getWindow().setBackgroundDrawable(
+  			        new ColorDrawable(android.graphics.Color.TRANSPARENT));
+  			    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+  			        @Override
+  			        public void onDismiss(DialogInterface dialogInterface) {
+  			            //nothing;
+  			        }
+  			    });
+
+  			    ImageView imageView = new ImageView(OknoPost.this);
+  			    int w = picture.getWidth();
+  			    int h = picture.getHeight();
+  			    Bitmap b = Bitmap.createScaledBitmap(picture, w*2-140, h*2-100, true);
+  			    imageView.setImageBitmap(b);
+  			    builder.addContentView(imageView, new RelativeLayout.LayoutParams(
+  			            ViewGroup.LayoutParams.MATCH_PARENT, 
+  			            ViewGroup.LayoutParams.MATCH_PARENT));
+  			    builder.show();
+				
+			}
+		});
         
         postDate = (TextView) findViewById(R.id.postDate);
         date = postDate.getText();

@@ -116,7 +116,12 @@ public class OknoNew extends FragmentActivity {
        	
         if(bitmap!=null) {
         	bitmap.recycle();
-       		bitmap  = null;
+       		bitmap = null;
+        }
+        
+        if(bitmapRotated!=null) {
+        	bitmapRotated.recycle();
+       		bitmapRotated = null;
         }
         
         int or = getOrientation(context, path);     

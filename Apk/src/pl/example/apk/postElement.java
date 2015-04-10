@@ -9,6 +9,7 @@ import pl.example.apk.WebServiceTask;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,15 +17,20 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
 
@@ -33,7 +39,7 @@ public class postElement extends Fragment {
        ImageView photoView;
        LinearLayout layout; 
        String postText, post, photo, location;
-       Bitmap picture;
+       Bitmap picture, pictureMin;
        String userLogin, place, eventTime;
        public static String which;
        public static String[] faculties, coords;
@@ -61,8 +67,7 @@ public class postElement extends Fragment {
        
        @Override
        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-           Bundle savedInstanceState) {   	   
-           String napis = "nowy post";  
+           Bundle savedInstanceState) {  
            serwer = getResources().getString(R.string.server);
            // Creating view correspoding to the fragment
            View v = inflater.inflate(R.layout.postelement_layout, container, false);   
@@ -177,7 +182,7 @@ public class postElement extends Fragment {
        	   photoView.setOnClickListener(new View.OnClickListener() {      			
       			@Override
               	public void onClick(View v) {
-                  	Intent intent = new Intent(getActivity(), OknoPost.class);
+                  	/*Intent intent = new Intent(getActivity(), OknoPost.class);
                   	intent.putExtra("postText",postText);
                   	intent.putExtra("photo", photo);
                   	intent.putExtra("userLogin", userLogin);
@@ -186,7 +191,27 @@ public class postElement extends Fragment {
         	    	intent.putExtra("faculties", faculties);
         	    	intent.putExtra("coords", coords);
         	    	intent.putExtra("token", token);
-                  	startActivity(intent);
+                  	startActivity(intent);*/
+      				
+      				Dialog builder = new Dialog(getActivity());
+      			    builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+      			    builder.getWindow().setBackgroundDrawable(
+      			        new ColorDrawable(android.graphics.Color.TRANSPARENT));
+      			    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+      			        @Override
+      			        public void onDismiss(DialogInterface dialogInterface) {
+      			            //nothing;
+      			        }
+      			    });
+
+      			    ImageView imageView = new ImageView(getActivity());
+      			    Bitmap b = Bitmap.createScaledBitmap(picture, picture.getWidth()*2-140, picture.getHeight()*2-100, true);
+      			    imageView.setImageBitmap(b);
+      			    builder.addContentView(imageView, new RelativeLayout.LayoutParams(
+      			            ViewGroup.LayoutParams.MATCH_PARENT, 
+      			            ViewGroup.LayoutParams.MATCH_PARENT));
+      			    builder.show();
+      				
                 }      			
        	   });             
            return v;
