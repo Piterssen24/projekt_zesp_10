@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-
+import android.content.Intent;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -24,6 +24,7 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -35,7 +36,10 @@ import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -43,11 +47,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class OknoMapa extends FragmentActivity {
 
-	LatLng yourLocation;
+	LatLng yourLocation,markerLocation;
 	private GoogleMap googleMap;
 	LocationManager locManager;
 	public String serwer = "";
 	public String token;
+	public static String[] faculties, coords;
 	private static final String TAG = "OknoMapa";
 	public String postId;
     public String userLogin;
@@ -66,6 +71,8 @@ public class OknoMapa extends FragmentActivity {
         Bundle b = getIntent().getExtras();
         if(b != null){
         	token = b.getString("token");
+        	faculties = b.getStringArray("faculties");
+   			coords = b.getStringArray("coords");
         }
         String sampleURL = serwer + "/map";
    		WebServiceTask wst = new WebServiceTask(WebServiceTask.MAP_TASK, this, "Loading posts on map...", token);   
@@ -124,7 +131,20 @@ public class OknoMapa extends FragmentActivity {
          e.printStackTrace();
       }
        
-    }  
+    }
+	
+	public static String truncate(final String content, final int lastIndex) {
+		if(content.length()>60)
+		{
+			String result = content.substring(0, lastIndex);
+			if (content.charAt(lastIndex) != ' ') 
+			{
+				result = result.substring(0, result.lastIndexOf(" "));
+			}
+			return result+"...";
+		}
+		else return content;
+	}
 	
 	
 	public void handleResponse(String resp) {   
@@ -137,7 +157,8 @@ public class OknoMapa extends FragmentActivity {
    					postId = jso.getString("postId");
    					userLogin = jso.getString("userLogin");
    					content = jso.getString("content");
-   					content = postId + content;
+   					final String postText = content;
+   					content = postId + truncate(content,40);
    					photo = jso.getString("photo");
    					categoryId = jso.getString("categoryId");
    					addTime = jso.getString("addTime");
@@ -148,7 +169,59 @@ public class OknoMapa extends FragmentActivity {
 		        	double lat = Double.parseDouble(tokens[0]);
 		        	double lon = Double.parseDouble(tokens[1]);
    					LatLng loc = new LatLng(lat, lon);
-   					Marker TP = googleMap.addMarker(new MarkerOptions().position(loc).title(content));
+   					markerLocation = loc;
+   					Marker TP = googleMap.addMarker(new MarkerOptions().position(loc).title(content).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+   					TP.setDraggable(true);
+   				    googleMap.setOnMarkerDragListener(new OnMarkerDragListener()
+   				    {
+
+					@Override
+					public void onMarkerDrag(Marker marker) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onMarkerDragEnd(Marker marker) {
+						// TODO Auto-generated method stub
+						marker.setPosition(markerLocation);
+						//Loading post...
+						if(marker.getTitle().equals(content)) // if marker source is clicked
+                        {
+						Intent intent = new Intent(OknoMapa.this, OknoPost.class);
+            	    	intent.putExtra("postText",postText);
+            	    	intent.putExtra("photo", photo);
+            	    	intent.putExtra("userLogin", userLogin);
+            	    	intent.putExtra("place", place);
+            	    	intent.putExtra("eventTime", eventTime);
+            	    	intent.putExtra("faculties", faculties);
+            	    	intent.putExtra("coords", coords);
+            	    	intent.putExtra("token", token);
+            	    	startActivity(intent);
+                        }
+						
+					}
+
+					@Override
+					public void onMarkerDragStart(Marker marker) {
+						// TODO Auto-generated method stub
+						/*if(marker.getTitle().equals(content)) // if marker source is clicked
+                        {
+						Intent intent = new Intent(OknoMapa.this, OknoPost.class);
+            	    	intent.putExtra("postText",postText);
+            	    	intent.putExtra("photo", photo);
+            	    	intent.putExtra("userLogin", userLogin);
+            	    	intent.putExtra("place", place);
+            	    	intent.putExtra("eventTime", eventTime);
+            	    	intent.putExtra("faculties", faculties);
+            	    	intent.putExtra("coords", coords);
+            	    	intent.putExtra("token", token);
+            	    	startActivity(intent);
+                        }*/
+						
+					}
+
+                 });   
    				}
    			}
    		} catch (Exception e) {
@@ -156,6 +229,7 @@ public class OknoMapa extends FragmentActivity {
    		}
    	}
 	
+
 	
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
    		public static final int MAP_TASK = 1;
