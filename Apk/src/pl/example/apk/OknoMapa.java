@@ -33,9 +33,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.MapFragment;
@@ -172,7 +176,55 @@ public class OknoMapa extends FragmentActivity {
    					markerLocation = loc;
    					Marker TP = googleMap.addMarker(new MarkerOptions().position(loc).title(content).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
    					TP.setDraggable(true);
-   				    googleMap.setOnMarkerDragListener(new OnMarkerDragListener()
+   					
+   					googleMap.setInfoWindowAdapter(new InfoWindowAdapter() {
+
+   			            // Use default InfoWindow frame
+   			            @Override
+   			            public View getInfoWindow(Marker args) {
+   			                return null;
+   			            }
+
+   			            // Defines the contents of the InfoWindow
+   			            @Override
+   			            public View getInfoContents(Marker args) {
+
+   			                // Getting view from the layout file info_window_layout
+   			                View v = getLayoutInflater().inflate(R.layout.info_window_layout, null);
+
+   			                // Getting the position from the marker
+   			                LatLng ll;
+   			                ll = args.getPosition();
+
+   			                TextView title = (TextView) v.findViewById(R.id.mapContent);
+   			                title.setText(args.getTitle());
+
+   			                googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {          
+   			                    public void onInfoWindowClick(Marker marker) 
+   			                    {
+   			                    	if(marker.getTitle().equals(content)) // if marker source is clicked
+   			                        {
+   									Intent intent = new Intent(OknoMapa.this, OknoPost.class);
+   			            	    	intent.putExtra("postText",postText);
+   			            	    	intent.putExtra("photo", photo);
+   			            	    	intent.putExtra("userLogin", userLogin);
+   			            	    	intent.putExtra("place", place);
+   			            	    	intent.putExtra("eventTime", eventTime);
+   			            	    	intent.putExtra("faculties", faculties);
+   			            	    	intent.putExtra("coords", coords);
+   			            	    	intent.putExtra("token", token);
+   			            	    	startActivity(intent);
+   			                        }
+   			                    }
+   			                });
+
+   			                // Returning the view containing InfoWindow contents
+   			                return v;
+
+   			            }
+   			        });  
+   					
+   				    /*googleMap.setOnMarkerDragListener(new OnMarkerDragListener()
    				    {
 
 					@Override
@@ -219,9 +271,9 @@ public class OknoMapa extends FragmentActivity {
             	    	startActivity(intent);
                         }*/
 						
-					}
+				//	}
 
-                 });   
+                // });   
    				}
    			}
    		} catch (Exception e) {
