@@ -5,11 +5,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import android.view.View.OnClickListener;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Dialog;
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,18 +21,18 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.RelativeLayout;
 import android.widget.LinearLayout.LayoutParams;
 
 
 public class OknoPost extends Activity {
 
-	TextView content, author, postDate, postLoc;
+	TextView content, author, postDate, postLoc, report;
 	ImageView photoView;
 	CharSequence authorTemp, date, location, loc;
 	String postText, photo;
@@ -41,15 +42,20 @@ public class OknoPost extends Activity {
 	Context context;
     public StringBuilder strAddress;
     public static String token;
-	
+    public String serwer = "";
+	public int postId;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.oknopost_layout);
         context = getApplicationContext();
-        
+        serwer = getResources().getString(R.string.server);
+        report = (TextView) findViewById(R.id.rateReport);
         Bundle b = getIntent().getExtras();
         if(b!=null){
+        	postId = b.getInt("postId");
+        	System.out.println("postid: " + postId);
         	postText = b.getString("postText");
         	photo = b.getString("photo");
         	userLogin = b.getString("userLogin");
@@ -92,8 +98,35 @@ public class OknoPost extends Activity {
         bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#009900")));
         bar.setTitle("PicNews");
         
+        report.setOnClickListener(new View.OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(OknoPost.this);
+				    builder.setTitle("Ostrze¿enie");
+				    builder.setMessage("Czy na pewno chcesz zg³osiæ posta?");
+				    builder.setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+				        public void onClick(DialogInterface dialog, int which) {
+				        	String sampleURL = serwer + "/report";
+				       		WebServiceTask wst = new WebServiceTask(WebServiceTask.POSTREPORT_TASK, OknoPost.this, "Trwa zg³aszanie posta, proszê czekaæ...", postId);   
+				       		wst.execute(new String[] { sampleURL }); 
+				            dialog.dismiss();
+				        }
+				    });
+				    
+				    builder.setNegativeButton("Nie", new DialogInterface.OnClickListener() {
+				        @Override
+				        public void onClick(DialogInterface dialog, int which) {
+				            // Do nothing
+				            dialog.dismiss();
+				        }
+				    });
+				    AlertDialog alert = builder.create();
+				    alert.show();
+				}
+			});
+        
         photoView = (ImageView) findViewById(R.id.picture);
-        photoView.setImageBitmap(picture);  
+        photoView.setImageBitmap(picture);
         photoView.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -109,16 +142,16 @@ public class OknoPost extends Activity {
   			            //nothing;
   			        }
   			    });
-
-  			    ImageView imageView = new ImageView(OknoPost.this);
-  			    int w = picture.getWidth();
-  			    int h = picture.getHeight();
-  			    Bitmap b = Bitmap.createScaledBitmap(picture, w*2-140, h*2-100, true);
-  			    imageView.setImageBitmap(b);
-  			    builder.addContentView(imageView, new RelativeLayout.LayoutParams(
-  			            ViewGroup.LayoutParams.MATCH_PARENT, 
-  			            ViewGroup.LayoutParams.MATCH_PARENT));
-  			    builder.show();
+  			    
+  			  ImageView imageView = new ImageView(OknoPost.this);
+			    int w = picture.getWidth();
+			    int h = picture.getHeight();
+			    Bitmap b = Bitmap.createScaledBitmap(picture, w*2-140, h*2-100, true);
+			    imageView.setImageBitmap(b);
+			    builder.addContentView(imageView, new RelativeLayout.LayoutParams(
+			            ViewGroup.LayoutParams.MATCH_PARENT, 
+			            ViewGroup.LayoutParams.MATCH_PARENT));
+			    builder.show();
 				
 			}
 		});
