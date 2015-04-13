@@ -19,12 +19,17 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
+import android.view.View;
+import android.widget.TextView;
+import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -33,17 +38,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
-import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -51,21 +49,22 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class OknoMapa extends FragmentActivity {
 
-	LatLng yourLocation,markerLocation;
+	LatLng yourLocation, markerLocation;
 	private GoogleMap googleMap;
 	LocationManager locManager;
 	public String serwer = "";
 	public String token;
-	public static String[] faculties, coords;
 	private static final String TAG = "OknoMapa";
-	public String postId;
-    public String userLogin;
-    public String content;
-    public String photo;
-    public String categoryId;
-    public String addTime;
-    public String place;
-    public String eventTime;
+	public static int[] repPostId, repUserId;
+	public String[] postId;
+    public String[] userLogin;
+    public String[] content, postText;
+    public String[] photo;
+    public String[] categoryId;
+    public String[] addTime;
+    public String[] place;
+    public String[] eventTime;
+    public static String[] faculties, coords;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +76,8 @@ public class OknoMapa extends FragmentActivity {
         	token = b.getString("token");
         	faculties = b.getStringArray("faculties");
    			coords = b.getStringArray("coords");
+   			repPostId = b.getIntArray("repPostId");
+   			repUserId = b.getIntArray("repUserId");
         }
         String sampleURL = serwer + "/map";
    		WebServiceTask wst = new WebServiceTask(WebServiceTask.MAP_TASK, this, "Loading posts on map...", token);   
@@ -135,7 +136,7 @@ public class OknoMapa extends FragmentActivity {
          e.printStackTrace();
       }
        
-    }
+    }  
 	
 	public static String truncate(final String content, final int lastIndex) {
 		if(content.length()>60)
@@ -150,34 +151,43 @@ public class OknoMapa extends FragmentActivity {
 		else return content;
 	}
 	
-	
 	public void handleResponse(String resp) {   
    		try {
    			System.out.println(resp);
    			JSONArray jsonarray = new JSONArray(resp);
    			for(int i=0; i<jsonarray.length(); i++){
+   				postId = new String[jsonarray.length()];
+   				userLogin = new String[jsonarray.length()];
+   				content = new String[jsonarray.length()];
+   				postText = new String[jsonarray.length()];
+   				photo = new String[jsonarray.length()];
+   				categoryId = new String[jsonarray.length()];
+   				addTime = new String[jsonarray.length()];
+   				place = new String[jsonarray.length()];
+   				eventTime = new String[jsonarray.length()];
    				JSONObject jso = jsonarray.getJSONObject(i);
    				if(jso!=null){
-   					postId = jso.getString("postId");
-   					userLogin = jso.getString("userLogin");
-   					content = jso.getString("content");
-   					final String postText = content;
-   					content = postId + truncate(content,40);
-   					photo = jso.getString("photo");
-   					categoryId = jso.getString("categoryId");
-   					addTime = jso.getString("addTime");
-   					place = jso.getString("place");
+   					postId[i] = jso.getString("postId");
+   					userLogin[i] = jso.getString("userLogin");
+   					content[i] = jso.getString("content");
+   					content[i] = postId[i] + content[i];
+   					postText[i] = content[i];
+   					content[i] = postId[i] + truncate(content[i],40);
+   					photo[i] = jso.getString("photo");
+   					categoryId[i] = jso.getString("categoryId");
+   					addTime[i] = jso.getString("addTime");
+   					place[i] = jso.getString("place");
    					System.out.println("place: " + place);
-   					eventTime = jso.getString("eventTime");
-   					String[] tokens = place.split(",");
+   					eventTime[i] = jso.getString("eventTime");
+   					String[] tokens = place[i].split(",");
 		        	double lat = Double.parseDouble(tokens[0]);
 		        	double lon = Double.parseDouble(tokens[1]);
    					LatLng loc = new LatLng(lat, lon);
    					markerLocation = loc;
-   					Marker TP = googleMap.addMarker(new MarkerOptions().position(loc).title(content).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-   					TP.setDraggable(true);
-   					
-   					googleMap.setInfoWindowAdapter(new InfoWindowAdapter() {
+   					Marker TP = googleMap.addMarker(new MarkerOptions().position(loc).title(content[i]).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+   					TP.setDraggable(false);
+   				    //googleMap.setOnMarkerDragListener(new OnMarkerDragListener()
+   					/*googleMap.setInfoWindowAdapter(new InfoWindowAdapter() {
 
    			            // Use default InfoWindow frame
    			            @Override
@@ -198,33 +208,40 @@ public class OknoMapa extends FragmentActivity {
 
    			                TextView title = (TextView) v.findViewById(R.id.mapContent);
    			                title.setText(args.getTitle());
+   			             googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {          
+			                    public void onInfoWindowClick(Marker marker) 
+			                    {
+			                    	for(int i=0; i<content.length; i++){
+			                    	if(marker.getTitle().equals(content[i])) // if marker source is clicked
+			                        {
+			                    	ProgressDialog pDlg = new ProgressDialog(OknoMapa.this);
+			               			pDlg.setMessage("£adowanie informacji o poœcie...");
+			               			pDlg.setProgressDrawable(OknoMapa.this.getWallpaper());
+			               			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			               			pDlg.setCancelable(false);
+			               			pDlg.show(); 
+									Intent intent = new Intent(OknoMapa.this, OknoPost.class);
+			            	    	intent.putExtra("postText",postText[i]);
+			            	    	intent.putExtra("photo", photo[i]);
+			            	    	intent.putExtra("userLogin", userLogin[i]);
+			            	    	intent.putExtra("place", place[i]);
+			            	    	intent.putExtra("eventTime", eventTime[i]);
+			            	    	intent.putExtra("faculties", faculties);
+			            	    	intent.putExtra("coords", coords);
+			            	    	intent.putExtra("token", token);
+			            	    	pDlg.dismiss();
+			            	    	startActivity(intent);
+			                        }
+			                    	}
+			                    }
+			                });
 
-   			                googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {          
-   			                    public void onInfoWindowClick(Marker marker) 
-   			                    {
-   			                    	if(marker.getTitle().equals(content)) // if marker source is clicked
-   			                        {
-   									Intent intent = new Intent(OknoMapa.this, OknoPost.class);
-   			            	    	intent.putExtra("postText",postText);
-   			            	    	intent.putExtra("photo", photo);
-   			            	    	intent.putExtra("userLogin", userLogin);
-   			            	    	intent.putExtra("place", place);
-   			            	    	intent.putExtra("eventTime", eventTime);
-   			            	    	intent.putExtra("faculties", faculties);
-   			            	    	intent.putExtra("coords", coords);
-   			            	    	intent.putExtra("token", token);
-   			            	    	startActivity(intent);
-   			                        }
-   			                    }
-   			                });
+			                // Returning the view containing InfoWindow contents
+			                return v;
 
-   			                // Returning the view containing InfoWindow contents
-   			                return v;
-
-   			            }
-   			        });  
-   					
-   				    /*googleMap.setOnMarkerDragListener(new OnMarkerDragListener()
+			            }
+			        });  */
+   					/*googleMap.setOnMarkerDragListener(new OnMarkerDragListener()
    				    {
 
 					@Override
@@ -232,7 +249,6 @@ public class OknoMapa extends FragmentActivity {
 						// TODO Auto-generated method stub
 						
 					}
-
 					@Override
 					public void onMarkerDragEnd(Marker marker) {
 						// TODO Auto-generated method stub
@@ -253,7 +269,6 @@ public class OknoMapa extends FragmentActivity {
                         }
 						
 					}
-
 					@Override
 					public void onMarkerDragStart(Marker marker) {
 						// TODO Auto-generated method stub
@@ -273,15 +288,72 @@ public class OknoMapa extends FragmentActivity {
 						
 				//	}
 
-                // });   
+              //   }); 
    				}
    			}
    		} catch (Exception e) {
    			Log.e(TAG, e.getLocalizedMessage(), e);
    		}
+   		
+   		googleMap.setInfoWindowAdapter(new InfoWindowAdapter() {
+
+	            // Use default InfoWindow frame
+	            @Override
+	            public View getInfoWindow(Marker args) {
+	                return null;
+	            }
+
+	            // Defines the contents of the InfoWindow
+	            @Override
+	            public View getInfoContents(Marker args) {
+
+	                // Getting view from the layout file info_window_layout
+	                View v = getLayoutInflater().inflate(R.layout.info_window_layout, null);
+
+	                // Getting the position from the marker
+	                LatLng ll;
+	                ll = args.getPosition();
+
+	                TextView title = (TextView) v.findViewById(R.id.mapContent);
+	                title.setText(args.getTitle());
+	             googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {          
+                    public void onInfoWindowClick(Marker marker) 
+                    {
+                    	for(int i=0; i<content.length; i++){
+                    	if(marker.getTitle().equals(content[i])) // if marker source is clicked
+                        {
+                    	ProgressDialog pDlg = new ProgressDialog(OknoMapa.this);
+               			pDlg.setMessage("£adowanie informacji o poœcie...");
+               			pDlg.setProgressDrawable(OknoMapa.this.getWallpaper());
+               			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+               			pDlg.setCancelable(false);
+               			pDlg.show(); 
+						Intent intent = new Intent(OknoMapa.this, OknoPost.class);
+						intent.putExtra("postId", postId[i]);
+            	    	intent.putExtra("postText",postText[i]);
+            	    	intent.putExtra("photo", photo[i]);
+            	    	intent.putExtra("userLogin", userLogin[i]);
+            	    	intent.putExtra("place", place[i]);
+            	    	intent.putExtra("eventTime", eventTime[i]);
+            	    	intent.putExtra("faculties", faculties);
+            	    	intent.putExtra("coords", coords);
+            	    	intent.putExtra("token", token);
+            	    	intent.putExtra("repPostId", repPostId);
+            	    	intent.putExtra("repUserId", repUserId);
+            	    	pDlg.dismiss();
+            	    	startActivity(intent);
+                        }
+                    	}
+                    }
+                });
+
+                // Returning the view containing InfoWindow contents
+                return v;
+
+            }
+        }); 
    	}
 	
-
 	
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
    		public static final int MAP_TASK = 1;

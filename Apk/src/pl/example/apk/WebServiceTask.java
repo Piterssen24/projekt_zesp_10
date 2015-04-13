@@ -98,11 +98,12 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     }
     
     // konstruktor do OknoNews i postElement zg³oœ nadu¿ycie
-    public WebServiceTask(int taskType, Context mContext, String processMessage, int number) {
+    public WebServiceTask(int taskType, Context mContext, String processMessage, int number, String token) {
         this.taskType = taskType;
         this.mContext = mContext;
         this.processMessage = processMessage;
         this.number = number;
+        this.token = token;
     }
     
     //konstruktor do postElement usuñ posta
@@ -286,7 +287,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             			httpPost.setEntity(se);
             			response = httpClient.execute(httpPost);					
             			if(response != null){
-            				InputStream in = response.getEntity().getContent();
+            				response.getEntity().getContent();
             			}
             		}catch(Exception e){
             			e.printStackTrace();
@@ -328,6 +329,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             			json.put("place", place);
             			json.put("eventTime", eventTime);
             			json.put("tag", tag);
+            			System.out.println("json: " + json);
             			StringEntity se = new StringEntity(json.toString(), "UTF-8");
             			httpPost.addHeader("Content-Type","application/json");
             			httpPost.setEntity(se);
@@ -436,6 +438,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
                     JSONObject jsonpr = new JSONObject();
                     try{
       					HttpPost httpPost = new HttpPost(url2);
+      					jsonpr.put("token", token);
       					jsonpr.put("postId", number);
       					System.out.println("json:" + jsonpr);
       					StringEntity se = new StringEntity(jsonpr.toString(), "UTF-8");
@@ -479,7 +482,6 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     		if(jsonarray!=null){
     			token = jsonarray.getString(0);
     			role = jsonarray.getString(1);
-    			maxPostId = jsonarray.getInt(4);
     			if(token.equals("")){
     				Toast.makeText(mContext, "B³êdny login lub has³o!", Toast.LENGTH_LONG).show();
     			} else {
@@ -513,7 +515,6 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     				Toast.makeText(mContext, "Zalogowano!", Toast.LENGTH_LONG).show();
     				Intent in = new Intent(mContext, OknoNews.class);
     				in.putExtra("token",token);
-    				in.putExtra("maxPostId", maxPostId);
     				in.putExtra("role", role);
     				in.putExtra("tagsId", tagId);
     				in.putExtra("tags", tagName);
@@ -548,12 +549,16 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
         	Toast.makeText(mContext, "Pomyslnie dodano posta!", Toast.LENGTH_LONG).show();
         	android.os.SystemClock.sleep(2000);
         	Intent i = new Intent(mContext,OknoNews.class);
+        	i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
         	//i.putExtra("Token",response);
         	mContext.startActivity(i);   	
         } else {
         	Toast.makeText(mContext, "B³¹d! Nie uda³o siê dodaæ posta!", Toast.LENGTH_LONG).show();
         	android.os.SystemClock.sleep(2000);
         	Intent i = new Intent(mContext,OknoNews.class);
+        	i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
         	//i.putExtra("Token",response);
         	mContext.startActivity(i);
         }
@@ -564,12 +569,16 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
         	Toast.makeText(mContext, "Pomyœlnie zastosowano zmiany!", Toast.LENGTH_LONG).show();
         	android.os.SystemClock.sleep(2000);
         	Intent i = new Intent(mContext,OknoNews.class);
+        	i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
         	//i.putExtra("Token",response);
         	mContext.startActivity(i);   	
         } else {
         	Toast.makeText(mContext, "B³¹d! Nie uda³o siê zastosowaæ zmian!", Toast.LENGTH_LONG).show();
         	android.os.SystemClock.sleep(2000);
         	Intent i = new Intent(mContext,OknoNews.class);
+        	i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
         	//i.putExtra("Token",response);
         	mContext.startActivity(i);
         }

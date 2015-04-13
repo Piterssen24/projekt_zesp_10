@@ -71,6 +71,7 @@ public class OknoKonto extends Activity {
     Fragment newpost;
     Button editAccount, logOut;
     public String serwer = "";
+    public static int[] repPostId, repUserId;
     public static String token;
 	public static String login;
 	public String place, postId, content, photo, categoryId, addTime, eventTime;
@@ -97,6 +98,8 @@ public class OknoKonto extends Activity {
    			tagsId = b.getStringArray("tagsId");
    			favUserId = b.getStringArray("favUserId");
    			favCategoryId = b.getStringArray("favCategoryId");
+   			repPostId = b.getIntArray("repPostId");
+   			repUserId = b.getIntArray("repUserId");
    		}
         
         ActionBar bar = getActionBar();
@@ -195,7 +198,7 @@ public class OknoKonto extends Activity {
         yourPicture.setLayoutParams(params);
         
         list1 = (TextView) findViewById(R.id.popup1);
-        list2 = (TextView) findViewById(R.id.popup2);
+        //list2 = (TextView) findViewById(R.id.popup2);
         
         //dodanie do tekstu liczbu wybranych tag�w i ulubionych u�ytkownik�w - zsumowa� z bazy
         String s1,s2;
@@ -205,9 +208,9 @@ public class OknoKonto extends Activity {
         s1+=" ("+liczbatagow+")";
         list1.setText(s1);
         
-        s2=list2.getText().toString();
+        /*s2=list2.getText().toString();
         s2+=" ("+liczbaulubionych+")";
-        list2.setText(s2);
+        list2.setText(s2);*/
         
         list1.setOnClickListener(new OnClickListener() {
 			
@@ -228,13 +231,13 @@ public class OknoKonto extends Activity {
 				menu1.getMenu().add("konkurs");
 				menu1.getMenu().add("impreza");
 				menu1.getMenu().add("koncert");
-				menu1.getMenu().add("wykład");
+				menu1.getMenu().add("wykład");*/
 				menu1.show();
-			*/	
+				
 			}
 		});
         
-        list2.setOnClickListener(new OnClickListener() {
+      /*  list2.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -264,7 +267,7 @@ public class OknoKonto extends Activity {
 		            });  
 				
 			}
-		});
+		});*/
         
         String sampleURL = serwer + "/account";
    		WebServiceTask wst = new WebServiceTask(WebServiceTask.ACCOUNT_TASK, this, token);   
@@ -299,7 +302,7 @@ public class OknoKonto extends Activity {
    					addTime = jso.getString("addTime");
    					place = jso.getString("place");
    					eventTime = jso.getString("eventTime");
-   					newpost = new postElement(token, postId, login, content, photo, categoryId, addTime, place, eventTime, faculties, coords, "Konto");
+   					newpost = new postElement(token, postId, login, content, photo, categoryId, addTime, place, eventTime, faculties, coords, "Konto", repPostId, repUserId);
    					ft = getFragmentManager().beginTransaction();
    					ft.add(R.id.content, newpost, "f1");
    					ft.commit();

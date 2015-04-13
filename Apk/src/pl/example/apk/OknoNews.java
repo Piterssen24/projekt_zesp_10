@@ -81,6 +81,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
     View loadMoreView;
     Fragment newpost, newpost2;
     public int idItem;
+    public static int[] repUserId, repPostId;
     public String postId;
     public String userLogin;
     public String content;
@@ -90,11 +91,10 @@ public class OknoNews extends Activity implements ScrollViewListener {
     public String place;
     public String eventTime, count;
     public String[] list;
-    public static int maxPostId;
     public static String role, token;
     public final static String APP_PATH_SD_CARD = "/PicNews";
   	public ProgressBar spinner;
-  	static int number = 0;
+  	public static String number = "";
   	public static int lastId = 0; 
   	public static int id2 = 0;
   	public static int max = 0; 
@@ -119,7 +119,6 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		Bundle b = getIntent().getExtras();
    		if(b!=null) {
    			token = b.getString("token");
-   			maxPostId = b.getInt("maxPostId");
    			role = b.getString("role");
    			tagsId = b.getStringArray("tagsId");
    			tags = b.getStringArray("tags");
@@ -129,7 +128,6 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		
    		scrollView = (ObservableScrollView) findViewById(R.id.scrollView);
    		scrollView.setScrollViewListener(this);
-    
    		// setup action bar for tabs
    		ActionBar actionBar =getActionBar();
    		actionBar.setTitle("PicNews");
@@ -207,14 +205,14 @@ public class OknoNews extends Activity implements ScrollViewListener {
                 	variant = 1;
                 	over = false;
                		String sampleURL = serwer + "/news";
-               		WebServiceTask wst = new WebServiceTask(WebServiceTask.NEWS_TASK, OknoNews.this, "Loading posts...", maxPostId, token);   
+               		WebServiceTask wst = new WebServiceTask(WebServiceTask.NEWS_TASK, OknoNews.this, "Loading posts...", number, token);   
                		wst.execute(new String[] { sampleURL }); 
                 	break;
                 case 1:
                 	variant = 2;
                 	over = false;
                		sampleURL = serwer + "/newsFavourites";
-               		wst = new WebServiceTask(WebServiceTask.NEWSFAVOURITES_TASK, OknoNews.this, "Loading posts...", maxPostId, token, favCategoryId);   
+               		wst = new WebServiceTask(WebServiceTask.NEWSFAVOURITES_TASK, OknoNews.this, "Loading posts...", number, token, favCategoryId);   
                		wst.execute(new String[] { sampleURL }); 
                 	break;
                 default:
@@ -222,7 +220,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
                 	over = false;
                		sampleURL = serwer + "/newsFiltered";
                		pos = position - 2;
-               		wst = new WebServiceTask(WebServiceTask.NEWSFILTERED_TASK, OknoNews.this, "Loading posts...", maxPostId, token, tagsId[pos]);   
+               		wst = new WebServiceTask(WebServiceTask.NEWSFILTERED_TASK, OknoNews.this, "Loading posts...", number, token, tagsId[pos]);   
                		wst.execute(new String[] { sampleURL }); 
                 	break;
                 }
@@ -232,7 +230,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		//idItem = 0;
    		variant = 0;
    		String sampleURL = serwer + "/news";
-   		WebServiceTask wst = new WebServiceTask(WebServiceTask.NEWS_TASK, this, "Loading posts...", maxPostId, token);   
+   		WebServiceTask wst = new WebServiceTask(WebServiceTask.NEWS_TASK, this, "Loading posts...", "", token);   
    		wst.execute(new String[] { sampleURL }); 
    	}
 
@@ -252,6 +250,10 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		case R.id.map:
    			Intent intentmapa = new Intent(getApplicationContext(), OknoMapa.class);
    			intentmapa.putExtra("token", token);
+   			intentmapa.putExtra("faculties", faculties);
+	    	intentmapa.putExtra("coords", coords);
+	    	intentmapa.putExtra("repPostId", repPostId);
+	    	intentmapa.putExtra("repUserId", repUserId);
    			startActivity(intentmapa);  
    			return true;
    		case R.id.news:
@@ -271,6 +273,8 @@ public class OknoNews extends Activity implements ScrollViewListener {
 	    	intentkonto.putExtra("tagsId", tagsId);
 	    	intentkonto.putExtra("favUserId", favUserId);
 	    	intentkonto.putExtra("favCategoryId", favCategoryId);
+	    	intentkonto.putExtra("repPostId", repPostId);
+	    	intentkonto.putExtra("repUserId", repUserId);
    			startActivity(intentkonto);
          	return true;
    		default:
@@ -315,14 +319,25 @@ public class OknoNews extends Activity implements ScrollViewListener {
    			JSONArray jsonarray = new JSONArray(resp);
    			JSONArray jarrayPosts = jsonarray.getJSONArray(1);
 			JSONArray jarrayFav = jsonarray.getJSONArray(0);
+			JSONArray jarrayRep = jsonarray.getJSONArray(2);
 			favUserId = new String[jarrayFav.length()];
 			favCategoryId = new String[jarrayFav.length()];
+			repPostId = new int[jarrayRep.length()];
+			repUserId = new int[jarrayRep.length()];
 			for(int i=0; i<jarrayFav.length(); i++){
 				JSONObject jso = jarrayFav.getJSONObject(i);
 				System.out.println("rozmiar: " + jso);
 				if(jso!=null){
 					favUserId[i] = jso.getString("favUserId");
 					favCategoryId[i] = jso.getString("favCategoryId");
+				}
+			}
+			for(int i=0; i<jarrayRep.length(); i++){
+				JSONObject jso = jarrayRep.getJSONObject(i);
+				System.out.println("rozmiar: " + jso);
+				if(jso!=null){
+					repPostId[i] = jso.getInt("repPostId");
+					repUserId[i] = jso.getInt("repUserId");
 				}
 			}
    			for(int i=0; i<jarrayPosts.length(); i++){
@@ -337,7 +352,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
    					addTime = jso.getString("addTime");
    					place = jso.getString("place");
    					eventTime = jso.getString("eventTime");
-   					newpost = new postElement(token, postId, userLogin, content, photo, categoryId, addTime, place, eventTime, faculties, coords, "News");
+   					newpost = new postElement(token, postId, userLogin, content, photo, categoryId, addTime, place, eventTime, faculties, coords, "News", repPostId, repUserId);
    					ft = getFragmentManager().beginTransaction();
    					ft.add(R.id.content, newpost, "f1");
    					ft.commit();
@@ -365,22 +380,22 @@ public class OknoNews extends Activity implements ScrollViewListener {
    			switch (variant) {
    				case 0:
    					String sampleURL = serwer + "/news";
-               		WebServiceTask wst = new WebServiceTask(WebServiceTask.NEWS_TASK, OknoNews.this, "Loading posts...", lastId, token);   
+               		WebServiceTask wst = new WebServiceTask(WebServiceTask.NEWS_TASK, OknoNews.this, "Loading posts...", Integer.toString(lastId), token);   
                		wst.execute(new String[] { sampleURL });    
    					break;
    				case 1:
    					sampleURL = serwer + "/news";
-               		wst = new WebServiceTask(WebServiceTask.NEWS_TASK, OknoNews.this, "Loading posts...", lastId, token);   
+               		wst = new WebServiceTask(WebServiceTask.NEWS_TASK, OknoNews.this, "Loading posts...", Integer.toString(lastId), token);   
                		wst.execute(new String[] { sampleURL });    
    					break;
    				case 2:
                		sampleURL = serwer + "/newsFavourites";
-               		wst = new WebServiceTask(WebServiceTask.NEWSFAVOURITES_TASK, OknoNews.this, "Loading posts...", lastId, token, favCategoryId);   
+               		wst = new WebServiceTask(WebServiceTask.NEWSFAVOURITES_TASK, OknoNews.this, "Loading posts...", Integer.toString(lastId), token, favCategoryId);   
                		wst.execute(new String[] { sampleURL }); 
                 	break;
    				case 3:
                		sampleURL = serwer + "/newsFiltered";
-               		wst = new WebServiceTask(WebServiceTask.NEWSFILTERED_TASK, OknoNews.this, "Loading posts...", lastId, token, tagsId[pos]);   
+               		wst = new WebServiceTask(WebServiceTask.NEWSFILTERED_TASK, OknoNews.this, "Loading posts...", Integer.toString(lastId), token, tagsId[pos]);   
                		wst.execute(new String[] { sampleURL }); 
                 	break;
    			}
@@ -398,15 +413,15 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		private static final int CONN_TIMEOUT = 50000;        
    		// socket timeout, in milliseconds (waiting for data)
    		private static final int SOCKET_TIMEOUT = 50000;  
-   		private int taskType, number;
+   		private int taskType;
    		private Context mContext = null;
-   		private String token;
+   		private String token, number;
    		private String processMessage = "Processing...";
    		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
    		private ProgressDialog pDlg = null;
    		private String[] favCategoryId;
    		private String tag;
-   		public WebServiceTask(int taskType, Context mContext, String processMessage, int number, String token){
+   		public WebServiceTask(int taskType, Context mContext, String processMessage, String number, String token){
    			this.taskType = taskType;
    			this.mContext = mContext;
    			this.processMessage = processMessage;
@@ -414,7 +429,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
    			this.token = token;
    		}
    		
-   		public WebServiceTask(int taskType, Context mContext, String processMessage, int number, String token, String[] favCategoryId){
+   		public WebServiceTask(int taskType, Context mContext, String processMessage, String number, String token, String[] favCategoryId){
    			this.taskType = taskType;
    			this.mContext = mContext;
    			this.processMessage = processMessage;
@@ -423,7 +438,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
    			this.favCategoryId = favCategoryId;
    		}
    		
-   		public WebServiceTask(int taskType, Context mContext, String processMessage, int number, String token, String tag){
+   		public WebServiceTask(int taskType, Context mContext, String processMessage, String number, String token, String tag){
    			this.taskType = taskType;
    			this.mContext = mContext;
    			this.processMessage = processMessage;
@@ -498,8 +513,9 @@ public class OknoNews extends Activity implements ScrollViewListener {
                 JSONObject json = new JSONObject();
                 try{
                 	HttpPost httpPost = new HttpPost(url2);
-  					json.put("id",number);
+  					json.put("id", number);
   					json.put("token", token);
+  					System.out.println("jsonloadmore: " + json);
   					StringEntity se = new StringEntity(json.toString());
   					httpPost.addHeader("Content-Type","application/json");
   					httpPost.setEntity(se);
@@ -552,6 +568,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
           					ja.put(number);
           					ja.put(token);
           					ja.put(j);
+          					System.out.println("ja: "+ ja);
           					StringEntity se = new StringEntity(ja.toString());
           					httpPost.addHeader("Content-Type","application/json");
           					httpPost.setEntity(se);

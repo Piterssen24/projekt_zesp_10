@@ -2,6 +2,8 @@ package pl.example.apk;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import android.view.View.OnClickListener;
@@ -40,6 +42,7 @@ public class OknoPost extends Activity {
 	String userLogin, place, eventTime;
 	public static String[] faculties, coords;
 	Context context;
+	public static int[] repPostId, repUserId;
     public StringBuilder strAddress;
     public static String token;
     public String serwer = "";
@@ -64,6 +67,8 @@ public class OknoPost extends Activity {
         	faculties = b.getStringArray("faculties");
             coords = b.getStringArray("coords");
             token = b.getString("token");
+            repPostId = b.getIntArray("repPostId");
+            repUserId = b.getIntArray("repUserId");
         }
         
         for(int j=0; j<faculties.length; j++) {
@@ -101,13 +106,30 @@ public class OknoPost extends Activity {
         report.setOnClickListener(new View.OnClickListener() {			
 			@Override
 			public void onClick(View v) {
+				List<Integer> list1 = new ArrayList<Integer>();
+				 for(int i=0; i<repPostId.length; i++){
+					 list1.add(repPostId[i]);
+					 System.out.println("lista: " + list1.get(i));
+				 }
+				if(list1.contains(postId)){
+					Toast.makeText(OknoPost.this, "Ten post zosta³ ju¿ przez Ciebie zg³oszony!", Toast.LENGTH_LONG).show();
+				} else {
 					AlertDialog.Builder builder = new AlertDialog.Builder(OknoPost.this);
 				    builder.setTitle("Ostrze¿enie");
 				    builder.setMessage("Czy na pewno chcesz zg³osiæ posta?");
 				    builder.setPositiveButton("Tak", new DialogInterface.OnClickListener() {
 				        public void onClick(DialogInterface dialog, int which) {
+				        	int[] temp = new int[repPostId.length + 1];
+				            for (int i = 0; i < repPostId.length; i++){
+				                temp[i] = repPostId[i];
+				            }
+				            temp[repPostId.length] = postId;
+				            repPostId = temp;
+				            for (int i = 0; i < repPostId.length; i++){
+				                System.out.println("repPostId: " + repPostId[i]);
+				            }
 				        	String sampleURL = serwer + "/report";
-				       		WebServiceTask wst = new WebServiceTask(WebServiceTask.POSTREPORT_TASK, OknoPost.this, "Trwa zg³aszanie posta, proszê czekaæ...", postId);   
+				       		WebServiceTask wst = new WebServiceTask(WebServiceTask.POSTREPORT_TASK, OknoPost.this, "Trwa zg³aszanie posta, proszê czekaæ...", postId, token);   
 				       		wst.execute(new String[] { sampleURL }); 
 				            dialog.dismiss();
 				        }
@@ -123,6 +145,7 @@ public class OknoPost extends Activity {
 				    AlertDialog alert = builder.create();
 				    alert.show();
 				}
+			}
 			});
         
         photoView = (ImageView) findViewById(R.id.picture);
@@ -181,6 +204,8 @@ public class OknoPost extends Activity {
               	intent.putExtra("faculties", faculties);
     	    	intent.putExtra("coords", coords);
     	    	intent.putExtra("token", token);
+    	    	intent.putExtra("repPostId", repPostId);
+    	    	intent.putExtra("repUserId", repUserId);
               	startActivity(intent);
             }			
   		});   

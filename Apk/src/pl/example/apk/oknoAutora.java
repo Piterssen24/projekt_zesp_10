@@ -21,6 +21,8 @@ import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.google.android.gms.internal.ex;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
@@ -46,6 +48,7 @@ public class oknoAutora extends Activity {
 
 	TextView postsNumber,postsNumberDeleted,userRate, author;
 	ImageView yourPicture;
+	public static int[] repPostId, repUserId;
 	public String serwer = "";
 	public String userLogin;
 	Fragment newpost, newpost2;
@@ -65,13 +68,13 @@ public class oknoAutora extends Activity {
         context = getApplicationContext();
         serwer = getResources().getString(R.string.server);
         Bundle extras= getIntent().getExtras();
-        if(extras!=null)
-        {
+        if(extras!=null){
            userLogin = extras.getString("userLogin"); 
            faculties = extras.getStringArray("faculties");
            coords = extras.getStringArray("coords");
            token = extras.getString("token");
-           
+           repPostId = extras.getIntArray("repPostId");
+           repUserId = extras.getIntArray("repUserId");
         }
         
         ActionBar bar = getActionBar();
@@ -122,7 +125,7 @@ public class oknoAutora extends Activity {
    					addTime = jso.getString("addTime");
    					place = jso.getString("place");
    					eventTime = jso.getString("eventTime");
-   					newpost = new postElement(token, postId, userLogin, content, photo, categoryId, addTime, place, eventTime, faculties, coords, "Autora");
+   					newpost = new postElement(token, postId, userLogin, content, photo, categoryId, addTime, place, eventTime, faculties, coords, "Autora", repPostId, repUserId);
    					ft = getFragmentManager().beginTransaction();
    					ft.add(R.id.content, newpost, "f1");
    					ft.commit();
