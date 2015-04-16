@@ -48,6 +48,8 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
 	public static final int NEWSFAVOURITES_TASK = 9;
 	public static final int POSTDELETE_TASK = 10;
 	public static final int POSTREPORT_TASK = 11;
+	public static final int FOLLOW_TASK = 12;
+	public static final int STOPFOLLOW_TASK = 13;
     private int taskType, number;
     Fragment newpost, newpost2;
     public int idItem;
@@ -83,6 +85,15 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
         this.processMessage = processMessage;
         this.login = login;
         this.password = password;
+    }
+    
+    //konstruktor do follow i stopfollow
+    public WebServiceTask(int taskType, String processMessage, String userLogin, String token, Context mContext) {
+        this.taskType = taskType;
+        this.mContext = mContext;
+        this.processMessage = processMessage;
+        this.userLogin = userLogin;
+        this.token = token;
     }
     
     // konstruktor do OknoRejestracja
@@ -232,6 +243,14 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
         		pDlg.dismiss();
         		handleResponsePOSTREPORT(response);
         		break;
+       /* 	case FOLLOW_TASK:
+        		pDlg.dismiss();
+        		handleResponseFOLLOW(response);
+        		break;
+        	case STOPFOLLOW_TASK:
+        		pDlg.dismiss();
+        		handleResponseSTOPFOLLOW(response);
+        		break;*/
     	}
                   
     }
@@ -294,7 +313,6 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             		}
             		HttpGet httpgetlogin = new HttpGet(url);
             		response = httpclient.execute(httpgetlogin);
-            		System.out.println("response w doResponse: " + response);
             		break;
             	case NEWS_TASK: 
             		url2 = serwer + "/news2";
@@ -329,7 +347,6 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             			json.put("place", place);
             			json.put("eventTime", eventTime);
             			json.put("tag", tag);
-            			System.out.println("json: " + json);
             			StringEntity se = new StringEntity(json.toString(), "UTF-8");
             			httpPost.addHeader("Content-Type","application/json");
             			httpPost.setEntity(se);
@@ -396,7 +413,6 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
       					jsone.put(token);
       					jsone.put(photo);
       					jsone.put(j);
-      					System.out.println("json:" + jsone);
       					StringEntity se = new StringEntity(jsone.toString(), "UTF-8");
       					httpPost.addHeader("Content-Type","application/json");
       					httpPost.setEntity(se);
@@ -418,7 +434,6 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
       					HttpPost httpPost = new HttpPost(url2);
       					jsonpd.put("token", token);
       					jsonpd.put("postId", number);
-      					System.out.println("json:" + jsonpd);
       					StringEntity se = new StringEntity(jsonpd.toString(), "UTF-8");
       					httpPost.addHeader("Content-Type","application/json");
       					httpPost.setEntity(se);
@@ -440,7 +455,6 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
       					HttpPost httpPost = new HttpPost(url2);
       					jsonpr.put("token", token);
       					jsonpr.put("postId", number);
-      					System.out.println("json:" + jsonpr);
       					StringEntity se = new StringEntity(jsonpr.toString(), "UTF-8");
       					httpPost.addHeader("Content-Type","application/json");
       					httpPost.setEntity(se);
@@ -454,6 +468,48 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
                     HttpGet httpgetpostr = new HttpGet(url);
                     response = httpclient.execute(httpgetpostr);               
                     break;
+            	case FOLLOW_TASK:
+            		url2 = serwer + "/Follow2";
+            		HttpConnectionParams.setConnectionTimeout(httpClient.getParams(), 10000);
+            		JSONObject jsonf = new JSONObject();
+            		try{
+            			HttpPost httpPost = new HttpPost(url2);
+            			jsonf.put("token", token);
+            			jsonf.put("userLogin", userLogin);
+            			StringEntity se = new StringEntity(jsonf.toString(), "UTF-8");
+            			httpPost.addHeader("Content-Type","application/json");
+            			httpPost.setEntity(se);
+            			response = httpClient.execute(httpPost);
+            			if(response != null){
+            				InputStream in = response.getEntity().getContent();
+            			}
+            		}catch(Exception e){
+            			e.printStackTrace();
+            		}
+            		HttpGet httpgetfollow = new HttpGet(url);
+            		response = httpclient.execute(httpgetfollow);               
+            		break;
+            	case STOPFOLLOW_TASK:
+            		url2 = serwer + "/stopFollow2";
+            		HttpConnectionParams.setConnectionTimeout(httpClient.getParams(), 10000);
+            		JSONObject jsonsf = new JSONObject();
+            		try{
+            			HttpPost httpPost = new HttpPost(url2);
+            			jsonsf.put("token", token);
+            			jsonsf.put("userLogin", userLogin);
+            			StringEntity se = new StringEntity(jsonsf.toString(), "UTF-8");
+            			httpPost.addHeader("Content-Type","application/json");
+            			httpPost.setEntity(se);
+            			response = httpClient.execute(httpPost);
+            			if(response != null){
+            				InputStream in = response.getEntity().getContent();
+            			}
+            		}catch(Exception e){
+            			e.printStackTrace();
+            		}
+            		HttpGet httpgetstopfollow = new HttpGet(url);
+            		response = httpclient.execute(httpgetstopfollow);               
+            		break;
             }
        	} catch (Exception e) {
         		Log.e(TAG, e.getLocalizedMessage(), e);
@@ -477,7 +533,6 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     
     public final void handleResponseLOG(String response) {  
     	try {
-    		System.out.println(response);
     		JSONArray jsonarray = new JSONArray(response);
     		if(jsonarray!=null){
     			token = jsonarray.getString(0);

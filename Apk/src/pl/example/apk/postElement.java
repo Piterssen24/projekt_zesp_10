@@ -44,17 +44,17 @@ public class postElement extends Fragment {
        String userLogin, place, eventTime;
        public static int[] repPostId, repUserId;
        public static String which;
-       public static String[] faculties, coords;
+       public static String[] faculties, coords, folUserName;
        Context context;
        public String serwer = "";
        int postId;
-       public String token;
+       public String myLogin, token;
        
        public postElement(){
     	   
        }
        
-       public postElement(String token, String postId, String userLogin, String content, String photo, String categoryId, String addTime, String place, String eventTime, String[] faculties, String[] coords, String which, int[] repPostId, int[] repUserId){
+       public postElement(String token, String postId, String userLogin, String content, String photo, String categoryId, String addTime, String place, String eventTime, String[] faculties, String[] coords, String which, int[] repPostId, int[] repUserId, String[] folUserName, String myLogin){
     	   this.token = token;
     	   this.postId = Integer.parseInt(postId);
     	   this.postText = content;
@@ -67,6 +67,8 @@ public class postElement extends Fragment {
     	   this.which = which;
     	   this.repPostId = repPostId;
     	   this.repUserId = repUserId;
+    	   this.folUserName = folUserName;
+    	   this.myLogin = myLogin;
        }
        
        @Override
@@ -99,6 +101,8 @@ public class postElement extends Fragment {
         	    	intent.putExtra("token", token);
         	    	intent.putExtra("repPostId", repPostId);
         	    	intent.putExtra("repUserId", repUserId);
+        	    	intent.putExtra("folUserName", folUserName);
+        	    	intent.putExtra("myLogin", myLogin);
         	    	startActivity(intent);
         	    }  			
            });
@@ -132,7 +136,6 @@ public class postElement extends Fragment {
 					 List<Integer> list1 = new ArrayList<Integer>();
 					 for(int i=0; i<repPostId.length; i++){
 						 list1.add(repPostId[i]);
-						 System.out.println("lista: " + list1.get(i));
 					 }
 					if(list1.contains(postId)){
 						Toast.makeText(getActivity(), "Ten post zosta³ ju¿ przez Ciebie zg³oszony!", Toast.LENGTH_LONG).show();
@@ -148,9 +151,6 @@ public class postElement extends Fragment {
 				            }
 				            temp[repPostId.length] = postId;
 				            repPostId = temp;
-				            for (int i = 0; i < repPostId.length; i++){
-				                System.out.println("repPostId: " + repPostId[i]);
-				            }
 				        	String sampleURL = serwer + "/report";
 				       		WebServiceTask wst = new WebServiceTask(WebServiceTask.POSTREPORT_TASK, getActivity(), "Trwa zg³aszanie posta, proszê czekaæ...", postId, token);   
 				       		wst.execute(new String[] { sampleURL }); 
@@ -191,6 +191,8 @@ public class postElement extends Fragment {
         	    	intent.putExtra("token", token);
         	    	intent.putExtra("repPostId", repPostId);
         	    	intent.putExtra("repUserId", repUserId);
+        	    	intent.putExtra("folUserName", folUserName);
+        	    	intent.putExtra("myLogin", myLogin);
                   	startActivity(intent);
                   }     			
       		});

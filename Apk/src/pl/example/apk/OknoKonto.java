@@ -71,15 +71,17 @@ public class OknoKonto extends Activity {
     Fragment newpost;
     Button editAccount, logOut;
     public String serwer = "";
+    public String s1,s2;
     public static int[] repPostId, repUserId;
     public static String token;
-	public static String login;
+	public static String login, myLogin;
 	public String place, postId, content, photo, categoryId, addTime, eventTime;
 	private static final String TAG = "OknoKonto";
 	public TextView tv;
-	public static String[] faculties, coords, favUserId, favCategoryId, tags, tagsId;
+	public static String[] faculties, coords, favUserId, favCategoryId, tags, tagsId, folUserName;
 	Context context;
 	public String photou;
+	public int itemId;
 	Bitmap userPhoto;
 	
     @Override
@@ -100,6 +102,8 @@ public class OknoKonto extends Activity {
    			favCategoryId = b.getStringArray("favCategoryId");
    			repPostId = b.getIntArray("repPostId");
    			repUserId = b.getIntArray("repUserId");
+   			folUserName = b.getStringArray("folUserName");
+   			myLogin = b.getString("myLogin");
    		}
         
         ActionBar bar = getActionBar();
@@ -198,19 +202,19 @@ public class OknoKonto extends Activity {
         yourPicture.setLayoutParams(params);
         
         list1 = (TextView) findViewById(R.id.popup1);
-        //list2 = (TextView) findViewById(R.id.popup2);
+        list2 = (TextView) findViewById(R.id.popup2);
         
         //dodanie do tekstu liczbu wybranych tag�w i ulubionych u�ytkownik�w - zsumowa� z bazy
-        String s1,s2;
+        String s11,s22;
         s1=list1.getText().toString();
-        int liczbatagow=favCategoryId.length, liczbaulubionych=6;
+        int liczbatagow=favCategoryId.length, liczbaulubionych=folUserName.length;
         //int liczbatagow=5, liczbaulubionych=6;
-        s1+=" ("+liczbatagow+")";
-        list1.setText(s1);
+        s11 = s1 + " ("+liczbatagow+")";
+        list1.setText(s11);
         
-        /*s2=list2.getText().toString();
-        s2+=" ("+liczbaulubionych+")";
-        list2.setText(s2);*/
+        s2=list2.getText().toString();
+        s22 = s2 + " ("+liczbaulubionych+")";
+        list2.setText(s22);
         
         list1.setOnClickListener(new OnClickListener() {
 			
@@ -237,14 +241,17 @@ public class OknoKonto extends Activity {
 			}
 		});
         
-      /*  list2.setOnClickListener(new OnClickListener() {
+        list2.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				menu2 = new PopupMenu(OknoKonto.this, v);
+				for(int i=0; i<folUserName.length;i++){
+					menu2.getMenu().add(0,i,0,folUserName[i] + "     usuń");
+				}
 				//dodanie kolejnych nazw u�ytkownik�w
-				menu2.getMenu().add(0,0,0,"Julka                     usuń");
+				/*menu2.getMenu().add(0,0,0,"Julka                     usuń");
 				menu2.getMenu().add(0,1,0,"Dominika              usuń");
 				menu2.getMenu().add(0,2,0,"Sebastian             usuń");
 				menu2.getMenu().add(0,3,0,"Piotr                      usuń");
@@ -255,31 +262,36 @@ public class OknoKonto extends Activity {
 				menu2.getMenu().add(0,8,0,"Sebastian             usuń");
 				menu2.getMenu().add(0,9,0,"Piotr                 usuń");
 				menu2.getMenu().add(0,10,0,"Bartek                usuń");
-				menu2.getMenu().add(0,11,0,"Lamia                 usuń");
+				menu2.getMenu().add(0,11,0,"Lamia                 usuń");*/
 				menu2.show();
 				menu2.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {  
-		             public boolean onMenuItemClick(MenuItem item) {  
-		              Toast.makeText(OknoKonto.this,"Usun��e� : " + item.getItemId(),Toast.LENGTH_SHORT).show();  
-		              menu2.getMenu().removeItem(item.getItemId());
-		              menu2.show();
+		             public boolean onMenuItemClick(MenuItem item) { 
+		            	 itemId = item.getItemId();
+		            	 System.out.println("item: " + itemId);
+		            	 String sampleURL = serwer + "/stopFollow";
+				        WebServiceTask wst = new WebServiceTask(WebServiceTask.STOPFOLLOW_TASK, "Trwa usuwanie użytkownika z listy ulubionych użytkowników...", folUserName[item.getItemId()], token, OknoKonto.this);   
+				        wst.execute(new String[] { sampleURL });
+		            //  Toast.makeText(OknoKonto.this,"Usunięto : " + item.getItemId(),Toast.LENGTH_SHORT).show(); 
 		              return true;  
 		             }  
 		            });  
 				
 			}
-		});*/
+		});
         
         String sampleURL = serwer + "/account";
    		WebServiceTask wst = new WebServiceTask(WebServiceTask.ACCOUNT_TASK, this, token);   
    		wst.execute(new String[] { sampleURL }); 
     }  
         
-    
+    /**
+     * metoda przyjmuje jako parametr string, który zawiera odpowiedź od serwera
+     * i tworzy z niego obiekt JSON, który następnie jest parsowany. Tworzy obiekty postElement,
+     * które są wyswietlane na stronie z newsami.
+     */
     public void handleResponse(String response) { 
-    	System.out.println(response);
     	try {
    			FragmentTransaction ft = null;
-   			System.out.println(response);
    			JSONArray jsonarray = new JSONArray(response);
    			if(jsonarray!=null){
     			login = jsonarray.getString(1);
@@ -302,7 +314,7 @@ public class OknoKonto extends Activity {
    					addTime = jso.getString("addTime");
    					place = jso.getString("place");
    					eventTime = jso.getString("eventTime");
-   					newpost = new postElement(token, postId, login, content, photo, categoryId, addTime, place, eventTime, faculties, coords, "Konto", repPostId, repUserId);
+   					newpost = new postElement(token, postId, login, content, photo, categoryId, addTime, place, eventTime, faculties, coords, "Konto", repPostId, repUserId, folUserName, myLogin);
    					ft = getFragmentManager().beginTransaction();
    					ft.add(R.id.content, newpost, "f1");
    					ft.commit();
@@ -311,6 +323,30 @@ public class OknoKonto extends Activity {
    		} catch (Exception e) {
    			Log.e(TAG, e.getLocalizedMessage(), e);
    		}
+    }
+    
+    public void handleResponseSTOPFOLLOW(String response){
+    	if(response.equals("OK")){
+    		String s22;
+    		int followcount = folUserName.length-1;
+            s22 = s2 + " (" + followcount + ")";
+            list2.setText(s22);
+    		menu2.getMenu().removeItem(itemId);
+    		List<String> list1 = new ArrayList<String>();
+   		 	for(int i=0; i<folUserName.length; i++){
+   		 		list1.add(folUserName[i]);
+   		 	}
+   		 	list1.remove(itemId);
+   		 	String[] tmp = new String[list1.size()];
+   		 	for(int i=0; i<list1.size(); i++){
+   		 		tmp[i] = list1.get(i);
+   		 	}
+   		 	folUserName = tmp;
+            menu2.show();
+    		Toast.makeText(this, "Pomyślnie usunięto użytkownika z listy obserwowanych!", Toast.LENGTH_LONG).show();
+    	} else {
+    		Toast.makeText(this, "Wystąpił błąd podczas wykonywania żądanej operacji!", Toast.LENGTH_LONG).show();
+    	}
     }
     
     
@@ -358,12 +394,16 @@ public class OknoKonto extends Activity {
 
     }*/
     
+    /**
+     * klasa wewnętrzna, która wykonuje asynchroniczne działanie w tle.
+     */
 private class WebServiceTask extends AsyncTask<String, Integer, String> {
     public static final int LOG_TASK = 1;
     public static final int REGISTER_TASK = 2;  
     public static final int NEWS_TASK = 3;
     public static final int NEW_TASK = 4; 
     public static final int ACCOUNT_TASK = 5;
+    public static final int STOPFOLLOW_TASK = 6;
     private int taskType, number;
     Fragment newpost, newpost2;
     public int idItem;
@@ -373,7 +413,7 @@ private class WebServiceTask extends AsyncTask<String, Integer, String> {
     public String photo;
     public String postType;
     public String addTime;
-    public String categoryId, count;
+    public String categoryId, count, userLogin;
     public String place, token, tags, faculties;
     private static final String TAG = "WebServiceTask";
     private static final int CONN_TIMEOUT = 100000;        
@@ -391,11 +431,22 @@ private class WebServiceTask extends AsyncTask<String, Integer, String> {
         this.mContext = mContext;
         this.token = token;
     }
+    
+    public WebServiceTask(int taskType, String processMessage, String userLogin, String token, Context mContext) {
+        this.taskType = taskType;
+        this.mContext = mContext;
+        this.processMessage = processMessage;
+        this.userLogin = userLogin;
+        this.token = token;
+    }
 
     public void addNameValuePair(String name, String value) {
         params.add(new BasicNameValuePair(name, value));
     }
 
+    /**
+     * metoda , która tworzy i wyświetla obiekt progress bar.
+     */
     private void showProgressDialog() {           
         pDlg = new ProgressDialog(mContext);
         pDlg.setMessage(processMessage);
@@ -410,6 +461,9 @@ private class WebServiceTask extends AsyncTask<String, Integer, String> {
         showProgressDialog(); 
     }
 
+    /**
+     * główna metoda wykonująca działanie w tle.
+     */
     protected String doInBackground(String... urls) {
         String url = urls[0];
         String result = ""; 
@@ -419,7 +473,6 @@ private class WebServiceTask extends AsyncTask<String, Integer, String> {
         } else { 
             try {
                 result = inputStreamToString(response.getEntity().getContent());
-                System.out.println("result: " + result);
             } catch (IllegalStateException e) {
                 Log.e(TAG, e.getLocalizedMessage(), e); 
             } catch (IOException e) {
@@ -431,11 +484,22 @@ private class WebServiceTask extends AsyncTask<String, Integer, String> {
 
     @Override
     protected void onPostExecute(String response) {             
-    	
+    	switch (taskType){
+    	case ACCOUNT_TASK:
         		pDlg.dismiss();
-        		handleResponse(response);         
+        		handleResponse(response);
+        		break;
+    	case STOPFOLLOW_TASK:
+    		pDlg.dismiss();
+    		handleResponseSTOPFOLLOW(response);
+    		break;
+    	}
+        		
     }
      
+    /**
+     * metoda ustawiająca parametry połączenia http.
+     */
     private HttpParams getHttpParams() {            
         HttpParams htpp = new BasicHttpParams();             
         HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
@@ -443,6 +507,9 @@ private class WebServiceTask extends AsyncTask<String, Integer, String> {
         return htpp;
     }
      
+    /**
+     * metoda wysyłająca oraz odbierająca dane od web serwisu.
+     */
     private HttpResponse doResponse(String url) {   
     	serwer = mContext.getString(R.string.server);
         HttpClient httpclient = new DefaultHttpClient(getHttpParams());
@@ -470,6 +537,27 @@ private class WebServiceTask extends AsyncTask<String, Integer, String> {
             		HttpGet httpgetaccount = new HttpGet(url);
             		response = httpclient.execute(httpgetaccount);     
             		break;
+            	case STOPFOLLOW_TASK:
+            		url2 = serwer + "/stopFollow2";
+            		HttpConnectionParams.setConnectionTimeout(httpClient.getParams(), 10000);
+            		JSONObject jsonsf = new JSONObject();
+            		try{
+            			HttpPost httpPost = new HttpPost(url2);
+            			jsonsf.put("token", token);
+            			jsonsf.put("userLogin", userLogin);
+            			StringEntity se = new StringEntity(jsonsf.toString(), "UTF-8");
+            			httpPost.addHeader("Content-Type","application/json");
+            			httpPost.setEntity(se);
+            			response = httpClient.execute(httpPost);
+            			if(response != null){
+            				InputStream in = response.getEntity().getContent();
+            			}
+            		}catch(Exception e){
+            			e.printStackTrace();
+            		}
+            		HttpGet httpgetstopfollow = new HttpGet(url);
+            		response = httpclient.execute(httpgetstopfollow);               
+            		break;
             }
        	} catch (Exception e) {
         		Log.e(TAG, e.getLocalizedMessage(), e);
@@ -477,6 +565,9 @@ private class WebServiceTask extends AsyncTask<String, Integer, String> {
         return response;
     }
      
+    /**
+     * metoda konwertująca odpowiedź serwera na String.
+     */
     private String inputStreamToString(InputStream is) {
         String line = "";
         StringBuilder total = new StringBuilder(); 
@@ -492,6 +583,9 @@ private class WebServiceTask extends AsyncTask<String, Integer, String> {
     }
 }
 
+/**
+ * metoda konwertująca String na obiekt bitmap (zdjęcie).
+ */
 public static Bitmap decodeBase64(String input) 
 {
     byte[] decodedByte;

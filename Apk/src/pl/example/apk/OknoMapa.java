@@ -53,7 +53,7 @@ public class OknoMapa extends FragmentActivity {
 	private GoogleMap googleMap;
 	LocationManager locManager;
 	public String serwer = "";
-	public String token;
+	public String token, myLogin;
 	private static final String TAG = "OknoMapa";
 	public static int[] repPostId, repUserId;
 	public String[] postId;
@@ -64,7 +64,7 @@ public class OknoMapa extends FragmentActivity {
     public String[] addTime;
     public String[] place;
     public String[] eventTime;
-    public static String[] faculties, coords;
+    public static String[] faculties, coords, folUserName;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +78,8 @@ public class OknoMapa extends FragmentActivity {
    			coords = b.getStringArray("coords");
    			repPostId = b.getIntArray("repPostId");
    			repUserId = b.getIntArray("repUserId");
+   			folUserName = b.getStringArray("folUserName");
+   			myLogin = b.getString("myLogin");
         }
         String sampleURL = serwer + "/map";
    		WebServiceTask wst = new WebServiceTask(WebServiceTask.MAP_TASK, this, "Loading posts on map...", token);   
@@ -92,12 +94,10 @@ public class OknoMapa extends FragmentActivity {
             final LocationListener myLocationListener = new LocationListener(){   		       
     	        @Override
     	        public void onProviderDisabled(String provider){
-    	            System.out.println("disabled");
     	        }
 
     	        @Override
-    	        public void onProviderEnabled(String provider){
-    	        	System.out.println("Provider enables");           
+    	        public void onProviderEnabled(String provider){         
     	        }
 
     			@Override
@@ -138,6 +138,9 @@ public class OknoMapa extends FragmentActivity {
        
     }  
 	
+	/**
+     * metoda skracaj¹ca d³ugoœæ stringu
+     */
 	public static String truncate(final String content, final int lastIndex) {
 		if(content.length()>60)
 		{
@@ -151,9 +154,13 @@ public class OknoMapa extends FragmentActivity {
 		else return content;
 	}
 	
+	
+	/**
+     * metoda przyjmuje jako parametr string, który zawiera odpowiedŸ od serwera
+     * i tworzy z niego obiekt JSON, który nastêpnie jest parsowany. Tworzy obiekty, które s¹ wyœwietlane na mapie.
+     */
 	public void handleResponse(String resp) {   
    		try {
-   			System.out.println(resp);
    			JSONArray jsonarray = new JSONArray(resp);
    			for(int i=0; i<jsonarray.length(); i++){
    				postId = new String[jsonarray.length()];
@@ -170,14 +177,12 @@ public class OknoMapa extends FragmentActivity {
    					postId[i] = jso.getString("postId");
    					userLogin[i] = jso.getString("userLogin");
    					content[i] = jso.getString("content");
-   					content[i] = postId[i] + content[i];
    					postText[i] = content[i];
-   					content[i] = postId[i] + truncate(content[i],40);
+   					content[i] = truncate(content[i],40);
    					photo[i] = jso.getString("photo");
    					categoryId[i] = jso.getString("categoryId");
    					addTime[i] = jso.getString("addTime");
    					place[i] = jso.getString("place");
-   					System.out.println("place: " + place);
    					eventTime[i] = jso.getString("eventTime");
    					String[] tokens = place[i].split(",");
 		        	double lat = Double.parseDouble(tokens[0]);
@@ -340,6 +345,8 @@ public class OknoMapa extends FragmentActivity {
             	    	intent.putExtra("token", token);
             	    	intent.putExtra("repPostId", repPostId);
             	    	intent.putExtra("repUserId", repUserId);
+            	    	intent.putExtra("folUserName", folUserName);
+            	    	intent.putExtra("myLogin", myLogin);
             	    	pDlg.dismiss();
             	    	startActivity(intent);
                         }
@@ -354,7 +361,9 @@ public class OknoMapa extends FragmentActivity {
         }); 
    	}
 	
-	
+	/**
+     * klasa wewnêtrzna, która wykonuje asynchroniczne dzia³anie w tle.
+     */
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
    		public static final int MAP_TASK = 1;
    		private static final String TAG = "WebServiceTask";
@@ -381,6 +390,9 @@ public class OknoMapa extends FragmentActivity {
    			params.add(new BasicNameValuePair(name, value));
    		}
 
+   		/**
+         * metoda , która tworzy i wyœwietla obiekt progress bar.
+         */
    		private void showProgressDialog() {    
    			pDlg = new ProgressDialog(mContext);
    			pDlg.setMessage(processMessage);
@@ -395,6 +407,9 @@ public class OknoMapa extends FragmentActivity {
    			showProgressDialog(); 
    		}
 
+   		/**
+         * g³ówna metoda wykonuj¹ca dzia³anie w tle.
+         */
    		protected String doInBackground(String... urls) {
    			String url = urls[0];
    			String result = ""; 
@@ -422,6 +437,9 @@ public class OknoMapa extends FragmentActivity {
    		}
        
    		// Establish connection and socket (data retrieval) timeouts
+   		/**
+         * metoda ustawiaj¹ca parametry po³¹czenia http.
+         */
    		private HttpParams getHttpParams() {            
    			HttpParams htpp = new BasicHttpParams();             
    			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
@@ -429,6 +447,9 @@ public class OknoMapa extends FragmentActivity {
    			return htpp;
    		}
        
+   		/**
+         * metoda wysy³aj¹ca oraz odbieraj¹ca dane od web serwisu.
+         */
    		private HttpResponse doResponse(String url) {  
    			// Use our connection and data timeouts as parameters for our
    			// DefaultHttpClient
@@ -466,6 +487,9 @@ public class OknoMapa extends FragmentActivity {
    			return response;
       }
        
+   		/**
+         * metoda konwertuj¹ca odpowiedŸ serwera na String.
+         */
       private String inputStreamToString(InputStream is) {
           String line = "";
           StringBuilder total = new StringBuilder(); 

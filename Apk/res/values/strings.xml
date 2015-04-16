@@ -63,7 +63,7 @@
     <string name="stringwymyslonylogin">Lamia</string>
     <string name="stringocenauzytkownika">Ocena</string>
     <string name="stringliczbapostowusunietych">Posty usunięte</string>
-    <string name="stringliczbapostow">Posty</string>
+    <string name="stringliczbapostow">Liczba postów:</string>
     <string name="stringzglosnaduzycie">Zgłoś nadużycie</string>
     <string name="stringplus"> + </string>
     <string name="stringminus"> - </string>

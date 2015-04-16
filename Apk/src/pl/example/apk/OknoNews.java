@@ -82,7 +82,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
     Fragment newpost, newpost2;
     public int idItem;
     public static int[] repUserId, repPostId;
-    public String postId;
+    public String postId, myLogin;
     public String userLogin;
     public String content;
     public String photo;
@@ -90,7 +90,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
     public String addTime;
     public String place;
     public String eventTime, count;
-    public String[] list;
+    public String[] list, folUserName;
     public static String role, token;
     public final static String APP_PATH_SD_CARD = "/PicNews";
   	public ProgressBar spinner;
@@ -160,11 +160,12 @@ public class OknoNews extends Activity implements ScrollViewListener {
     
    		// Setting DrawerToggle on DrawerLayout
    		dLayout.setDrawerListener(mDrawerToggle);
-   		list = new String[tags.length + 2];
+   		list = new String[tags.length + 3];
    		list[0] = "Wszystkie";
-   		list[1] = "Moje ulubione";
+   		list[1] = "Ulubione kategorie";
+   		list[2] = "Ulubieni u¿ytkownicy";
    		for(int i=0; i<tags.length; i++){
-   			list[i+2] = tags[i];
+   			list[i+3] = tags[i];
    		}
     	// Creating an ArrayAdapter to add items to the listview mDrawerList
    		adapter = new ArrayAdapter<String>(getBaseContext(), R.layout.drawer_list_item , list);
@@ -215,11 +216,18 @@ public class OknoNews extends Activity implements ScrollViewListener {
                		wst = new WebServiceTask(WebServiceTask.NEWSFAVOURITES_TASK, OknoNews.this, "Loading posts...", number, token, favCategoryId);   
                		wst.execute(new String[] { sampleURL }); 
                 	break;
-                default:
+                case 2:
                 	variant = 3;
                 	over = false;
+               		sampleURL = serwer + "/newsFollowed";
+               		wst = new WebServiceTask(WebServiceTask.NEWSFOLLOWED_TASK, "Loading posts...", number, token, folUserName, OknoNews.this);   
+               		wst.execute(new String[] { sampleURL }); 
+                	break;
+                default:
+                	variant = 4;
+                	over = false;
                		sampleURL = serwer + "/newsFiltered";
-               		pos = position - 2;
+               		pos = position - 3;
                		wst = new WebServiceTask(WebServiceTask.NEWSFILTERED_TASK, OknoNews.this, "Loading posts...", number, token, tagsId[pos]);   
                		wst.execute(new String[] { sampleURL }); 
                 	break;
@@ -254,6 +262,8 @@ public class OknoNews extends Activity implements ScrollViewListener {
 	    	intentmapa.putExtra("coords", coords);
 	    	intentmapa.putExtra("repPostId", repPostId);
 	    	intentmapa.putExtra("repUserId", repUserId);
+	    	intentmapa.putExtra("folUserName", folUserName);
+	    	intentmapa.putExtra("myLogin", myLogin);
    			startActivity(intentmapa);  
    			return true;
    		case R.id.news:
@@ -275,6 +285,8 @@ public class OknoNews extends Activity implements ScrollViewListener {
 	    	intentkonto.putExtra("favCategoryId", favCategoryId);
 	    	intentkonto.putExtra("repPostId", repPostId);
 	    	intentkonto.putExtra("repUserId", repUserId);
+	    	intentkonto.putExtra("folUserName", folUserName);
+	    	intentkonto.putExtra("myLogin", myLogin);
    			startActivity(intentkonto);
          	return true;
    		default:
@@ -312,21 +324,33 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		return true;
    	}
    
+   	/**
+     * metoda przyjmuje jako parametr string, który zawiera odpowiedŸ od serwera
+     * i tworzy z niego obiekt JSON, który nastêpnie jest parsowany. Tworzy obiekty postElement,
+     * które s¹ wyswietlane na stronie z newsami.
+     */
    	public void handleResponse(String resp) {   
    		try {
-   			System.out.println(resp);
    			FragmentTransaction ft = null;
    			JSONArray jsonarray = new JSONArray(resp);
    			JSONArray jarrayPosts = jsonarray.getJSONArray(1);
 			JSONArray jarrayFav = jsonarray.getJSONArray(0);
 			JSONArray jarrayRep = jsonarray.getJSONArray(2);
+			JSONArray jarrayFol = jsonarray.getJSONArray(3);
 			favUserId = new String[jarrayFav.length()];
 			favCategoryId = new String[jarrayFav.length()];
 			repPostId = new int[jarrayRep.length()];
 			repUserId = new int[jarrayRep.length()];
+			folUserName = new String[jarrayFol.length()];
+			myLogin = jsonarray.getString(4);
+			for(int i=0; i<jarrayFol.length(); i++){
+				JSONObject jso = jarrayFol.getJSONObject(i);
+				if(jso!=null){
+					folUserName[i] = jso.getString("folUserName");
+				}
+			}
 			for(int i=0; i<jarrayFav.length(); i++){
 				JSONObject jso = jarrayFav.getJSONObject(i);
-				System.out.println("rozmiar: " + jso);
 				if(jso!=null){
 					favUserId[i] = jso.getString("favUserId");
 					favCategoryId[i] = jso.getString("favCategoryId");
@@ -334,7 +358,6 @@ public class OknoNews extends Activity implements ScrollViewListener {
 			}
 			for(int i=0; i<jarrayRep.length(); i++){
 				JSONObject jso = jarrayRep.getJSONObject(i);
-				System.out.println("rozmiar: " + jso);
 				if(jso!=null){
 					repPostId[i] = jso.getInt("repPostId");
 					repUserId[i] = jso.getInt("repUserId");
@@ -346,20 +369,18 @@ public class OknoNews extends Activity implements ScrollViewListener {
    					postId = jso.getString("postId");
    					userLogin = jso.getString("userLogin");
    					content = jso.getString("content");
-   					content = postId + content;
    					photo = jso.getString("photo");
    					categoryId = jso.getString("categoryId");
    					addTime = jso.getString("addTime");
    					place = jso.getString("place");
    					eventTime = jso.getString("eventTime");
-   					newpost = new postElement(token, postId, userLogin, content, photo, categoryId, addTime, place, eventTime, faculties, coords, "News", repPostId, repUserId);
+   					newpost = new postElement(token, postId, userLogin, content, photo, categoryId, addTime, place, eventTime, faculties, coords, "News", repPostId, repUserId, folUserName, myLogin);
    					ft = getFragmentManager().beginTransaction();
    					ft.add(R.id.content, newpost, "f1");
    					ft.commit();
    					//if(i == jsonarray.length()-1){
    						lastId = Integer.parseInt(postId);
    						lastId = lastId - 1;
-   						System.out.println("lastId: " + lastId);
    					//}
    					if(postId.equals("1")){
    						over = true;
@@ -371,7 +392,10 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		}
    		loadingMore = false;
    	}
-   
+   	
+   	/**
+     * metoda "³aduj¹ca" dalsze posty po przewiniêciu scrolla na sam koniec
+     */
    	@Override
    	public void onScrollEnded(ObservableScrollView scrollView, int x, int y, int oldx,   int oldy) {
    		if(loadingMore == false){
@@ -394,6 +418,11 @@ public class OknoNews extends Activity implements ScrollViewListener {
                		wst.execute(new String[] { sampleURL }); 
                 	break;
    				case 3:
+               		sampleURL = serwer + "/newsFollowed";
+               		wst = new WebServiceTask(WebServiceTask.NEWSFOLLOWED_TASK, "Loading posts...", Integer.toString(lastId), token, folUserName, OknoNews.this);   
+               		wst.execute(new String[] { sampleURL }); 
+                	break;
+   				case 4:
                		sampleURL = serwer + "/newsFiltered";
                		wst = new WebServiceTask(WebServiceTask.NEWSFILTERED_TASK, OknoNews.this, "Loading posts...", Integer.toString(lastId), token, tagsId[pos]);   
                		wst.execute(new String[] { sampleURL }); 
@@ -403,11 +432,15 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		}
    	}
    
+   	/**
+     * klasa wewnêtrzna, wykonuj¹ca asynchroniczne dzia³anie w tle.
+     */
    	private class WebServiceTask extends AsyncTask<String, Integer, String> {
    		public static final int POST_TASK = 1;
    		public static final int NEWS_TASK = 2;
    		public static final int NEWSFILTERED_TASK = 3;
    		public static final int NEWSFAVOURITES_TASK = 4;
+   		public static final int NEWSFOLLOWED_TASK = 5;
    		private static final String TAG = "WebServiceTask";
    		// connection timeout, in milliseconds (waiting to connect)
    		private static final int CONN_TIMEOUT = 50000;        
@@ -419,7 +452,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		private String processMessage = "Processing...";
    		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
    		private ProgressDialog pDlg = null;
-   		private String[] favCategoryId;
+   		private String[] favCategoryId, folUserName;
    		private String tag;
    		public WebServiceTask(int taskType, Context mContext, String processMessage, String number, String token){
    			this.taskType = taskType;
@@ -436,6 +469,15 @@ public class OknoNews extends Activity implements ScrollViewListener {
    			this.number = number;
    			this.token = token;
    			this.favCategoryId = favCategoryId;
+   		}
+   		
+   		public WebServiceTask(int taskType, String processMessage, String number, String token, String[] folUserName, Context mContext){
+   			this.taskType = taskType;
+   			this.mContext = mContext;
+   			this.processMessage = processMessage;
+   			this.number = number;
+   			this.token = token;
+   			this.folUserName = folUserName;
    		}
    		
    		public WebServiceTask(int taskType, Context mContext, String processMessage, String number, String token, String tag){
@@ -515,7 +557,6 @@ public class OknoNews extends Activity implements ScrollViewListener {
                 	HttpPost httpPost = new HttpPost(url2);
   					json.put("id", number);
   					json.put("token", token);
-  					System.out.println("jsonloadmore: " + json);
   					StringEntity se = new StringEntity(json.toString());
   					httpPost.addHeader("Content-Type","application/json");
   					httpPost.setEntity(se);
@@ -568,7 +609,6 @@ public class OknoNews extends Activity implements ScrollViewListener {
           					ja.put(number);
           					ja.put(token);
           					ja.put(j);
-          					System.out.println("ja: "+ ja);
           					StringEntity se = new StringEntity(ja.toString());
           					httpPost.addHeader("Content-Type","application/json");
           					httpPost.setEntity(se);
@@ -583,6 +623,34 @@ public class OknoNews extends Activity implements ScrollViewListener {
                           	httpget = new HttpGet(url);
                           	response = httpclient.execute(httpget);
                           	break;
+                          	
+            		case NEWSFOLLOWED_TASK:
+            			url2 = serwer + "/newsFollowed2";
+       				HttpConnectionParams.setConnectionTimeout(httpClient.getParams(), 10000);
+       				ja = new JSONArray();
+                    try{
+                    	HttpPost httpPost = new HttpPost(url2);
+                    	JSONArray j = new JSONArray();
+                    	for(int i=0; i<folUserName.length; i++){
+            				j.put(folUserName[i]);
+            			}
+      					ja.put(number);
+      					ja.put(token);
+      					ja.put(j);
+      					StringEntity se = new StringEntity(ja.toString());
+      					httpPost.addHeader("Content-Type","application/json");
+      					httpPost.setEntity(se);
+      					response = httpClient.execute(httpPost);				
+      					if(response != null){
+      						InputStream in = response.getEntity().getContent();
+      					}
+      				}catch(Exception e){
+      					e.printStackTrace();
+      					//createDialog("Error", "Cannot Estabilish Connection");
+      				}
+                      	httpget = new HttpGet(url);
+                      	response = httpclient.execute(httpget);
+                      	break;
                       	
    				}
    			} catch (Exception e) {

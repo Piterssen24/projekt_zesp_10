@@ -25,7 +25,7 @@
         <ImageView
             android:id="@+id/userAuthorPhoto"
             android:layout_width="120dp"
-            android:layout_height="200dp" />
+            android:layout_height="120dp" />
         
         <TextView 
             android:id="@+id/textViewAuthorName"  
@@ -40,94 +40,41 @@
     </LinearLayout>
 
  	<LinearLayout
-     	android:id="@+id/counterLayout"
-     	android:layout_width="fill_parent"
-     	android:layout_marginLeft="10dp"
-     	android:layout_marginRight="10dp"
-     	android:orientation="horizontal"
-     	android:layout_height="wrap_content">
-        
-     	<LinearLayout
-     		android:id="@+id/counterLayout1"
-     		android:layout_width="wrap_content"
-     		android:orientation="vertical"
-     		android:gravity="center"
-     		android:padding="15dp"
-     		android:layout_height="wrap_content">
-            
-     	    <TextView
-                android:id="@+id/textViewPostCounter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/stringliczbapostow"
-                android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-     	    
-     	     <TextView
-                android:id="@+id/textPostCounter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/stringliczbapostow"
-                android:gravity="center" />     	    
-     	    
-     
- 		</LinearLayout>
- 		
-     	<LinearLayout
-     		android:id="@+id/counterLayout2"
-     		android:layout_width="wrap_content"
-     		android:orientation="vertical"
-     		android:gravity="center"
-     		android:padding="15dp"
-     		android:layout_height="wrap_content">
-     	    
-     	    <TextView
-                android:id="@+id/textViewPostsCounterDeleted"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/stringliczbapostow"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-     	
-     	    
-     	   
-     	    
-     	    <TextView
-                android:id="@+id/textCouterPostsDeleted"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/stringliczbapostowusunietych"
-                android:gravity="center" />
-     	    
-     	    
-     
- 		</LinearLayout>
- 		
-     	<LinearLayout
-     	    android:id="@+id/counterLayout3"
-     		android:layout_width="wrap_content"
-     		android:orientation="vertical"
-     		android:padding="15dp"
-     		android:gravity="center"
-     		android:layout_height="wrap_content">
-     	    
-     	    <TextView
-                android:id="@+id/textViewCounterRates"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/stringliczbapostow"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-     	    
-     	    <TextView
-                android:id="@+id/textCounterRates"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/stringocenauzytkownika"
-                android:gravity="center" />
-     	    
-     	</LinearLayout>
-     
+ 	    android:id="@+id/counterLayout"
+ 	    android:layout_width="fill_parent"
+ 	    android:layout_height="wrap_content"
+ 	    android:layout_marginLeft="10dp"
+ 	    android:layout_marginRight="10dp"
+ 	    android:orientation="horizontal" >
+
+ 	    <LinearLayout
+ 	        android:id="@+id/counterLayout1"
+ 	        android:layout_width="wrap_content"
+ 	        android:layout_height="wrap_content"
+ 	        android:gravity="center"
+ 	        android:orientation="vertical"
+ 	        android:padding="15dp" >
+
+ 	        <TextView
+ 	            android:id="@+id/textPostCounter"
+ 	            android:layout_width="wrap_content"
+ 	            android:layout_height="wrap_content"
+ 	            android:gravity="center"
+ 	            android:text="@string/stringliczbapostow" />
+
+ 	        <TextView
+ 	            android:id="@+id/textViewPostCounter"
+ 	            android:layout_width="98dp"
+ 	            android:layout_height="wrap_content"
+ 	            android:gravity="center"
+ 	            android:text="@string/stringliczbapostow"
+ 	            android:textAppearance="?android:attr/textAppearanceLarge" />
+ 	    </LinearLayout>
+
+ 	    <Button
+ 	        android:id="@+id/buttonLike"
+ 	        android:layout_width="154dp"
+ 	        android:layout_height="wrap_content" />
  	</LinearLayout>
  	
  	<LinearLayout

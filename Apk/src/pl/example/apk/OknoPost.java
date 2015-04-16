@@ -40,12 +40,12 @@ public class OknoPost extends Activity {
 	String postText, photo;
 	Bitmap picture;
 	String userLogin, place, eventTime;
-	public static String[] faculties, coords;
+	public static String[] faculties, coords, folUserName;
 	Context context;
 	public static int[] repPostId, repUserId;
     public StringBuilder strAddress;
     public static String token;
-    public String serwer = "";
+    public String myLogin, serwer = "";
 	public int postId;
     
     @Override
@@ -58,7 +58,6 @@ public class OknoPost extends Activity {
         Bundle b = getIntent().getExtras();
         if(b!=null){
         	postId = b.getInt("postId");
-        	System.out.println("postid: " + postId);
         	postText = b.getString("postText");
         	photo = b.getString("photo");
         	userLogin = b.getString("userLogin");
@@ -69,6 +68,8 @@ public class OknoPost extends Activity {
             token = b.getString("token");
             repPostId = b.getIntArray("repPostId");
             repUserId = b.getIntArray("repUserId");
+            folUserName = b.getStringArray("folUserName");
+            myLogin = b.getString("myLogin");
         }
         
         for(int j=0; j<faculties.length; j++) {
@@ -109,7 +110,6 @@ public class OknoPost extends Activity {
 				List<Integer> list1 = new ArrayList<Integer>();
 				 for(int i=0; i<repPostId.length; i++){
 					 list1.add(repPostId[i]);
-					 System.out.println("lista: " + list1.get(i));
 				 }
 				if(list1.contains(postId)){
 					Toast.makeText(OknoPost.this, "Ten post zosta³ ju¿ przez Ciebie zg³oszony!", Toast.LENGTH_LONG).show();
@@ -125,9 +125,6 @@ public class OknoPost extends Activity {
 				            }
 				            temp[repPostId.length] = postId;
 				            repPostId = temp;
-				            for (int i = 0; i < repPostId.length; i++){
-				                System.out.println("repPostId: " + repPostId[i]);
-				            }
 				        	String sampleURL = serwer + "/report";
 				       		WebServiceTask wst = new WebServiceTask(WebServiceTask.POSTREPORT_TASK, OknoPost.this, "Trwa zg³aszanie posta, proszê czekaæ...", postId, token);   
 				       		wst.execute(new String[] { sampleURL }); 
@@ -206,6 +203,8 @@ public class OknoPost extends Activity {
     	    	intent.putExtra("token", token);
     	    	intent.putExtra("repPostId", repPostId);
     	    	intent.putExtra("repUserId", repUserId);
+    	    	intent.putExtra("folUserName", folUserName);
+    	    	intent.putExtra("myLogin", myLogin);
               	startActivity(intent);
             }			
   		});   
