@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Intent;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -21,7 +23,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import android.view.View;
 import android.widget.TextView;
+
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
+import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
@@ -42,7 +47,9 @@ import android.util.Log;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -64,7 +71,14 @@ public class OknoMapa extends FragmentActivity {
     public String[] addTime;
     public String[] place;
     public String[] eventTime;
+    public String[] newContent;
     public static String[] faculties, coords, folUserName;
+    public List<LatLng> list, listPoint;
+    public List<Marker> markerList;
+    public List<Marker> markerYellow;
+    public boolean test = false, listTest=false, backTest=false;
+    public float zoomTest;
+    public int test2=0;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +98,11 @@ public class OknoMapa extends FragmentActivity {
         String sampleURL = serwer + "/map";
    		WebServiceTask wst = new WebServiceTask(WebServiceTask.MAP_TASK, this, "Loading posts on map...", token);   
    		wst.execute(new String[] { sampleURL }); 
+   		
+   		list = new ArrayList<LatLng>();
+   		listPoint = new ArrayList<LatLng>();
+   		markerList = new ArrayList<Marker>();
+   		markerYellow = new ArrayList<Marker>();
         
         try { 
             if (googleMap == null) {
@@ -97,7 +116,7 @@ public class OknoMapa extends FragmentActivity {
     	        }
 
     	        @Override
-    	        public void onProviderEnabled(String provider){         
+    	        public void onProviderEnabled(String provider){           
     	        }
 
     			@Override
@@ -111,9 +130,10 @@ public class OknoMapa extends FragmentActivity {
     	            Log.d("tag", "Lon: "+String.valueOf(lon));
     	            yourLocation = new LatLng(lat, lon);
     	            googleMap.moveCamera(CameraUpdateFactory.newLatLng(yourLocation));
-    	            googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+    	            googleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
     	            Marker TP = googleMap.addMarker(new MarkerOptions().position(yourLocation).title("Tu jesteœ"));
-    	            locManager.removeUpdates(this);   	               				
+    	            locManager.removeUpdates(this); 
+    	            
     			}
 
     			@Override
@@ -121,8 +141,7 @@ public class OknoMapa extends FragmentActivity {
     				// TODO Auto-generated method stub   				
     			}   			
     		};
-    		
-    		
+    	    
     		locManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
     		boolean isGPSEnabled = locManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     		if(isGPSEnabled)
@@ -132,175 +151,8 @@ public class OknoMapa extends FragmentActivity {
     		else locManager.requestLocationUpdates( LocationManager.NETWORK_PROVIDER, 0, 0, myLocationListener);    		  
     		
     		googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-      } catch (Exception e) {
-         e.printStackTrace();
-      }
-       
-    }  
-	
-	/**
-     * metoda skracaj¹ca d³ugoœæ stringu
-     */
-	public static String truncate(final String content, final int lastIndex) {
-		if(content.length()>60)
-		{
-			String result = content.substring(0, lastIndex);
-			if (content.charAt(lastIndex) != ' ') 
-			{
-				result = result.substring(0, result.lastIndexOf(" "));
-			}
-			return result+"...";
-		}
-		else return content;
-	}
-	
-	
-	/**
-     * metoda przyjmuje jako parametr string, który zawiera odpowiedŸ od serwera
-     * i tworzy z niego obiekt JSON, który nastêpnie jest parsowany. Tworzy obiekty, które s¹ wyœwietlane na mapie.
-     */
-	public void handleResponse(String resp) {   
-   		try {
-   			JSONArray jsonarray = new JSONArray(resp);
-   			for(int i=0; i<jsonarray.length(); i++){
-   				postId = new String[jsonarray.length()];
-   				userLogin = new String[jsonarray.length()];
-   				content = new String[jsonarray.length()];
-   				postText = new String[jsonarray.length()];
-   				photo = new String[jsonarray.length()];
-   				categoryId = new String[jsonarray.length()];
-   				addTime = new String[jsonarray.length()];
-   				place = new String[jsonarray.length()];
-   				eventTime = new String[jsonarray.length()];
-   				JSONObject jso = jsonarray.getJSONObject(i);
-   				if(jso!=null){
-   					postId[i] = jso.getString("postId");
-   					userLogin[i] = jso.getString("userLogin");
-   					content[i] = jso.getString("content");
-   					postText[i] = content[i];
-   					content[i] = truncate(content[i],40);
-   					photo[i] = jso.getString("photo");
-   					categoryId[i] = jso.getString("categoryId");
-   					addTime[i] = jso.getString("addTime");
-   					place[i] = jso.getString("place");
-   					eventTime[i] = jso.getString("eventTime");
-   					String[] tokens = place[i].split(",");
-		        	double lat = Double.parseDouble(tokens[0]);
-		        	double lon = Double.parseDouble(tokens[1]);
-   					LatLng loc = new LatLng(lat, lon);
-   					markerLocation = loc;
-   					Marker TP = googleMap.addMarker(new MarkerOptions().position(loc).title(content[i]).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-   					TP.setDraggable(false);
-   				    //googleMap.setOnMarkerDragListener(new OnMarkerDragListener()
-   					/*googleMap.setInfoWindowAdapter(new InfoWindowAdapter() {
-
-   			            // Use default InfoWindow frame
-   			            @Override
-   			            public View getInfoWindow(Marker args) {
-   			                return null;
-   			            }
-
-   			            // Defines the contents of the InfoWindow
-   			            @Override
-   			            public View getInfoContents(Marker args) {
-
-   			                // Getting view from the layout file info_window_layout
-   			                View v = getLayoutInflater().inflate(R.layout.info_window_layout, null);
-
-   			                // Getting the position from the marker
-   			                LatLng ll;
-   			                ll = args.getPosition();
-
-   			                TextView title = (TextView) v.findViewById(R.id.mapContent);
-   			                title.setText(args.getTitle());
-   			             googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {          
-			                    public void onInfoWindowClick(Marker marker) 
-			                    {
-			                    	for(int i=0; i<content.length; i++){
-			                    	if(marker.getTitle().equals(content[i])) // if marker source is clicked
-			                        {
-			                    	ProgressDialog pDlg = new ProgressDialog(OknoMapa.this);
-			               			pDlg.setMessage("£adowanie informacji o poœcie...");
-			               			pDlg.setProgressDrawable(OknoMapa.this.getWallpaper());
-			               			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			               			pDlg.setCancelable(false);
-			               			pDlg.show(); 
-									Intent intent = new Intent(OknoMapa.this, OknoPost.class);
-			            	    	intent.putExtra("postText",postText[i]);
-			            	    	intent.putExtra("photo", photo[i]);
-			            	    	intent.putExtra("userLogin", userLogin[i]);
-			            	    	intent.putExtra("place", place[i]);
-			            	    	intent.putExtra("eventTime", eventTime[i]);
-			            	    	intent.putExtra("faculties", faculties);
-			            	    	intent.putExtra("coords", coords);
-			            	    	intent.putExtra("token", token);
-			            	    	pDlg.dismiss();
-			            	    	startActivity(intent);
-			                        }
-			                    	}
-			                    }
-			                });
-
-			                // Returning the view containing InfoWindow contents
-			                return v;
-
-			            }
-			        });  */
-   					/*googleMap.setOnMarkerDragListener(new OnMarkerDragListener()
-   				    {
-
-					@Override
-					public void onMarkerDrag(Marker marker) {
-						// TODO Auto-generated method stub
-						
-					}
-					@Override
-					public void onMarkerDragEnd(Marker marker) {
-						// TODO Auto-generated method stub
-						marker.setPosition(markerLocation);
-						//Loading post...
-						if(marker.getTitle().equals(content)) // if marker source is clicked
-                        {
-						Intent intent = new Intent(OknoMapa.this, OknoPost.class);
-            	    	intent.putExtra("postText",postText);
-            	    	intent.putExtra("photo", photo);
-            	    	intent.putExtra("userLogin", userLogin);
-            	    	intent.putExtra("place", place);
-            	    	intent.putExtra("eventTime", eventTime);
-            	    	intent.putExtra("faculties", faculties);
-            	    	intent.putExtra("coords", coords);
-            	    	intent.putExtra("token", token);
-            	    	startActivity(intent);
-                        }
-						
-					}
-					@Override
-					public void onMarkerDragStart(Marker marker) {
-						// TODO Auto-generated method stub
-						/*if(marker.getTitle().equals(content)) // if marker source is clicked
-                        {
-						Intent intent = new Intent(OknoMapa.this, OknoPost.class);
-            	    	intent.putExtra("postText",postText);
-            	    	intent.putExtra("photo", photo);
-            	    	intent.putExtra("userLogin", userLogin);
-            	    	intent.putExtra("place", place);
-            	    	intent.putExtra("eventTime", eventTime);
-            	    	intent.putExtra("faculties", faculties);
-            	    	intent.putExtra("coords", coords);
-            	    	intent.putExtra("token", token);
-            	    	startActivity(intent);
-                        }*/
-						
-				//	}
-
-              //   }); 
-   				}
-   			}
-   		} catch (Exception e) {
-   			Log.e(TAG, e.getLocalizedMessage(), e);
-   		}
-   		
-   		googleMap.setInfoWindowAdapter(new InfoWindowAdapter() {
+    		
+    		googleMap.setInfoWindowAdapter(new InfoWindowAdapter() {
 
 	            // Use default InfoWindow frame
 	            @Override
@@ -314,25 +166,15 @@ public class OknoMapa extends FragmentActivity {
 
 	                // Getting view from the layout file info_window_layout
 	                View v = getLayoutInflater().inflate(R.layout.info_window_layout, null);
-
-	                // Getting the position from the marker
-	                LatLng ll;
-	                ll = args.getPosition();
-
+	                
 	                TextView title = (TextView) v.findViewById(R.id.mapContent);
 	                title.setText(args.getTitle());
-	             googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {          
+	                googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {          
                     public void onInfoWindowClick(Marker marker) 
                     {
                     	for(int i=0; i<content.length; i++){
                     	if(marker.getTitle().equals(content[i])) // if marker source is clicked
-                        {
-                    	ProgressDialog pDlg = new ProgressDialog(OknoMapa.this);
-               			pDlg.setMessage("£adowanie informacji o poœcie...");
-               			pDlg.setProgressDrawable(OknoMapa.this.getWallpaper());
-               			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-               			pDlg.setCancelable(false);
-               			pDlg.show(); 
+                        { 
 						Intent intent = new Intent(OknoMapa.this, OknoPost.class);
 						intent.putExtra("postId", postId[i]);
             	    	intent.putExtra("postText",postText[i]);
@@ -347,10 +189,42 @@ public class OknoMapa extends FragmentActivity {
             	    	intent.putExtra("repUserId", repUserId);
             	    	intent.putExtra("folUserName", folUserName);
             	    	intent.putExtra("myLogin", myLogin);
-            	    	pDlg.dismiss();
             	    	startActivity(intent);
                         }
+                    	else
+                    	{
+                    		if(marker.getTitle()!="Tu jesteœ")
+                    		{
+                    		for(int j=0;j<listPoint.size();j++)
+                        	{
+                        		if((marker.getPosition().latitude==listPoint.get(j).latitude) && (marker.getPosition().longitude==listPoint.get(j).longitude))
+                        		{
+                        			LatLng newPosition = new LatLng(listPoint.get(j).latitude,listPoint.get(j).longitude);
+                        			LatLng northeast = new LatLng(listPoint.get(j).latitude-0.001,listPoint.get(j).longitude-0.001);
+                        			LatLng southwest = new LatLng(listPoint.get(j).latitude+0.001,listPoint.get(j).longitude+0.001);
+                        			LatLngBounds bounds = new LatLngBounds(northeast,southwest);
+                        			googleMap.moveCamera(CameraUpdateFactory.newLatLng(newPosition));
+                        			googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+                        			marker.setVisible(false);
+                        			zoomTest = googleMap.getCameraPosition().zoom;
+                        			for(int k=0;k<markerList.size();k++)
+                           			{
+                        				if((markerList.get(k).getPosition().latitude - listPoint.get(j).latitude < 0.001)
+                           						&& (markerList.get(k).getPosition().latitude - listPoint.get(j).latitude > -0.001)
+                           					&&(markerList.get(k).getPosition().longitude - listPoint.get(j).longitude < 0.001)
+                           					&& (markerList.get(k).getPosition().longitude - listPoint.get(j).longitude < 0.001))
+                           				{
+                           					markerList.get(k).setVisible(true);
+                           					test2=0;
+                           				}
+                           			}
+                        		}
+                        		test=true;
+                        	}
                     	}
+                    	}
+                    	}
+                    
                     }
                 });
 
@@ -359,11 +233,186 @@ public class OknoMapa extends FragmentActivity {
 
             }
         }); 
+      
+    		googleMap.setOnCameraChangeListener(getCameraChangeListener());
+    		
+        } catch (Exception e) {
+         e.printStackTrace();
+      }
+       
+    }  
+	
+	public OnCameraChangeListener getCameraChangeListener()
+	{
+	    return new OnCameraChangeListener() 
+	    {
+			@Override
+			public void onCameraChange(CameraPosition arg0) {
+				
+				
+				if((zoomTest > arg0.zoom) && (test) && (test2>0) && (zoomTest<17))
+				{
+					for(int i=0; i<markerYellow.size();i++)
+					{
+						if((markerYellow.get(i).getPosition().latitude<arg0.target.latitude+0.001) && ((markerYellow.get(i).getPosition().longitude<arg0.target.longitude+0.001)))
+						{
+							for(int k=0;k<markerList.size();k++)
+                   			{
+                				if((markerList.get(k).getPosition().latitude - markerYellow.get(i).getPosition().latitude < 0.001)
+                   						&& (markerList.get(k).getPosition().latitude - markerYellow.get(i).getPosition().latitude > -0.001)
+                   					&&(markerList.get(k).getPosition().longitude - markerYellow.get(i).getPosition().longitude < 0.001)
+                   					&& (markerList.get(k).getPosition().longitude - markerYellow.get(i).getPosition().longitude < 0.001))
+                   				{
+                   					markerList.get(k).setVisible(false);
+                   					markerYellow.get(i).setVisible(true);
+                   					test=false;
+                   				}
+                   			}
+							
+						}
+					}
+				
+				}
+				zoomTest = arg0.zoom;
+				test2++;
+				
+			}
+	    };
+	}
+	
+	public static String truncate(final String content, final int lastIndex) {
+		if(content.length()>60)
+		{
+			String result = content.substring(0, lastIndex);
+			if (content.charAt(lastIndex) != ' ') 
+			{
+				result = result.substring(0, result.lastIndexOf(" "));
+			}
+			return result+"...";
+		}
+		else return content;
+	}
+	
+	public void handleResponse(String resp) {   
+   		try {
+   			JSONArray jsonarray = new JSONArray(resp);
+   				postId = new String[jsonarray.length()];
+				userLogin = new String[jsonarray.length()];
+				content = new String[jsonarray.length()];
+				newContent = new String[jsonarray.length()];
+				postText = new String[jsonarray.length()];
+				photo = new String[jsonarray.length()];
+				categoryId = new String[jsonarray.length()];
+				addTime = new String[jsonarray.length()];
+				place = new String[jsonarray.length()];
+				eventTime = new String[jsonarray.length()];
+   			for(int i=0; i<jsonarray.length(); i++){	
+   				JSONObject jso = jsonarray.getJSONObject(i);
+   				if(jso!=null){
+   					postId[i] = jso.getString("postId");
+   					userLogin[i] = jso.getString("userLogin");
+   					content[i] = jso.getString("content");
+   					content[i] = postId[i] + content[i];
+   					postText[i] = content[i];
+   					content[i] = truncate(content[i],40);
+   					photo[i] = jso.getString("photo");
+   					categoryId[i] = jso.getString("categoryId");
+   					addTime[i] = jso.getString("addTime");
+   					place[i] = jso.getString("place");
+   					eventTime[i] = jso.getString("eventTime");
+   					String[] tokens = place[i].split(",");
+		        	double lat = Double.parseDouble(tokens[0]);
+		        	double lon = Double.parseDouble(tokens[1]);
+   					LatLng loc = new LatLng(lat, lon);
+   					markerLocation = loc;
+   					for(int j=0; j<list.size(); j++)
+   					{
+   						if ( (list.get(j).latitude-loc.latitude<0.00002) && (list.get(j).latitude-loc.latitude>-0.00002) && (list.get(j).longitude-loc.longitude<0.00002) && (list.get(j).longitude-loc.longitude>-0.00002) )
+   						{
+   							listTest=true;
+   						}
+   					}
+   					if(list.contains(loc) || (listTest))
+   					{		
+   							if(!listPoint.contains(loc) && (!(listTest)))
+   							{
+   								listPoint.add(loc);
+   							}
+   					        double nlat = lat + (Math.random() -.5) / 1500;
+   					        double nlng = lon + (Math.random() -.5) / 1500;
+   					        LatLng nloc = new LatLng(nlat,nlng);
+   					        Marker TP = googleMap.addMarker(new MarkerOptions().position(nloc).title(content[i]).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+   					        markerList.add(TP);
+   					        TP.setVisible(false);
+   					        list.add(nloc);
+   					        listTest=false;
+   					}
+   					else
+   					{
+   						if(!listPoint.contains(loc))
+							{
+								listPoint.add(loc);
+							}
+   						Marker TP = googleMap.addMarker(new MarkerOptions().position(markerLocation).title(content[i]).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+   						list.add(markerLocation);
+   						markerList.add(TP);
+   						TP.setVisible(false);
+   					}
+   					
+   				}
+   			}
+   				
+   				
+   			
+
+   			
+   		} catch (Exception e) {
+   			Log.e(TAG, e.getLocalizedMessage(), e);
+   		}
+   		
+   		
+   		
+   		for(int i=0; i<listPoint.size();i++)
+   		{
+   			int number = 0;
+   			for(int j=0; j<markerList.size(); j++)
+   			{
+   				if((markerList.get(j).getPosition().latitude - listPoint.get(i).latitude < 0.001)
+   						&& (markerList.get(j).getPosition().latitude - listPoint.get(i).latitude > -0.001)
+   					&&(markerList.get(j).getPosition().longitude - listPoint.get(i).longitude < 0.001)
+   					&& (markerList.get(j).getPosition().longitude - listPoint.get(i).longitude < 0.001))
+   				{
+   					number++;
+   				}
+   			}
+   			if (number==1)
+   			{
+   				for(int j=0; j<markerList.size(); j++)
+   	   			{
+   	   				if((markerList.get(j).getPosition().latitude - listPoint.get(i).latitude < 0.001)
+   	   						&& (markerList.get(j).getPosition().latitude - listPoint.get(i).latitude > -0.001)
+   	   					&&(markerList.get(j).getPosition().longitude - listPoint.get(i).longitude < 0.001)
+   	   					&& (markerList.get(j).getPosition().longitude - listPoint.get(i).longitude < 0.001))
+   	   				{
+   	   					markerList.get(j).setVisible(true);
+   	   				}
+   	   			}
+   			}
+   			else
+   			{
+   			double nlat = listPoint.get(i).latitude;
+		    double nlng = listPoint.get(i).longitude;
+		    LatLng nloc = new LatLng(nlat,nlng);
+		    Marker TP = googleMap.addMarker(new MarkerOptions().position(nloc).title("Iloœæ postów: "+number).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+   			markerYellow.add(TP);
+   			}
+   		}
+
+   		
+   		
    	}
 	
-	/**
-     * klasa wewnêtrzna, która wykonuje asynchroniczne dzia³anie w tle.
-     */
+	
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
    		public static final int MAP_TASK = 1;
    		private static final String TAG = "WebServiceTask";
@@ -390,9 +439,6 @@ public class OknoMapa extends FragmentActivity {
    			params.add(new BasicNameValuePair(name, value));
    		}
 
-   		/**
-         * metoda , która tworzy i wyœwietla obiekt progress bar.
-         */
    		private void showProgressDialog() {    
    			pDlg = new ProgressDialog(mContext);
    			pDlg.setMessage(processMessage);
@@ -407,9 +453,6 @@ public class OknoMapa extends FragmentActivity {
    			showProgressDialog(); 
    		}
 
-   		/**
-         * g³ówna metoda wykonuj¹ca dzia³anie w tle.
-         */
    		protected String doInBackground(String... urls) {
    			String url = urls[0];
    			String result = ""; 
@@ -437,9 +480,6 @@ public class OknoMapa extends FragmentActivity {
    		}
        
    		// Establish connection and socket (data retrieval) timeouts
-   		/**
-         * metoda ustawiaj¹ca parametry po³¹czenia http.
-         */
    		private HttpParams getHttpParams() {            
    			HttpParams htpp = new BasicHttpParams();             
    			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
@@ -447,9 +487,6 @@ public class OknoMapa extends FragmentActivity {
    			return htpp;
    		}
        
-   		/**
-         * metoda wysy³aj¹ca oraz odbieraj¹ca dane od web serwisu.
-         */
    		private HttpResponse doResponse(String url) {  
    			// Use our connection and data timeouts as parameters for our
    			// DefaultHttpClient
@@ -487,9 +524,6 @@ public class OknoMapa extends FragmentActivity {
    			return response;
       }
        
-   		/**
-         * metoda konwertuj¹ca odpowiedŸ serwera na String.
-         */
       private String inputStreamToString(InputStream is) {
           String line = "";
           StringBuilder total = new StringBuilder(); 
