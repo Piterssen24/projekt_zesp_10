@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pl.example.apk.WebServiceTask;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -20,8 +19,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,10 +28,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class OknoEdytujProfil extends Activity {
 	
@@ -106,7 +101,6 @@ public class OknoEdytujProfil extends Activity {
 		
 		//Array list of countries
 		  listOfTags = new ArrayList<TagCheckModel>();
-		  System.out.println("dlugosc tags: " + tags.length + " tags: " + tags);
 		  for(int i=0; i<tags.length; i++){
 				if(favCategoryId.length>0){
 					for(int j=0; j<favCategoryId.length; j++){
@@ -125,7 +119,6 @@ public class OknoEdytujProfil extends Activity {
 						listOfTags.add(tcm);
 				}
 			}
-		  System.out.println("dlugosc list of tags: " + listOfTags.size() + " listoftags: " + listOfTags);
 		 
 		  //create an ArrayAdaptar from the String Array
 		  dataAdapter = new MyCustomAdapter(this, R.layout.edytujprofil_rowlayout, listOfTags);
@@ -216,6 +209,9 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data)
 
     }
 	
+	/**
+     * metoda , która zamienia string na bitmapê (obraz).
+     */
 	public static Bitmap decodeBase64(String input) 
 	{
 	    byte[] decodedByte;
@@ -225,6 +221,9 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	    return b;
 	}
 	
+	/**
+     * metoda , która zamienia obraz (bitmapê) na string.
+     */
 	public static String encodeTobase64(Bitmap image)
     {
     	Bitmap immagex = image;
@@ -259,7 +258,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data)
 		 
 		   ViewHolder holder = null;
 		   Log.v("ConvertView", String.valueOf(position));
-		   final int id = position;
+	//	   final int id = position;
 		   if (convertView == null) {
 			   LayoutInflater vi = (LayoutInflater)getSystemService(
 			     Context.LAYOUT_INFLATER_SERVICE);
@@ -273,10 +272,6 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data)
 			     public void onClick(View v) {  
 			      CheckBox cb = (CheckBox) v ;  
 			      TagCheckModel country = (TagCheckModel) cb.getTag();  
-			      Toast.makeText(getApplicationContext(),
-			       "Clicked on Checkbox: " + cb.getText() +
-			       " is " + cb.isChecked()+id, 
-			       Toast.LENGTH_LONG).show();
 			      country.setSelected(cb.isChecked());
 			     }  
 			    });  

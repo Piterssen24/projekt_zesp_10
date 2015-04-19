@@ -4,36 +4,29 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.List;
 
-import pl.example.apk.*;
-import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
+//import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
+//import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 
 public class WebServiceTask extends AsyncTask<String, Integer, String> {
@@ -68,7 +61,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     private String processMessage = "Processing...";
     public String login, password, email, role, url2, location, eventTime, tag, userLogin, userPhoto;
     public String serwer = "";
-    private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+    //private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
     private ProgressDialog pDlg = null;
     public String [] coords, fac, tagName, tagId;
     public List<Integer> favouritesTags;
@@ -165,11 +158,12 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
         this.favouritesTags = favouritesTags;
     }
 
-    public void addNameValuePair(String name, String value) {
+  /*  public void addNameValuePair(String name, String value) {
         params.add(new BasicNameValuePair(name, value));
-    }
+    }*/
 
-    private void showProgressDialog() {           
+    @SuppressWarnings("deprecation")
+	private void showProgressDialog() {           
         pDlg = new ProgressDialog(mContext);
         pDlg.setMessage(processMessage);
         pDlg.setProgressDrawable(mContext.getWallpaper());
@@ -284,9 +278,9 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             			httpPost.addHeader("Content-Type","application/json");
             			httpPost.setEntity(se);
             			response = httpClient.execute(httpPost);
-            			if(response != null){
-            				InputStream in = response.getEntity().getContent();
-            			}
+            		/*	if(response != null){
+            				response.getEntity().getContent();
+            			}*/
             		}catch(Exception e){
             			e.printStackTrace();
             		}
@@ -305,9 +299,9 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             			httpPost.addHeader("Content-Type","application/json");
             			httpPost.setEntity(se);
             			response = httpClient.execute(httpPost);					
-            			if(response != null){
+            			/*if(response != null){
             				response.getEntity().getContent();
-            			}
+            			}*/
             		}catch(Exception e){
             			e.printStackTrace();
             		}
@@ -325,9 +319,9 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
       					httpPost.addHeader("Content-Type","application/json");
       					httpPost.setEntity(se);
       					response = httpClient.execute(httpPost);     					
-      					if(response != null){
-      						InputStream in = response.getEntity().getContent();
-      					}
+      				/*	if(response != null){
+      						response.getEntity().getContent();
+      					}*/
                     }catch(Exception e){
       					e.printStackTrace();
       				}
@@ -351,9 +345,9 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             			httpPost.addHeader("Content-Type","application/json");
             			httpPost.setEntity(se);
             			response = httpClient.execute(httpPost);				
-            			if(response != null){
-            				InputStream in = response.getEntity().getContent();
-            			}	
+            		/*	if(response != null){
+            				response.getEntity().getContent();
+            			}	*/
             		}catch(Exception e){
             			e.printStackTrace();
             		}
@@ -371,9 +365,9 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             			httpPost.addHeader("Content-Type","application/json");
             			httpPost.setEntity(se);
             			response = httpClient.execute(httpPost);
-            			if(response != null){
-            				InputStream in = response.getEntity().getContent();
-            			}
+            		/*	if(response != null){
+            				response.getEntity().getContent();
+            			}*/
             		}catch(Exception e){
             			e.printStackTrace();
             		}
@@ -391,9 +385,9 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             			httpPost.addHeader("Content-Type","application/json");
             			httpPost.setEntity(se);
             			response = httpClient.execute(httpPost);
-            			if(response != null){
-            				InputStream in = response.getEntity().getContent();
-            			}
+            		/*	if(response != null){
+            				response.getEntity().getContent();
+            			}*/
             		}catch(Exception e){
             			e.printStackTrace();
             		}
@@ -417,9 +411,9 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
       					httpPost.addHeader("Content-Type","application/json");
       					httpPost.setEntity(se);
       					response = httpClient.execute(httpPost);     					
-      					if(response != null){
-      						InputStream in = response.getEntity().getContent();
-      					}
+      				/*	if(response != null){
+      						response.getEntity().getContent();
+      					}*/
                     }catch(Exception e){
       					e.printStackTrace();
       				}
@@ -438,9 +432,9 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
       					httpPost.addHeader("Content-Type","application/json");
       					httpPost.setEntity(se);
       					response = httpClient.execute(httpPost);     					
-      					if(response != null){
-      						InputStream in = response.getEntity().getContent();
-      					}
+      					/*if(response != null){
+      						response.getEntity().getContent();
+      					}*/
                     }catch(Exception e){
       					e.printStackTrace();
       				}
@@ -459,9 +453,9 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
       					httpPost.addHeader("Content-Type","application/json");
       					httpPost.setEntity(se);
       					response = httpClient.execute(httpPost);     					
-      					if(response != null){
-      						InputStream in = response.getEntity().getContent();
-      					}
+      				/*	if(response != null){
+      						response.getEntity().getContent();
+      					}*/
                     }catch(Exception e){
       					e.printStackTrace();
       				}
@@ -480,9 +474,9 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             			httpPost.addHeader("Content-Type","application/json");
             			httpPost.setEntity(se);
             			response = httpClient.execute(httpPost);
-            			if(response != null){
-            				InputStream in = response.getEntity().getContent();
-            			}
+            			/*if(response != null){
+            				response.getEntity().getContent();
+            			}*/
             		}catch(Exception e){
             			e.printStackTrace();
             		}
@@ -501,9 +495,9 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             			httpPost.addHeader("Content-Type","application/json");
             			httpPost.setEntity(se);
             			response = httpClient.execute(httpPost);
-            			if(response != null){
-            				InputStream in = response.getEntity().getContent();
-            			}
+            		/*	if(response != null){
+            				response.getEntity().getContent();
+            			}*/
             		}catch(Exception e){
             			e.printStackTrace();
             		}

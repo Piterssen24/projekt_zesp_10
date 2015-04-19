@@ -38,17 +38,15 @@ public class OknoGlowne extends Activity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(OknoGlowne.this); //Get the preferences
    		login = prefs.getString("name", "defaultName"); //get a String
    		password = prefs.getString("passwd", "defPasswd");
-   		boolean rememberCredentials = prefs.getBoolean("rememberCredentials", true);
+   		prefs.getBoolean("rememberCredentials", true);
         
         if((login!=null) && (password!=null) && (login!="") && (password!="") && (!login.equals("defaultName")) && (!password.equals("defPasswd")))
         {
         	serwer = getResources().getString(R.string.server);
         	String sampleURL = serwer + "/login";
-        	System.out.println("login: " + login + " haslo: " + password);
         	String key = "key-0123123451";
             try {
     			cryptedpass = cipher(key, password);
-    			System.out.println("pass: " + cryptedpass);
     		} catch (Exception e) {
     			// TODO Auto-generated catch block
     			e.printStackTrace();
@@ -88,6 +86,7 @@ public class OknoGlowne extends Activity {
 	
 	/**
 	    * Encrypt data
+	    * metoda szyfruj¹ca has³o
 	    * @param secretKey - a secret key used for encryption
 	    * @param data - data to encrypt
 	    * @return Encrypted data
@@ -105,6 +104,7 @@ public class OknoGlowne extends Activity {
 
 	    /**
 	    * Decrypt data
+	    * metoda deszyfruj¹ca has³o
 	    * @param secretKey - a secret key used for decryption
 	    * @param data - data to decrypt
 	    * @return Decrypted data
@@ -122,6 +122,9 @@ public class OknoGlowne extends Activity {
 
 	    // Helper methods
 
+	    /**
+		    * metoda konwertuj¹ca string na tablicê bajtów
+		    */
 	    private static byte[] toByte(String hexString) {
 	    	int len = hexString.length()/2;
 	    	byte[] result = new byte[len];
@@ -130,6 +133,9 @@ public class OknoGlowne extends Activity {
 	    	return result;
 	    }
 
+	    /**
+		    * metoda konwertuj¹ca tablicê bajtów na string
+		    */
 	    public static String toHex(byte[] stringBytes) {
 	    	StringBuffer result = new StringBuffer(2*stringBytes.length);
 	    	for (int i = 0; i < stringBytes.length; i++) {

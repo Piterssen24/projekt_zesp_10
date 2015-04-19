@@ -9,13 +9,11 @@ import java.util.List;
 
 import android.content.Intent;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -23,19 +21,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import android.view.View;
 import android.widget.TextView;
-
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -131,7 +122,7 @@ public class OknoMapa extends FragmentActivity {
     	            yourLocation = new LatLng(lat, lon);
     	            googleMap.moveCamera(CameraUpdateFactory.newLatLng(yourLocation));
     	            googleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
-    	            Marker TP = googleMap.addMarker(new MarkerOptions().position(yourLocation).title("Tu jesteœ"));
+    	            googleMap.addMarker(new MarkerOptions().position(yourLocation).title("Tu jesteœ"));
     	            locManager.removeUpdates(this); 
     	            
     			}
@@ -420,14 +411,14 @@ public class OknoMapa extends FragmentActivity {
    		private static final int CONN_TIMEOUT = 50000;        
    		// socket timeout, in milliseconds (waiting for data)
    		private static final int SOCKET_TIMEOUT = 50000;  
-   		private int taskType, number;
+   		private int taskType;
    		private Context mContext = null;
    		private String token;
    		private String processMessage = "Processing...";
-   		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+   	//	private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
    		private ProgressDialog pDlg = null;
-   		private String[] favCategoryId;
-   		private String tag;
+   	//	private String[] favCategoryId;
+   	//	private String tag;
    		public WebServiceTask(int taskType, Context mContext, String processMessage, String token){
    			this.taskType = taskType;
    			this.mContext = mContext;
@@ -435,11 +426,12 @@ public class OknoMapa extends FragmentActivity {
    			this.token = token;
    		}
       
-   		public void addNameValuePair(String name, String value) {
+   		/*public void addNameValuePair(String name, String value) {
    			params.add(new BasicNameValuePair(name, value));
-   		}
+   		}*/
 
-   		private void showProgressDialog() {    
+   		@SuppressWarnings("deprecation")
+		private void showProgressDialog() {    
    			pDlg = new ProgressDialog(mContext);
    			pDlg.setMessage(processMessage);
    			pDlg.setProgressDrawable(mContext.getWallpaper());
@@ -456,14 +448,14 @@ public class OknoMapa extends FragmentActivity {
    		protected String doInBackground(String... urls) {
    			String url = urls[0];
    			String result = ""; 
-   			String resp = "";
+   		//	String resp = "";
    			HttpResponse response = doResponse(url); 
    			if (response == null) {
    				return result;
    			} else { 
    				try {
    					result = inputStreamToString(response.getEntity().getContent());
-   					resp = response.toString();
+   			//		resp = response.toString();
    				} catch (IllegalStateException e) {
    					Log.e(TAG, e.getLocalizedMessage(), e); 
    				} catch (IOException e) {
@@ -506,9 +498,9 @@ public class OknoMapa extends FragmentActivity {
   					httpPost.addHeader("Content-Type","application/json");
   					httpPost.setEntity(se);
   					response = httpClient.execute(httpPost);				
-  					if(response != null){
+  				/*	if(response != null){
   						InputStream in = response.getEntity().getContent();
-  					}
+  					}*/
   				}catch(Exception e){
   					e.printStackTrace();
   					//createDialog("Error", "Cannot Estabilish Connection");

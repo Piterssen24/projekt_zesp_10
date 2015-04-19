@@ -3,17 +3,12 @@ package pl.example.apk;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 
 import android.view.Gravity;
 import android.widget.LinearLayout;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.Scanner;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import android.widget.Spinner;
@@ -105,7 +100,8 @@ public class OknoNew extends FragmentActivity {
         cursor.moveToFirst();
         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
         String imagepath = cursor.getString(columnIndex); 
-        File f = new File(imagepath);   
+        @SuppressWarnings("unused")
+		File f = new File(imagepath);   
         cursor.close();
         
         if(bitmapx!=null){
@@ -116,7 +112,7 @@ public class OknoNew extends FragmentActivity {
        	
         if(bitmap!=null) {
         	bitmap.recycle();
-       		bitmap = null;
+       		bitmap  = null;
         }
         
         if(bitmapRotated!=null) {
@@ -318,6 +314,9 @@ public class OknoNew extends FragmentActivity {
     		else locManager.requestLocationUpdates( LocationManager.NETWORK_PROVIDER, 0, 0, myLocationListener); 		   	
     }   
     
+    /**
+     * metoda pobieraj¹ca dane tworzonego posta i wywo³uj¹ca asynchroniczn¹ metodê w celu przes³ania danych do web serwisu
+     */
     public void addNewPost(View vw) { 
     	photo =  encodeTobase64(bitmap); 
     	bitmap.recycle();
@@ -329,6 +328,9 @@ public class OknoNew extends FragmentActivity {
         wst.execute(new String[] { sampleURL }); 
 	}
     
+    /**
+     * metoda konwertuj¹ca bitmapê (zdjêcie) na string
+     */
     public static String encodeTobase64(Bitmap image)
     {
     	Bitmap immagex = image;
@@ -343,6 +345,9 @@ public class OknoNew extends FragmentActivity {
         return imageEncoded;
     }
     
+    /**
+     * metoda przyjmuj¹ca jako parametr odpowiedŸ od serwera i wykonuj¹ca przejœcie do innego okna
+     */
     public void handleResponse(String response) {   
         if(response.equals("TRUE")){
         	Toast.makeText(this, "Pomyslnie dodano posta!", Toast.LENGTH_LONG).show();

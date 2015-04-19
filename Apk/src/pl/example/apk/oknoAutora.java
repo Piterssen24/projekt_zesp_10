@@ -9,20 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import com.google.android.gms.internal.ex;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -30,12 +26,10 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Base64;
@@ -45,7 +39,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.LinearLayout.LayoutParams;
 
 public class oknoAutora extends Activity {
 
@@ -198,25 +191,19 @@ public class oknoAutora extends Activity {
      * klasa wewnêtrzna, która wykonuje asynchroniczne dzia³anie w tle.
      */
     private class WebServiceTask extends AsyncTask<String, Integer, String> {
-        public static final int LOG_TASK = 1;
-        public static final int REGISTER_TASK = 2;  
-        public static final int NEWS_TASK = 3;
-        public static final int NEW_TASK = 4; 
-        public static final int ACCOUNT_TASK = 5;
-        public static final int AUTHOR_TASK = 6;
-        public static final int FOLLOW_TASK = 7;
-        public static final int STOPFOLLOW_TASK = 8;
-        private int taskType, number;
+        public static final int AUTHOR_TASK = 1;
+        public static final int FOLLOW_TASK = 2;
+        public static final int STOPFOLLOW_TASK = 3;
+        private int taskType;
         private static final String TAG = "WebServiceTask";
         private static final int CONN_TIMEOUT = 50000;        
         private static final int SOCKET_TIMEOUT = 50000;        
         private Context mContext = null;
         private String processMessage = "Processing...";
-        public String login, password, email, role, url2, location, eventTime, tag, userLogin;
+        public String url2, userLogin;
         public String serwer = "";
-        private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+        //private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         private ProgressDialog pDlg = null;
-        public String [] coords, fac, tagName, tagId;
         public String token;
         
 
@@ -236,14 +223,15 @@ public class oknoAutora extends Activity {
             this.token = token;
         }
 
-        public void addNameValuePair(String name, String value) {
+     /*   public void addNameValuePair(String name, String value) {
             params.add(new BasicNameValuePair(name, value));
-        }
+        }*/
 
         /**
          * metoda , która tworzy i wyœwietla obiekt progress bar.
          */
-        private void showProgressDialog() {           
+        @SuppressWarnings("deprecation")
+		private void showProgressDialog() {           
             pDlg = new ProgressDialog(mContext);
             pDlg.setMessage(processMessage);
             pDlg.setProgressDrawable(mContext.getWallpaper());
@@ -327,9 +315,9 @@ public class oknoAutora extends Activity {
                 			httpPost.addHeader("Content-Type","application/json");
                 			httpPost.setEntity(se);
                 			response = httpClient.execute(httpPost);
-                			if(response != null){
+                			/*if(response != null){
                 				InputStream in = response.getEntity().getContent();
-                			}
+                			}*/
                 		}catch(Exception e){
                 			e.printStackTrace();
                 		}
@@ -348,9 +336,9 @@ public class oknoAutora extends Activity {
                 			httpPost.addHeader("Content-Type","application/json");
                 			httpPost.setEntity(se);
                 			response = httpClient.execute(httpPost);
-                			if(response != null){
+                			/*if(response != null){
                 				InputStream in = response.getEntity().getContent();
-                			}
+                			}*/
                 		}catch(Exception e){
                 			e.printStackTrace();
                 		}
@@ -369,9 +357,9 @@ public class oknoAutora extends Activity {
                 			httpPost.addHeader("Content-Type","application/json");
                 			httpPost.setEntity(se);
                 			response = httpClient.execute(httpPost);
-                			if(response != null){
+                		/*	if(response != null){
                 				InputStream in = response.getEntity().getContent();
-                			}
+                			}*/
                 		}catch(Exception e){
                 			e.printStackTrace();
                 		}

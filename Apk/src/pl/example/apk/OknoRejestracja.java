@@ -1,12 +1,7 @@
 package pl.example.apk;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.security.spec.KeySpec;
-import java.util.ArrayList;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -14,41 +9,21 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import android.content.Intent;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.json.JSONObject;
-
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
 public class OknoRejestracja extends Activity {
-	private static final String TAG = "OknoRejestracja";
+//	private static final String TAG = "OknoRejestracja";
 	public RadioGroup radioGrouRola;
 	public int id;
 	public String role, login, password, repassword, email;
@@ -75,6 +50,9 @@ public class OknoRejestracja extends Activity {
         bar.setTitle("PicNews - rejestracja");              
     }
 
+    /**
+     * metoda pobieraj¹ca dane do rejestracji z pól, sprawdzaj¹ca poprawnoœæ tych danych i wywo³uj¹ca klasê odpowiadaj¹c¹ za wys³anie tych danych do web serwisu.
+     */
     public void rejestruj(View vw) {
     	String sampleURL = serwer + "/register";
     	
@@ -97,7 +75,6 @@ public class OknoRejestracja extends Activity {
     			String key = "key-0123123451";
     	        try {
     				cryptedpass = cipher(key, password);
-    				System.out.println("pass: " + password);
     			} catch (Exception e) {
     				// TODO Auto-generated catch block
     				e.printStackTrace();
@@ -109,6 +86,9 @@ public class OknoRejestracja extends Activity {
     	}	
     }
     
+    /**
+     * metoda konwertuj¹ca bitmapê (zdjêcie) na string
+     */
     public static String encodeTobase64(Bitmap image)
     {
     	Bitmap immagex = image;

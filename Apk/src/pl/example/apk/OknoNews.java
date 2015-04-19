@@ -5,54 +5,37 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import android.graphics.Bitmap;
-import org.apache.http.HttpEntity;
-
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -61,10 +44,8 @@ import android.widget.Toast;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.AbsListView;
-import android.widget.ScrollView;
 
+@SuppressWarnings("deprecation")
 public class OknoNews extends Activity implements ScrollViewListener {
 	String[] menu;
     ArrayList<FragmentTransaction> arrayList;
@@ -436,7 +417,6 @@ public class OknoNews extends Activity implements ScrollViewListener {
      * klasa wewnêtrzna, wykonuj¹ca asynchroniczne dzia³anie w tle.
      */
    	private class WebServiceTask extends AsyncTask<String, Integer, String> {
-   		public static final int POST_TASK = 1;
    		public static final int NEWS_TASK = 2;
    		public static final int NEWSFILTERED_TASK = 3;
    		public static final int NEWSFAVOURITES_TASK = 4;
@@ -450,7 +430,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		private Context mContext = null;
    		private String token, number;
    		private String processMessage = "Processing...";
-   		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+   	//	private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
    		private ProgressDialog pDlg = null;
    		private String[] favCategoryId, folUserName;
    		private String tag;
@@ -489,9 +469,9 @@ public class OknoNews extends Activity implements ScrollViewListener {
    			this.tag = tag;
    		}
       
-   		public void addNameValuePair(String name, String value) {
+   		/*public void addNameValuePair(String name, String value) {
    			params.add(new BasicNameValuePair(name, value));
-   		}
+   		}*/
 
    		private void showProgressDialog() {    
    			pDlg = new ProgressDialog(mContext);
@@ -510,14 +490,14 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		protected String doInBackground(String... urls) {
    			String url = urls[0];
    			String result = ""; 
-   			String resp = "";
+   			//String resp = "";
    			HttpResponse response = doResponse(url); 
    			if (response == null) {
    				return result;
    			} else { 
    				try {
    					result = inputStreamToString(response.getEntity().getContent());
-   					resp = response.toString();
+   				//	resp = response.toString();
    				} catch (IllegalStateException e) {
    					Log.e(TAG, e.getLocalizedMessage(), e); 
    				} catch (IOException e) {
@@ -561,9 +541,9 @@ public class OknoNews extends Activity implements ScrollViewListener {
   					httpPost.addHeader("Content-Type","application/json");
   					httpPost.setEntity(se);
   					response = httpClient.execute(httpPost);				
-  					if(response != null){
-  						InputStream in = response.getEntity().getContent();
-  					}
+  					/*if(response != null){
+  						response.getEntity().getContent();
+  					}*/
   				}catch(Exception e){
   					e.printStackTrace();
   					//createDialog("Error", "Cannot Estabilish Connection");
@@ -586,7 +566,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
       					httpPost.setEntity(se);
       					response = httpClient.execute(httpPost);				
       					if(response != null){
-      						InputStream in = response.getEntity().getContent();
+      						response.getEntity().getContent();
       					}
       				}catch(Exception e){
       					e.printStackTrace();
@@ -614,7 +594,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
           					httpPost.setEntity(se);
           					response = httpClient.execute(httpPost);				
           					if(response != null){
-          						InputStream in = response.getEntity().getContent();
+          						response.getEntity().getContent();
           					}
           				}catch(Exception e){
           					e.printStackTrace();
@@ -642,7 +622,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
       					httpPost.setEntity(se);
       					response = httpClient.execute(httpPost);				
       					if(response != null){
-      						InputStream in = response.getEntity().getContent();
+      						response.getEntity().getContent();
       					}
       				}catch(Exception e){
       					e.printStackTrace();

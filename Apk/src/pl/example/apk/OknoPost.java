@@ -3,7 +3,6 @@ package pl.example.apk;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import android.view.View.OnClickListener;
@@ -29,7 +28,6 @@ import android.widget.Toast;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.RelativeLayout;
-import android.widget.LinearLayout.LayoutParams;
 
 
 public class OknoPost extends Activity {

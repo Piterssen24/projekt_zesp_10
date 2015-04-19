@@ -1,12 +1,6 @@
 package pl.example.apk;
 
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.security.spec.KeySpec;
-import java.util.ArrayList;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -14,38 +8,19 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import android.preference.PreferenceManager;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.json.JSONObject;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.Toast;
 
 public class OknoLog extends Activity {
-	private static final String TAG = "OknoLog";
+	//private static final String TAG = "OknoLog";
 	private EditText elogin, epassword;
 	public String login, password;
 	private String cryptedpass;
@@ -68,6 +43,9 @@ public class OknoLog extends Activity {
         bar.setTitle("PicNews - logowanie");
     }
     
+    /**
+     * metoda pobieraj¹ca login i has³o
+     */
     public void retrieveSampleData(View vw) {
     	login = elogin.getText().toString();
     	password = epassword.getText().toString();
@@ -81,7 +59,6 @@ public class OknoLog extends Activity {
         String key = "key-0123123451";
         try {
 			cryptedpass = cipher(key, password);
-			System.out.println("pass: " + password);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -126,6 +103,9 @@ public class OknoLog extends Activity {
 
     // Helper methods
 
+    /**
+	    * metoda konwertuj¹ca string na tablicê bajtów
+	    */
     private static byte[] toByte(String hexString) {
     	int len = hexString.length()/2;
     	byte[] result = new byte[len];
@@ -134,6 +114,9 @@ public class OknoLog extends Activity {
     	return result;
     }
 
+    /**
+	    * metoda konwertuj¹ca tablicê bajtów na string
+	    */
     public static String toHex(byte[] stringBytes) {
     	StringBuffer result = new StringBuffer(2*stringBytes.length);
     	for (int i = 0; i < stringBytes.length; i++) {

@@ -14,25 +14,18 @@ import android.view.View.OnClickListener;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import android.view.LayoutInflater;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import android.preference.PreferenceManager;
-import org.apache.http.message.BasicNameValuePair;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import pl.example.apk.*;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
@@ -398,31 +391,18 @@ public class OknoKonto extends Activity {
      * klasa wewnętrzna, która wykonuje asynchroniczne działanie w tle.
      */
 private class WebServiceTask extends AsyncTask<String, Integer, String> {
-    public static final int LOG_TASK = 1;
-    public static final int REGISTER_TASK = 2;  
-    public static final int NEWS_TASK = 3;
-    public static final int NEW_TASK = 4; 
-    public static final int ACCOUNT_TASK = 5;
-    public static final int STOPFOLLOW_TASK = 6;
-    private int taskType, number;
-    Fragment newpost, newpost2;
-    public int idItem;
-    public String postId;
-    public String userId;
-    public String content;
-    public String photo;
-    public String postType;
-    public String addTime;
-    public String categoryId, count, userLogin;
-    public String place, token, tags, faculties;
-    private static final String TAG = "WebServiceTask";
+    public static final int ACCOUNT_TASK = 1;
+    public static final int STOPFOLLOW_TASK = 2;
+    private int taskType;
+    public String userLogin;
+    static final String TAG = "WebServiceTask";
     private static final int CONN_TIMEOUT = 100000;        
     private static final int SOCKET_TIMEOUT = 100000;        
     private Context mContext = null;
     private String processMessage = "Processing...";
-    public String login, password, email, role, url2, location, eventTime, tag;
+    public String url2, token;
     public String serwer = "";
-    private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+   // private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
     private ProgressDialog pDlg = null;
     
     // konstruktor do okna konto
@@ -440,14 +420,15 @@ private class WebServiceTask extends AsyncTask<String, Integer, String> {
         this.token = token;
     }
 
-    public void addNameValuePair(String name, String value) {
+   /* public void addNameValuePair(String name, String value) {
         params.add(new BasicNameValuePair(name, value));
-    }
+    }*/
 
     /**
      * metoda , która tworzy i wyświetla obiekt progress bar.
      */
-    private void showProgressDialog() {           
+    @SuppressWarnings("deprecation")
+	private void showProgressDialog() {           
         pDlg = new ProgressDialog(mContext);
         pDlg.setMessage(processMessage);
         pDlg.setProgressDrawable(mContext.getWallpaper());
@@ -528,9 +509,9 @@ private class WebServiceTask extends AsyncTask<String, Integer, String> {
             			httpPost.addHeader("Content-Type","application/json");
             			httpPost.setEntity(se);
             			response = httpClient.execute(httpPost);
-            			if(response != null){
-            				InputStream in = response.getEntity().getContent();
-            			}
+            			/*if(response != null){
+            				response.getEntity().getContent();
+            			}*/
             		}catch(Exception e){
             			e.printStackTrace();
             		}
@@ -549,9 +530,9 @@ private class WebServiceTask extends AsyncTask<String, Integer, String> {
             			httpPost.addHeader("Content-Type","application/json");
             			httpPost.setEntity(se);
             			response = httpClient.execute(httpPost);
-            			if(response != null){
+            			/*if(response != null){
             				InputStream in = response.getEntity().getContent();
-            			}
+            			}*/
             		}catch(Exception e){
             			e.printStackTrace();
             		}
