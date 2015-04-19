@@ -8,6 +8,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
@@ -16,14 +17,18 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class OknoLog extends Activity {
 	//private static final String TAG = "OknoLog";
 	private EditText elogin, epassword;
+	private TextView forgotPassword;
 	public String login, password;
-	private String cryptedpass;
+	private String cryptedpass, deviceId;
 	public String serwer = "";
 	String name, pass;
 	private final static String ALGORITHM = "AES";
@@ -34,6 +39,7 @@ public class OknoLog extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.oknologowania_layout);
         
+        forgotPassword = (TextView) findViewById(R.id.forgotPassword);
         serwer = getResources().getString(R.string.server);
         elogin = (EditText) findViewById(R.id.editlogin);
         epassword = (EditText) findViewById(R.id.editPassword);
@@ -41,29 +47,47 @@ public class OknoLog extends Activity {
         ActionBar bar = getActionBar();
         bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#009900")));
         bar.setTitle("PicNews - logowanie");
+        
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Toast.makeText(OknoLog.this, "W celu przypomnienia has³a prosimy o wys³anie wiadomoœci do administratora na adres admin@admin.com z adresu email podanego podczas rejestracji", 3000).show();
+			}
+		});
     }
     
     /**
      * metoda pobieraj¹ca login i has³o
      */
     public void retrieveSampleData(View vw) {
+    	String key = "key-0123123451";
     	login = elogin.getText().toString();
     	password = epassword.getText().toString();
+    	TelephonyManager tManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+    	deviceId = tManager.getDeviceId();
         String sampleURL = serwer + "/login";
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(OknoLog.this); //Get the preferences
         Editor edit = prefs.edit(); //Needed to edit the preferences
+        String Password = "";
+		try {
+			Password = cipher(key, password);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
         edit.putString("name", login);  //add a String
-        edit.putString("passwd", password);
+        edit.putString("passwd", Password);
         edit.putBoolean("rememberCredentials", true); //add a boolean
         edit.commit();  // save the edits. 
-        String key = "key-0123123451";
         try {
 			cryptedpass = cipher(key, password);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        WebServiceTask wst = new WebServiceTask(WebServiceTask.LOG_TASK, this, "Logging...", login, cryptedpass);   
+        WebServiceTask wst = new WebServiceTask(WebServiceTask.LOG_TASK, this, "Logging...", login, cryptedpass, deviceId);   
         wst.execute(new String[] { sampleURL });       
     }
     

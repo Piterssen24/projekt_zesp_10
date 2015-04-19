@@ -13,6 +13,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.Button;
 import android.content.SharedPreferences;
@@ -30,28 +31,36 @@ public class OknoGlowne extends Activity {
 	public String serwer = "";
 	private final static String ALGORITHM = "AES";
 	private final static String HEX = "0123456789ABCDEF";
-	private String cryptedpass;
+	private String cryptedpass, deviceId;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String key = "key-0123123451";
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(OknoGlowne.this); //Get the preferences
    		login = prefs.getString("name", "defaultName"); //get a String
-   		password = prefs.getString("passwd", "defPasswd");
+   		String Password = prefs.getString("passwd", "defPasswd");
+   		try {
+			password = decipher(key, Password);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
    		prefs.getBoolean("rememberCredentials", true);
         
         if((login!=null) && (password!=null) && (login!="") && (password!="") && (!login.equals("defaultName")) && (!password.equals("defPasswd")))
         {
         	serwer = getResources().getString(R.string.server);
         	String sampleURL = serwer + "/login";
-        	String key = "key-0123123451";
             try {
     			cryptedpass = cipher(key, password);
     		} catch (Exception e) {
     			// TODO Auto-generated catch block
     			e.printStackTrace();
     		}
-        	WebServiceTask wst = new WebServiceTask(WebServiceTask.LOG_TASK, this, "Logging...", login, cryptedpass);   
+            TelephonyManager tManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+        	deviceId = tManager.getDeviceId();
+        	WebServiceTask wst = new WebServiceTask(WebServiceTask.LOG_TASK, this, "Logging...", login, cryptedpass, deviceId);   
             wst.execute(new String[] { sampleURL });          	
         }
         else

@@ -120,10 +120,13 @@ public class OknoKonto extends Activity {
 		        edit.putString("passwd", "");
 		        edit.putBoolean("rememberCredentials", true); //add a boolean
 		        edit.commit();  // save the edits. 
-				Intent intent = new Intent(getApplicationContext(), OknoGlowne.class);
+		        String sampleURL = serwer + "/logout";
+		        WebServiceTask wst = new WebServiceTask(WebServiceTask.LOGOUT_TASK, OknoKonto.this, "Logging out...", myLogin);   
+		        wst.execute(new String[] { sampleURL });  
+				/*Intent intent = new Intent(getApplicationContext(), OknoGlowne.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
-	        	startActivity(intent);
+	        	startActivity(intent);*/
 				
 			}
 		});
@@ -318,6 +321,17 @@ public class OknoKonto extends Activity {
    		}
     }
     
+    public void handleResponseLOGOUT(String response){
+    	if(response.equals("TRUE")){
+    		Intent intent = new Intent(getApplicationContext(), OknoGlowne.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        	startActivity(intent);
+    	} else {
+    		Toast.makeText(this, "Wystąpił błąd podczas wykonywania żądanej operacji!", Toast.LENGTH_LONG).show();
+    	}
+    }
+    
     public void handleResponseSTOPFOLLOW(String response){
     	if(response.equals("OK")){
     		String s22;
@@ -393,6 +407,7 @@ public class OknoKonto extends Activity {
 private class WebServiceTask extends AsyncTask<String, Integer, String> {
     public static final int ACCOUNT_TASK = 1;
     public static final int STOPFOLLOW_TASK = 2;
+    public static final int LOGOUT_TASK = 3;
     private int taskType;
     public String userLogin;
     static final String TAG = "WebServiceTask";
@@ -410,6 +425,13 @@ private class WebServiceTask extends AsyncTask<String, Integer, String> {
     	this.taskType = taskType;
         this.mContext = mContext;
         this.token = token;
+    }
+    
+    public WebServiceTask(int taskType, Context mContext, String processMessage, String userLogin){
+    	this.taskType = taskType;
+        this.mContext = mContext;
+        this.processMessage = processMessage;
+        this.userLogin = userLogin;
     }
     
     public WebServiceTask(int taskType, String processMessage, String userLogin, String token, Context mContext) {
@@ -474,6 +496,10 @@ private class WebServiceTask extends AsyncTask<String, Integer, String> {
     		pDlg.dismiss();
     		handleResponseSTOPFOLLOW(response);
     		break;
+    	case LOGOUT_TASK:
+    		pDlg.dismiss();
+    		handleResponseLOGOUT(response);
+    		break;
     	}
         		
     }
@@ -517,6 +543,26 @@ private class WebServiceTask extends AsyncTask<String, Integer, String> {
             		}
             		HttpGet httpgetaccount = new HttpGet(url);
             		response = httpclient.execute(httpgetaccount);     
+            		break;
+            	case LOGOUT_TASK: 
+            		url2 = serwer + "/logout2";
+            		HttpConnectionParams.setConnectionTimeout(httpClient.getParams(), 10000);
+            		JSONObject jsonl = new JSONObject();
+            		try{
+            			HttpPost httpPost = new HttpPost(url2);
+            			jsonl.put("userLogin", userLogin);
+            			StringEntity se = new StringEntity(jsonl.toString(), "UTF-8");
+            			httpPost.addHeader("Content-Type","application/json");
+            			httpPost.setEntity(se);
+            			response = httpClient.execute(httpPost);					
+            			/*if(response != null){
+            				response.getEntity().getContent();
+            			}*/
+            		}catch(Exception e){
+            			e.printStackTrace();
+            		}
+            		HttpGet httpgetlogin = new HttpGet(url);
+            		response = httpclient.execute(httpgetlogin);
             		break;
             	case STOPFOLLOW_TASK:
             		url2 = serwer + "/stopFollow2";

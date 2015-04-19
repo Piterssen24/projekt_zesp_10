@@ -43,10 +43,11 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
 	public static final int POSTREPORT_TASK = 11;
 	public static final int FOLLOW_TASK = 12;
 	public static final int STOPFOLLOW_TASK = 13;
+	public static final int LOGOUT_TASK = 14;
     private int taskType, number;
     Fragment newpost, newpost2;
     public int idItem;
-    public String postId;
+    public String postId, deviceId;
     public String userId;
     public String content;
     public String photo;
@@ -72,12 +73,13 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     
   	
   	// konstruktor do OknoLog
-    public WebServiceTask(int taskType, Context mContext, String processMessage, String login, String password) {
+    public WebServiceTask(int taskType, Context mContext, String processMessage, String login, String password, String deviceId) {
         this.taskType = taskType;
         this.mContext = mContext;
         this.processMessage = processMessage;
         this.login = login;
         this.password = password;
+        this.deviceId = deviceId;
     }
     
     //konstruktor do follow i stopfollow
@@ -140,7 +142,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
         this.token = token;
     }
     
-    // konstruktor do oknoAutora
+    // konstruktor do oknoAutora i logOut
     public WebServiceTask(int taskType, Context mContext, String processMessage, String userLogin){
     	this.taskType = taskType;
         this.mContext = mContext;
@@ -287,15 +289,14 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             		HttpGet httpgetregister = new HttpGet(url);
             		response = httpclient.execute(httpgetregister);               
             		break;
-            	case LOG_TASK: 
-            		url2 = serwer + "/login2";
+            	case LOGOUT_TASK: 
+            		url2 = serwer + "/logout2";
             		HttpConnectionParams.setConnectionTimeout(httpClient.getParams(), 10000);
-            		JSONObject jsonl = new JSONObject();
+            		JSONObject jsonlx = new JSONObject();
             		try{
             			HttpPost httpPost = new HttpPost(url2);
-            			jsonl.put("login", login);
-            			jsonl.put("password", password);
-            			StringEntity se = new StringEntity(jsonl.toString(), "UTF-8");
+            			jsonlx.put("login", login);
+            			StringEntity se = new StringEntity(jsonlx.toString(), "UTF-8");
             			httpPost.addHeader("Content-Type","application/json");
             			httpPost.setEntity(se);
             			response = httpClient.execute(httpPost);					
@@ -307,6 +308,28 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             		}
             		HttpGet httpgetlogin = new HttpGet(url);
             		response = httpclient.execute(httpgetlogin);
+            		break;
+            	case LOG_TASK: 
+            		url2 = serwer + "/login2";
+            		HttpConnectionParams.setConnectionTimeout(httpClient.getParams(), 10000);
+            		JSONObject jsonl = new JSONObject();
+            		try{
+            			HttpPost httpPost = new HttpPost(url2);
+            			jsonl.put("login", login);
+            			jsonl.put("password", password);
+            			jsonl.put("deviceId", deviceId);
+            			StringEntity se = new StringEntity(jsonl.toString(), "UTF-8");
+            			httpPost.addHeader("Content-Type","application/json");
+            			httpPost.setEntity(se);
+            			response = httpClient.execute(httpPost);					
+            			/*if(response != null){
+            				response.getEntity().getContent();
+            			}*/
+            		}catch(Exception e){
+            			e.printStackTrace();
+            		}
+            		HttpGet httpgetloginx = new HttpGet(url);
+            		response = httpclient.execute(httpgetloginx);
             		break;
             	case NEWS_TASK: 
             		url2 = serwer + "/news2";
@@ -528,7 +551,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     public final void handleResponseLOG(String response) {  
     	try {
     		JSONArray jsonarray = new JSONArray(response);
-    		if(jsonarray!=null){
+    		if(jsonarray.length()>0){
     			token = jsonarray.getString(0);
     			role = jsonarray.getString(1);
     			if(token.equals("")){
@@ -561,7 +584,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     					coords[i] = jo.getString("coordinates");
     				}
     			
-    				Toast.makeText(mContext, "Zalogowano!", Toast.LENGTH_LONG).show();
+    				//Toast.makeText(mContext, "Zalogowano!", Toast.LENGTH_LONG).show();
     				Intent in = new Intent(mContext, OknoNews.class);
     				in.putExtra("token",token);
     				in.putExtra("role", role);
@@ -573,6 +596,12 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     				in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
     				mContext.startActivity(in);
     			}
+    		} else {
+    			Toast.makeText(mContext, "Nie mo¿na byæ zalogowanym na dwóch urz¹dzeniach!", Toast.LENGTH_LONG).show();
+    			Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+    		    homeIntent.addCategory( Intent.CATEGORY_HOME );
+    		    homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);  
+    		    mContext.startActivity(homeIntent); 
     		}
          } catch (Exception e) {
               Log.e(TAG, e.getLocalizedMessage(), e);
