@@ -9,6 +9,8 @@
              <ImageView
             android:id="@+id/authorPhoto"
             android:layout_marginLeft="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
             android:layout_width="120dp"
             android:layout_height="200dp" />
              
@@ -37,40 +39,22 @@
         			android:gravity="center|bottom"
         			android:orientation="horizontal">
                      
-                    <TextView 
-                		android:id="@+id/plus"
-                		android:layout_width="wrap_content"
-            			android:layout_height="wrap_content"
-            			android:layout_weight="1"
-            			android:textColor="#CC009900"
-           				android:gravity="center_horizontal"
-            			android:text="@string/stringplus"
-                 	/>
-                     
-                    <TextView 
-                		android:id="@+id/minus"
-                		android:layout_width="wrap_content"
-            			android:layout_height="wrap_content"
-            			android:layout_weight="1"
-            			android:textColor="#CC009900"
-            			android:gravity="center_horizontal"
-            			android:text="@string/stringminus"
-                 	/>
                      
                     <TextView 
                 		android:id="@+id/report"
                 		android:layout_width="wrap_content"
             			android:layout_height="wrap_content"
-            			android:layout_weight="1"
             			android:textColor="#CC009900"
-            			android:gravity="center_horizontal"
+            			android:layout_weight="1"
+            			android:gravity="center_horizontal" 
+            			android:text="@string/stringzglosnaduzycie"
                  	/>
                     <TextView 
                         android:id="@+id/readMore" 
                         android:layout_width="wrap_content" 
-                        android:layout_height="wrap_content" 
+                        android:layout_height="wrap_content"
+                        android:textColor="#CC009900" 
                         android:layout_weight="1"
-                        android:textColor="#CC009900"
             			android:gravity="center_horizontal" 
                         android:text="@string/stringczytajdalej" />
                      

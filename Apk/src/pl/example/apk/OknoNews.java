@@ -25,11 +25,14 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -85,27 +88,21 @@ public class OknoNews extends Activity implements ScrollViewListener {
    	public String serwer = "";
    	public static String[] tags, faculties, coords, tagsId, favUserId, favCategoryId;
    	private static final String TAG = "OknoLog";
-   	public int pos, variant;
+   	public int pos, variant, screenTest=0, width, height;
    	public boolean over = false;
+   	Bitmap bmp;
    	
    	@Override
    	protected void onCreate(Bundle savedInstanceState) {
    		super.onCreate(savedInstanceState);
-   		setContentView(R.layout.oknonews_layout); 
+   		setContentView(R.layout.oknonews_layout);;
    		
    		serwer = getResources().getString(R.string.server);
    		context = getApplicationContext();
    		linearLayout = (LinearLayout) findViewById(R.id.content);
    		
-   		Bundle b = getIntent().getExtras();
-   		if(b!=null) {
-   			token = b.getString("token");
-   			role = b.getString("role");
-   			tagsId = b.getStringArray("tagsId");
-   			tags = b.getStringArray("tags");
-   			faculties = b.getStringArray("faculties");
-   			coords = b.getStringArray("coords");
-   		}
+   		getExtras();
+   		getScreenType();   		
    		
    		scrollView = (ObservableScrollView) findViewById(R.id.scrollView);
    		scrollView.setScrollViewListener(this);
@@ -117,104 +114,16 @@ public class OknoNews extends Activity implements ScrollViewListener {
     
    		//DRAWERLAYOUT      
    		dLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-   		final LinearLayout mDrawerLinear = (LinearLayout) findViewById(R.id.linearDrawer);
    		dList = (ListView) findViewById(R.id.leftDrawer);
+   		getLeftMenu();
+   		
 
    		// Enabling Home button
    		actionBar.setHomeButtonEnabled(true);
    		// Enabling Up navigation
    		actionBar.setDisplayHomeAsUpEnabled(true); 
    		// Getting reference to the ActionBarDrawerToggle
-   		mDrawerToggle = new ActionBarDrawerToggle( this, dLayout, R.drawable.ic_launcher, R.string.drawer_open, R.string.drawer_close){
-            /** Called when drawer is closed */
-            public void onDrawerClosed(View view) {
-            	getActionBar().setTitle("PicNews");
-                invalidateOptionsMenu();
-            }
-
-            /** Called when a drawer is opened */
-            public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle("PicNews - opcje");
-                invalidateOptionsMenu();
-            }
-   		};
-    
-   		// Setting DrawerToggle on DrawerLayout
-   		dLayout.setDrawerListener(mDrawerToggle);
-   		list = new String[tags.length + 3];
-   		list[0] = "Wszystkie";
-   		list[1] = "Ulubione kategorie";
-   		list[2] = "Ulubieni u¿ytkownicy";
-   		for(int i=0; i<tags.length; i++){
-   			list[i+3] = tags[i];
-   		}
-    	// Creating an ArrayAdapter to add items to the listview mDrawerList
-   		adapter = new ArrayAdapter<String>(getBaseContext(), R.layout.drawer_list_item , list);
-   		// Setting the adapter on mDrawerList
-   		dList.setAdapter(adapter);   
    		
-   		//dList.getSelectedItem()
-   		
-   		// Setting item click listener for the listview mDrawerList
-   		dList.setOnItemClickListener(new OnItemClickListener() {
-   			@Override
-   			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Getting an array of rivers
-                //String[] rivers = getResources().getStringArray(R.array.rivers);
-         /*       //Currently selected river
-                getActionBar().setTitle(list[position]);
-                // Creating a fragment object
-                DetailFragment rFragment = new DetailFragment();
-                // Creating a Bundle object
-                Bundle data = new Bundle();
-                // Setting the index of the currently selected item of mDrawerList
-                data.putInt("position", position);
-                // Setting the position to the fragment
-                rFragment.setArguments(data);
-                // Getting reference to the FragmentManager
-                FragmentManager fragmentManager = getFragmentManager();
-                // Creating a fragment transaction
-                FragmentTransaction ft = fragmentManager.beginTransaction();
-                // Adding a fragment to the fragment transaction
-                ft.replace(R.id.contentFrame, rFragment);
-                // Committing the transaction
-                ft.commit();*/
-                // Closing the drawer
-   				linearLayout.removeAllViews();
-                dLayout.closeDrawer(mDrawerLinear);
-                switch (position) {
-                case 0:
-                	variant = 1;
-                	over = false;
-               		String sampleURL = serwer + "/news";
-               		WebServiceTask wst = new WebServiceTask(WebServiceTask.NEWS_TASK, OknoNews.this, "Loading posts...", number, token);   
-               		wst.execute(new String[] { sampleURL }); 
-                	break;
-                case 1:
-                	variant = 2;
-                	over = false;
-               		sampleURL = serwer + "/newsFavourites";
-               		wst = new WebServiceTask(WebServiceTask.NEWSFAVOURITES_TASK, OknoNews.this, "Loading posts...", number, token, favCategoryId);   
-               		wst.execute(new String[] { sampleURL }); 
-                	break;
-                case 2:
-                	variant = 3;
-                	over = false;
-               		sampleURL = serwer + "/newsFollowed";
-               		wst = new WebServiceTask(WebServiceTask.NEWSFOLLOWED_TASK, "Loading posts...", number, token, folUserName, OknoNews.this);   
-               		wst.execute(new String[] { sampleURL }); 
-                	break;
-                default:
-                	variant = 4;
-                	over = false;
-               		sampleURL = serwer + "/newsFiltered";
-               		pos = position - 3;
-               		wst = new WebServiceTask(WebServiceTask.NEWSFILTERED_TASK, OknoNews.this, "Loading posts...", number, token, tagsId[pos]);   
-               		wst.execute(new String[] { sampleURL }); 
-                	break;
-                }
-   			}
-   		});
     
    		//idItem = 0;
    		variant = 0;
@@ -223,6 +132,106 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		wst.execute(new String[] { sampleURL }); 
    	}
 
+   public void getLeftMenu()
+   {
+	   final LinearLayout mDrawerLinear = (LinearLayout) findViewById(R.id.linearDrawer);
+	   mDrawerToggle = new ActionBarDrawerToggle( this, dLayout, R.drawable.ic_launcher, R.string.drawer_open, R.string.drawer_close){
+           /** Called when drawer is closed */
+           public void onDrawerClosed(View view) {
+           	getActionBar().setTitle("PicNews");
+               invalidateOptionsMenu();
+           }
+
+           /** Called when a drawer is opened */
+           public void onDrawerOpened(View drawerView) {
+               getActionBar().setTitle("PicNews - opcje");
+               invalidateOptionsMenu();
+           }
+  		};
+   
+  		// Setting DrawerToggle on DrawerLayout
+  		dLayout.setDrawerListener(mDrawerToggle);
+  		list = new String[tags.length + 3];
+  		list[0] = "Wszystkie";
+  		list[1] = "Ulubione kategorie";
+  		list[2] = "Ulubieni u¿ytkownicy";
+  		for(int i=0; i<tags.length; i++){
+  			list[i+3] = tags[i];
+  		}
+   	// Creating an ArrayAdapter to add items to the listview mDrawerList
+  		adapter = new ArrayAdapter<String>(getBaseContext(), R.layout.drawer_list_item , list);
+  		// Setting the adapter on mDrawerList
+  		dList.setAdapter(adapter);   
+  		
+  		//dList.getSelectedItem()
+  		
+  		// Setting item click listener for the listview mDrawerList
+  		dList.setOnItemClickListener(new OnItemClickListener() {
+  			@Override
+  			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+  				linearLayout.removeAllViews();
+               dLayout.closeDrawer(mDrawerLinear);
+               switch (position) {
+               case 0:
+               	variant = 1;
+               	over = false;
+              		String sampleURL = serwer + "/news";
+              		WebServiceTask wst = new WebServiceTask(WebServiceTask.NEWS_TASK, OknoNews.this, "Loading posts...", number, token);   
+              		wst.execute(new String[] { sampleURL }); 
+               	break;
+               case 1:
+               	variant = 2;
+               	over = false;
+              		sampleURL = serwer + "/newsFavourites";
+              		wst = new WebServiceTask(WebServiceTask.NEWSFAVOURITES_TASK, OknoNews.this, "Loading posts...", number, token, favCategoryId);   
+              		wst.execute(new String[] { sampleURL }); 
+               	break;
+               case 2:
+               	variant = 3;
+               	over = false;
+              		sampleURL = serwer + "/newsFollowed";
+              		wst = new WebServiceTask(WebServiceTask.NEWSFOLLOWED_TASK, "Loading posts...", number, token, folUserName, OknoNews.this);   
+              		wst.execute(new String[] { sampleURL }); 
+               	break;
+               default:
+               	variant = 4;
+               	over = false;
+              		sampleURL = serwer + "/newsFiltered";
+              		pos = position - 3;
+              		wst = new WebServiceTask(WebServiceTask.NEWSFILTERED_TASK, OknoNews.this, "Loading posts...", number, token, tagsId[pos]);   
+              		wst.execute(new String[] { sampleURL }); 
+               	break;
+               }
+  			}
+  		});
+   }
+   	
+   	public void getScreenType()
+   	{
+   		Display display = getWindowManager().getDefaultDisplay();
+   		Point size = new Point();
+   		display.getSize(size);
+   		width = size.x;
+   		height = size.y;
+   		if( (width>1100) && (height>1500) )
+   		{
+   			screenTest=1;
+   		}
+   	}
+   	
+   public void getExtras()
+   {
+	   Bundle b = getIntent().getExtras();
+  		if(b!=null) {
+  			token = b.getString("token");
+  			role = b.getString("role");
+  			tagsId = b.getStringArray("tagsId");
+  			tags = b.getStringArray("tags");
+  			faculties = b.getStringArray("faculties");
+  			coords = b.getStringArray("coords");
+  		}
+   }
+   	
    	/** Handling the touch event of app icon */
    	@Override
    	public boolean onOptionsItemSelected(MenuItem item) {
@@ -245,6 +254,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
 	    	intentmapa.putExtra("repUserId", repUserId);
 	    	intentmapa.putExtra("folUserName", folUserName);
 	    	intentmapa.putExtra("myLogin", myLogin);
+	    	intentmapa.putExtra("screenTest", screenTest);
    			startActivity(intentmapa);  
    			return true;
    		case R.id.news:
@@ -257,6 +267,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
    			return true;
    		case R.id.konto:
    			Intent intentkonto = new Intent(getApplicationContext(), OknoKonto.class);
+   			intentkonto.putExtra("screenTest",screenTest);
    			intentkonto.putExtra("token", token);
    			intentkonto.putExtra("faculties", faculties);
 	    	intentkonto.putExtra("coords", coords);
@@ -282,6 +293,8 @@ public class OknoNews extends Activity implements ScrollViewListener {
       	boolean drawerOpen = dLayout.isDrawerOpen(mDrawerLinear);
       	return super.onPrepareOptionsMenu(menu);
   	}*/
+   	
+   	
   
    	@Override
    	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -355,7 +368,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
    					addTime = jso.getString("addTime");
    					place = jso.getString("place");
    					eventTime = jso.getString("eventTime");
-   					newpost = new postElement(token, postId, userLogin, content, photo, categoryId, addTime, place, eventTime, faculties, coords, "News", repPostId, repUserId, folUserName, myLogin);
+   					newpost = new postElement(token, postId, userLogin, content, photo, categoryId, addTime, place, eventTime, faculties, coords, "News", repPostId, repUserId, folUserName, myLogin,screenTest);
    					ft = getFragmentManager().beginTransaction();
    					ft.add(R.id.content, newpost, "f1");
    					ft.commit();

@@ -53,14 +53,14 @@ public class OknoRejestracja extends Activity {
     /**
      * metoda pobieraj¹ca dane do rejestracji z pól, sprawdzaj¹ca poprawnoœæ tych danych i wywo³uj¹ca klasê odpowiadaj¹c¹ za wys³anie tych danych do web serwisu.
      */
-    public void rejestruj(View vw) {
+    public void register(View vw) {
     	String sampleURL = serwer + "/register";
     	
     	login = elogin.getText().toString();
     	password = epassword.getText().toString();
     	repassword = erepassword.getText().toString();
     	email = eemail.getText().toString();
-    	Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.gaz3min); 
+    	Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.userdefault); 
     	userPhoto = encodeTobase64(bmp);
     	
     	elogin.setText("");

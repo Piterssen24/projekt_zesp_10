@@ -28,10 +28,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -43,8 +45,10 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ExpandableListView;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
@@ -52,9 +56,6 @@ import android.widget.LinearLayout.LayoutParams;
 public class OknoKonto extends Activity {
 	
 	ImageView yourPicture;
-	ExpandableListAdapter listAdapter;
-    ExpandableListView expListView;
-    ExpandableListView expListView2;
     ArrayList<String> listDataHeader;
     ArrayList<String> listDataHeaderCheck;
     HashMap<String, List<String>> listDataChild;
@@ -74,7 +75,7 @@ public class OknoKonto extends Activity {
 	public static String[] faculties, coords, favUserId, favCategoryId, tags, tagsId, folUserName;
 	Context context;
 	public String photou;
-	public int itemId;
+	public int itemId, screenTest;
 	Bitmap userPhoto;
 	
     @Override
@@ -84,20 +85,7 @@ public class OknoKonto extends Activity {
         context = getApplicationContext();
         serwer = getResources().getString(R.string.server);
         
-        Bundle b = getIntent().getExtras();
-   		if(b!=null) {
-   			token = b.getString("token");
-   			faculties = b.getStringArray("faculties");
-   			coords = b.getStringArray("coords");
-   			tags = b.getStringArray("tags");
-   			tagsId = b.getStringArray("tagsId");
-   			favUserId = b.getStringArray("favUserId");
-   			favCategoryId = b.getStringArray("favCategoryId");
-   			repPostId = b.getIntArray("repPostId");
-   			repUserId = b.getIntArray("repUserId");
-   			folUserName = b.getStringArray("folUserName");
-   			myLogin = b.getString("myLogin");
-   		}
+        getExtras();
         
         ActionBar bar = getActionBar();
         bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#009900")));
@@ -106,105 +94,53 @@ public class OknoKonto extends Activity {
         tv = (TextView) findViewById(R.id.textViewUserName);
         yourPicture = (ImageView) findViewById(R.id.userPhoto);
         LayoutParams params = (LayoutParams) yourPicture.getLayoutParams();
-        params.width = 120;
-        params.height = 200;
+        if(screenTest==0)
+        {
+        	params.width = 130;
+            params.height = 130;
+        }
+        else
+        {
+        	params.width = 400;
+            params.height = 400;
+        }
+        
+        yourPicture.setLayoutParams(params);
+        yourPicture.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub				
+				pictureFullScreen();			
+			}
+		});
+        
         logOut = (Button) findViewById(R.id.buttonLogOut);
         logOut.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(OknoKonto.this); //Get the preferences
-		        Editor edit = prefs.edit(); //Needed to edit the preferences
-		        edit.putString("name", "");  //add a String
-		        edit.putString("passwd", "");
-		        edit.putBoolean("rememberCredentials", true); //add a boolean
-		        edit.commit();  // save the edits. 
-		        String sampleURL = serwer + "/logout";
-		        WebServiceTask wst = new WebServiceTask(WebServiceTask.LOGOUT_TASK, OknoKonto.this, "Logging out...", myLogin);   
-		        wst.execute(new String[] { sampleURL });  
-				/*Intent intent = new Intent(getApplicationContext(), OknoGlowne.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
-	        	startActivity(intent);*/
-				
+				logOut();				
 			}
 		});
+        
         editAccount = (Button) findViewById(R.id.buttonEdit);
         editAccount.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent intent = new Intent(getApplicationContext(), OknoEdytujProfil.class);
-				intent.putExtra("photou", photou);
-				intent.putExtra("favUserId", favUserId);
-				intent.putExtra("favCategoryId", favCategoryId);
-				intent.putExtra("tags", tags);
-				intent.putExtra("token", token);
-				intent.putExtra("tagsId", tagsId);
-            	startActivity(intent);
-				
+				intentEditProfile();				
 			}
 		});
-        // existing height is ok as is, no need to edit it
-        //yourPicture.setLayoutParams(params);       
-/*
-        expListView = (ExpandableListView) findViewById(R.id.expandableList); 
-        // preparing list data
-        // Adding child data
-        listDataHeader = new ArrayList<String>();
-        listDataHeader.add("Typy news'ów");
-        listDataHeader.add("Obserwowani dziennikarze");
-        listDataHeader.add("Obserwujący użytkownicy");
- 
-        // Adding child data
-        List<String> typy = new ArrayList<String>();
-        typy.add("Sport");
-        typy.add("Kultura");
-        typy.add("Utrudnienia na drodze");
-        typy.add("Polityczne");
-        typy.add("Charytatywne");
-        typy.add("Imprezy");
-        typy.add("12 Angry Men");
- 
-        List<String> obserwowani = new ArrayList<String>();
-        obserwowani.add("The Conjuring");
-        obserwowani.add("Despicable Me 2");
-        obserwowani.add("Turbo");
-        obserwowani.add("Grown Ups 2");
-        obserwowani.add("Red 2");
-        obserwowani.add("The Wolverine");
- 
-        List<String> obserwujacy = new ArrayList<String>();
-        obserwujacy.add("2 Guns");
-        obserwujacy.add("The Smurfs 2");
-        obserwujacy.add("The Spectacular Now");
-        obserwujacy.add("The Canyons");
-        obserwujacy.add("Europa Report");
- 
-        listDataChild = new HashMap<String, List<String>>();
-        listDataChild.put(listDataHeader.get(0), typy); // Header, Child data
-        listDataChild.put(listDataHeader.get(1), obserwowani);
-        listDataChild.put(listDataHeader.get(2), obserwujacy);
- 
-        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
- 
-        // setting list adapter
-        expListView.setAdapter(listAdapter);
-     
-        //endofexpandablelist*/
-        
-        yourPicture.setLayoutParams(params);
-        
+       
         list1 = (TextView) findViewById(R.id.popup1);
         list2 = (TextView) findViewById(R.id.popup2);
         
-        //dodanie do tekstu liczbu wybranych tag�w i ulubionych u�ytkownik�w - zsumowa� z bazy
         String s11,s22;
         s1=list1.getText().toString();
         int liczbatagow=favCategoryId.length, liczbaulubionych=folUserName.length;
-        //int liczbatagow=5, liczbaulubionych=6;
         s11 = s1 + " ("+liczbatagow+")";
         list1.setText(s11);
         
@@ -217,23 +153,7 @@ public class OknoKonto extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				menu1 = new PopupMenu(OknoKonto.this, v);
-				//dodanie kolejnych nazw tag�w
-				for(int i=0; i<favCategoryId.length;i++){
-					for(int j=0; j<tags.length; j++){
-						if(favCategoryId[i].equals(tagsId[j])){
-							menu1.getMenu().add(tags[j].toString());
-						}
-					}
-				}
-			/*	//dodanie kolejnych nazw tagów
-				menu1.getMenu().add("sport");
-				menu1.getMenu().add("konkurs");
-				menu1.getMenu().add("impreza");
-				menu1.getMenu().add("koncert");
-				menu1.getMenu().add("wykład");*/
-				menu1.show();
-				
+				getFavTags(v);			
 			}
 		});
         
@@ -242,35 +162,7 @@ public class OknoKonto extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				menu2 = new PopupMenu(OknoKonto.this, v);
-				for(int i=0; i<folUserName.length;i++){
-					menu2.getMenu().add(0,i,0,folUserName[i] + "     usuń");
-				}
-				//dodanie kolejnych nazw u�ytkownik�w
-				/*menu2.getMenu().add(0,0,0,"Julka                     usuń");
-				menu2.getMenu().add(0,1,0,"Dominika              usuń");
-				menu2.getMenu().add(0,2,0,"Sebastian             usuń");
-				menu2.getMenu().add(0,3,0,"Piotr                      usuń");
-				menu2.getMenu().add(0,4,0,"Bartek                   usuń");
-				menu2.getMenu().add(0,5,0,"Lamia                 usuń");
-				menu2.getMenu().add(0,6,0,"Julka                 usuń");
-				menu2.getMenu().add(0,7,0,"Dominika              usuń");
-				menu2.getMenu().add(0,8,0,"Sebastian             usuń");
-				menu2.getMenu().add(0,9,0,"Piotr                 usuń");
-				menu2.getMenu().add(0,10,0,"Bartek                usuń");
-				menu2.getMenu().add(0,11,0,"Lamia                 usuń");*/
-				menu2.show();
-				menu2.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {  
-		             public boolean onMenuItemClick(MenuItem item) { 
-		            	 itemId = item.getItemId();
-		            	 System.out.println("item: " + itemId);
-		            	 String sampleURL = serwer + "/stopFollow";
-				        WebServiceTask wst = new WebServiceTask(WebServiceTask.STOPFOLLOW_TASK, "Trwa usuwanie użytkownika z listy ulubionych użytkowników...", folUserName[item.getItemId()], token, OknoKonto.this);   
-				        wst.execute(new String[] { sampleURL });
-		            //  Toast.makeText(OknoKonto.this,"Usunięto : " + item.getItemId(),Toast.LENGTH_SHORT).show(); 
-		              return true;  
-		             }  
-		            });  
+				favUsers(v);
 				
 			}
 		});
@@ -279,13 +171,15 @@ public class OknoKonto extends Activity {
    		WebServiceTask wst = new WebServiceTask(WebServiceTask.ACCOUNT_TASK, this, token);   
    		wst.execute(new String[] { sampleURL }); 
     }  
-        
+      
+    
+    
     /**
      * metoda przyjmuje jako parametr string, który zawiera odpowiedź od serwera
      * i tworzy z niego obiekt JSON, który następnie jest parsowany. Tworzy obiekty postElement,
      * które są wyswietlane na stronie z newsami.
      */
-    public void handleResponse(String response) { 
+public void handleResponse(String response) { 
     	try {
    			FragmentTransaction ft = null;
    			JSONArray jsonarray = new JSONArray(response);
@@ -310,7 +204,7 @@ public class OknoKonto extends Activity {
    					addTime = jso.getString("addTime");
    					place = jso.getString("place");
    					eventTime = jso.getString("eventTime");
-   					newpost = new postElement(token, postId, login, content, photo, categoryId, addTime, place, eventTime, faculties, coords, "Konto", repPostId, repUserId, folUserName, myLogin);
+   					newpost = new postElement(token, postId, login, content, photo, categoryId, addTime, place, eventTime, faculties, coords, "Konto", repPostId, repUserId, folUserName, myLogin, screenTest);
    					ft = getFragmentManager().beginTransaction();
    					ft.add(R.id.content, newpost, "f1");
    					ft.commit();
@@ -321,7 +215,7 @@ public class OknoKonto extends Activity {
    		}
     }
     
-    public void handleResponseLOGOUT(String response){
+public void handleResponseLOGOUT(String response){
     	if(response.equals("TRUE")){
     		Intent intent = new Intent(getApplicationContext(), OknoGlowne.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -332,7 +226,7 @@ public class OknoKonto extends Activity {
     	}
     }
     
-    public void handleResponseSTOPFOLLOW(String response){
+public void handleResponseSTOPFOLLOW(String response){
     	if(response.equals("OK")){
     		String s22;
     		int followcount = folUserName.length-1;
@@ -356,15 +250,136 @@ public class OknoKonto extends Activity {
     	}
     }
     
+public Bitmap pictureClickZoom()
+    {
+    	Bitmap bmp;
+    	if(screenTest==1)
+		  {
+		  bmp = Bitmap.createScaledBitmap(userPhoto, userPhoto.getWidth()*3, userPhoto.getHeight()*3, true);
+		  }
+		  else
+		  {
+			bmp = Bitmap.createScaledBitmap(userPhoto, userPhoto.getWidth(), userPhoto.getHeight(), true); 
+		  }
+		    
+		    return bmp;
+    }
+    
+public void getExtras()
+    {
+    	Bundle b = getIntent().getExtras();
+   		if(b!=null) {
+   			token = b.getString("token");
+   			faculties = b.getStringArray("faculties");
+   			coords = b.getStringArray("coords");
+   			tags = b.getStringArray("tags");
+   			tagsId = b.getStringArray("tagsId");
+   			favUserId = b.getStringArray("favUserId");
+   			favCategoryId = b.getStringArray("favCategoryId");
+   			repPostId = b.getIntArray("repPostId");
+   			repUserId = b.getIntArray("repUserId");
+   			folUserName = b.getStringArray("folUserName");
+   			myLogin = b.getString("myLogin");
+   			screenTest = b.getInt("screenTest");
+   		}
+    }
+    
+public void intentEditProfile()
+    {
+    	Intent intent = new Intent(getApplicationContext(), OknoEdytujProfil.class);
+		//intent.putExtra("photou", photou);
+		Global.img = userPhoto;
+		intent.putExtra("faculties", faculties);
+		intent.putExtra("coords",coords);
+		intent.putExtra("repPostId",repPostId);
+		intent.putExtra("repUserId",repUserId);
+		intent.putExtra("folUserName",folUserName);
+		intent.putExtra("myLogin",myLogin);
+		intent.putExtra("favUserId", favUserId);
+		intent.putExtra("favCategoryId", favCategoryId);
+		intent.putExtra("tags", tags);
+		intent.putExtra("token", token);
+		intent.putExtra("tagsId", tagsId);
+		intent.putExtra("screenTest", screenTest);
+    	startActivity(intent);
+    }
+    
+public void logOut()
+    {
+    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(OknoKonto.this); //Get the preferences
+        Editor edit = prefs.edit(); //Needed to edit the preferences
+        edit.putString("name", "");  //add a String
+        edit.putString("passwd", "");
+        edit.putBoolean("rememberCredentials", true); //add a boolean
+        edit.commit();  // save the edits. 
+        String sampleURL = serwer + "/logout";
+        WebServiceTask wst = new WebServiceTask(WebServiceTask.LOGOUT_TASK, OknoKonto.this, "Logging out...", myLogin);   
+        wst.execute(new String[] { sampleURL }); 
+    }
+    
+public void pictureFullScreen()
+    {
+    	Dialog builder = new Dialog(OknoKonto.this);
+		    builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		    builder.getWindow().setBackgroundDrawable(
+		        new ColorDrawable(android.graphics.Color.TRANSPARENT));
+		    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+		        @Override
+		        public void onDismiss(DialogInterface dialogInterface) {
+		            //nothing;
+		        }
+		    });
+		    
+		  ImageView imageView = new ImageView(OknoKonto.this);  			  
+	  imageView.setImageBitmap(pictureClickZoom()); 
+	    
+	  builder.addContentView(imageView, new RelativeLayout.LayoutParams(
+	            ViewGroup.LayoutParams.MATCH_PARENT, 
+	            ViewGroup.LayoutParams.MATCH_PARENT));
+	    builder.show();
+    }
+    
+public void getFavTags(View v)
+    {
+    	menu1 = new PopupMenu(OknoKonto.this, v);
+		for(int i=0; i<favCategoryId.length;i++){
+			for(int j=0; j<tags.length; j++){
+				if(favCategoryId[i].equals(tagsId[j])){
+					menu1.getMenu().add(tags[j].toString());
+				}
+			}
+		}
+		menu1.show();
+    }
+    
+public void favUsers(View v)
+    {
+    	menu2 = new PopupMenu(OknoKonto.this, v);
+		for(int i=0; i<folUserName.length;i++){
+			menu2.getMenu().add(0,i,0,folUserName[i] + "     usuń");
+		}
+		menu2.show();
+		menu2.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {  
+             public boolean onMenuItemClick(MenuItem item) { 
+            	 itemId = item.getItemId();
+            	 System.out.println("item: " + itemId);
+            	 String sampleURL = serwer + "/stopFollow";
+		        WebServiceTask wst = new WebServiceTask(WebServiceTask.STOPFOLLOW_TASK, "Trwa usuwanie użytkownika z listy ulubionych użytkowników...", folUserName[item.getItemId()], token, OknoKonto.this);   
+		        wst.execute(new String[] { sampleURL });
+            //  Toast.makeText(OknoKonto.this,"Usunięto : " + item.getItemId(),Toast.LENGTH_SHORT).show(); 
+              return true;  
+             }  
+            });  
+    }
     
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
     
-    public boolean onOptionsItemSelected(MenuItem item) {
+public boolean onOptionsItemSelected(MenuItem item) {
         
         switch (item.getItemId()) {
         case R.id.home:
@@ -389,17 +404,27 @@ public class OknoKonto extends Activity {
             return super.onOptionsItemSelected(item);
     }
     }   
-    //explist    
-    //enxplist           
+  
+    /**
+     * metoda konwertująca String na obiekt bitmap (zdjęcie).
+     */
+public static Bitmap decodeBase64(String input) 
+    {
+        byte[] decodedByte;
+        decodedByte = Base64.decode(input, Base64.URL_SAFE);
+        Bitmap b = BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
+        decodedByte = null;
+        return b;
+    }
 
-  /*  @Override
-    public void onBackPressed()
+    @Override
+public void onBackPressed()
     {
         super.onBackPressed(); 
         startActivity(new Intent(OknoKonto.this, OknoNews.class));
         finish();
-
-    }*/
+    }
+    
     
     /**
      * klasa wewnętrzna, która wykonuje asynchroniczne działanie w tle.
@@ -610,24 +635,6 @@ private class WebServiceTask extends AsyncTask<String, Integer, String> {
     }
 }
 
-/**
- * metoda konwertująca String na obiekt bitmap (zdjęcie).
- */
-public static Bitmap decodeBase64(String input) 
-{
-    byte[] decodedByte;
-    decodedByte = Base64.decode(input, Base64.URL_SAFE);
-    Bitmap b = BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
-    decodedByte = null;
-    return b;
-}
 
-@Override
-public void onBackPressed()
-{
-    super.onBackPressed(); 
-    startActivity(new Intent(OknoKonto.this, OknoNews.class));
-    finish();
-}
 
 }

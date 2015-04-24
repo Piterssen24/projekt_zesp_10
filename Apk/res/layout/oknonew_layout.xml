@@ -11,65 +11,70 @@
     android:layout_height="wrap_content" >
 
 <LinearLayout
-    android:layout_width="321dp"
-    android:layout_height="match_parent"
     android:id="@+id/newpostlayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical" >
-        
+
     <ImageView
         android:id="@+id/imageViewPostPhoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="10dp" />
-    
-    <LinearLayout 
-        android:id="@+id/options"
-        android:layout_width="match_parent"
-    	android:layout_height="wrap_content"
-    	android:layout_marginTop="10dp" 
-    	android:layout_gravity="center"
-    	android:orientation="horizontal" >
-    
-        <TextView
+
+    <TextView
         android:id="@+id/textViewGps"
+        android:layout_marginTop="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_gravity="left" 
-        /> 
-        
-        <Button
-            android:id="@+id/locationChange"
-            android:layout_width="120dp"
-            android:layout_height="60dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:scrollHorizontally="true"
-            android:layout_gravity="right"
-            android:text="@string/stringChangeLocation" />
-        
-        <Spinner
-    		android:id="@+id/listOfLocations"
-    		android:layout_width="200dp"
-    		android:layout_height="40dp"
-    		 />
-        
-        </LinearLayout>
-        
-    <Spinner
-    		android:id="@+id/listOfCategories"
-    		android:layout_width="match_parent"
-    		android:layout_height="40dp"
-    		android:layout_gravity="center"
-    		 />
+        android:layout_marginLeft="10dp" />
 
-    <LinearLayout 
+     <LinearLayout
+        android:id="@+id/changeOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+    
+    <Button
+        android:id="@+id/locationChange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scrollHorizontally="true"
+        android:layout_marginLeft="10dp"
+        android:textSize="12sp"
+        android:text="@string/stringChangeLocation" />
+    
+    <Button
+        android:id="@+id/locationChange3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scrollHorizontally="true"
+        android:textSize="12sp"
+        android:text="@string/stringChangeLocation2">
+    </Button>
+    </LinearLayout>
+
+    <Spinner
+        android:id="@+id/listOfLocations"
+        android:layout_width="200dp"
+        android:layout_gravity="center"
+        android:layout_height="40dp" />
+
+    
+    
+    <Spinner
+        android:id="@+id/listOfCategories"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="center" />
+
+    <LinearLayout
         android:id="@+id/dateOptions"
         android:layout_width="match_parent"
-    	android:layout_height="wrap_content"
-    	android:orientation="horizontal">
-        
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
         <TextView
             android:id="@+id/textViewDate"
             android:layout_width="wrap_content"
@@ -77,27 +82,25 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
             android:text="@string/stringEventDate" />
-        
+
         <TextView
             android:id="@+id/editTextDate"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
-            android:textSize="17sp"
+            android:layout_marginTop="10dp"
             android:layout_weight="1"
-            
-            android:ems="10"/>
-        
+            android:ems="10"
+            android:textSize="17sp" />
+
         <Button
             android:id="@+id/buttonDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/icon_calendar" 
-            android:layout_marginRight="10dp"/>
-        
+            android:layout_marginRight="10dp"
+            android:text="@string/icon_calendar" />
     </LinearLayout>
-    
+
     <TextView
         android:id="@+id/textViewCounter"
         android:layout_width="wrap_content"
@@ -110,13 +113,12 @@
         android:id="@+id/editTextPostContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="0dp"
         android:ems="10"
-        android:maxLength="140"
-        android:layout_gravity="center"
-        android:inputType="textMultiLine" >
-
-        <requestFocus />
+        android:hint="Wprowadź treść posta"
+        android:inputType="textMultiLine"
+        android:maxLength="140" >
     </EditText>
 
     <Button
@@ -125,10 +127,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:text="@string/stringbuttondodaj"
-        android:onClick="addNewPost" />
-
-    </LinearLayout>
+        android:onClick="addNewPost"
+        android:text="@string/stringbuttondodaj" />
+</LinearLayout>
 
 </ScrollView>
     

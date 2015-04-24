@@ -25,16 +25,19 @@ import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Base64;
 import android.util.Log;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -45,16 +48,16 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
-public class OknoMapa extends FragmentActivity {
+public class OknoMapa extends FragmentActivity{
 
-	LatLng yourLocation, markerLocation;
+	public LatLng yourLocation, markerLocation;
 	private GoogleMap googleMap;
-	LocationManager locManager;
+	public LocationManager locManager;
 	public String serwer = "";
 	public String token, myLogin;
 	private static final String TAG = "OknoMapa";
 	public static int[] repPostId, repUserId;
-	public String[] postId;
+	public int[] postId;
     public String[] userLogin;
     public String[] content, postText;
     public String[] photo;
@@ -70,13 +73,31 @@ public class OknoMapa extends FragmentActivity {
     public boolean test = false, listTest=false, backTest=false;
     public float zoomTest;
     public int test2=0;
+    public Location mLastLocation;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.oknomapa_layout);
         serwer = getResources().getString(R.string.server);
-        Bundle b = getIntent().getExtras();
+        
+        getExtras();
+   		
+   		list = new ArrayList<LatLng>();
+   		listPoint = new ArrayList<LatLng>();
+   		markerList = new ArrayList<Marker>();
+   		markerYellow = new ArrayList<Marker>();
+   		
+   		loadPosts();
+        
+        loadMap();
+       
+    }  
+
+	
+	public void getExtras()
+	{
+		Bundle b = getIntent().getExtras();
         if(b != null){
         	token = b.getString("token");
         	faculties = b.getStringArray("faculties");
@@ -86,61 +107,166 @@ public class OknoMapa extends FragmentActivity {
    			folUserName = b.getStringArray("folUserName");
    			myLogin = b.getString("myLogin");
         }
-        String sampleURL = serwer + "/map";
+	}
+	
+	public void loadPosts()
+	{
+		String sampleURL = serwer + "/map";
    		WebServiceTask wst = new WebServiceTask(WebServiceTask.MAP_TASK, this, "Loading posts on map...", token);   
    		wst.execute(new String[] { sampleURL }); 
-   		
-   		list = new ArrayList<LatLng>();
-   		listPoint = new ArrayList<LatLng>();
-   		markerList = new ArrayList<Marker>();
-   		markerYellow = new ArrayList<Marker>();
-        
-        try { 
+	}
+	
+	public void getLastKnowLocation(LocationManager locManager)
+	{
+		Location fastLocation = locManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+		Location fastLocation2 = locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		if(fastLocation!=null)
+		{
+			googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(fastLocation.getLatitude(),fastLocation.getLongitude())));
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+            
+		}
+		if(fastLocation2!=null)
+		{
+			googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(fastLocation2.getLatitude(),fastLocation2.getLongitude())));
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+            
+		}
+		 
+	}
+	
+	public void getLocation()
+	{
+		 final LocationListener myLocationListener = new LocationListener(){   		       
+ 	        @Override
+ 	        public void onProviderDisabled(String provider){
+ 	        }
+
+ 	        @Override
+ 	        public void onProviderEnabled(String provider){ 
+ 	        }
+
+ 			@Override
+ 			public void onLocationChanged(Location loc) {
+ 				// TODO Auto-generated method stub
+ 				Log.d("tag", "Finding Latitude");
+ 	            double lat = loc.getLatitude();
+ 	            Log.d("tag", "Lat: "+String.valueOf(lat));
+ 	            Log.d("tag", "Finding Longitude");
+ 	            double lon = loc.getLongitude();
+ 	            Log.d("tag", "Lon: "+String.valueOf(lon));
+ 	            yourLocation = new LatLng(lat, lon);
+ 	            googleMap.moveCamera(CameraUpdateFactory.newLatLng(yourLocation));
+ 	            googleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+ 	            googleMap.addMarker(new MarkerOptions().position(yourLocation).title("Tu jesteœ"));
+ 	            locManager.removeUpdates(this); 
+ 	            
+ 			}
+
+ 			@Override
+ 			public void onStatusChanged(String provider, int status, Bundle extras) {
+ 				// TODO Auto-generated method stub   				
+ 			}   			
+ 		};
+ 	    
+ 		locManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+ 		boolean isGPSEnabled = locManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+ 		if(isGPSEnabled)
+ 		{
+ 			getLastKnowLocation(locManager);
+ 			locManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 5000, 10, myLocationListener);    		
+ 		}
+ 		else 
+ 			{
+ 			getLastKnowLocation(locManager);
+ 			locManager.requestLocationUpdates( LocationManager.NETWORK_PROVIDER, 5000, 10, myLocationListener);
+ 			}
+ 		
+	}
+	
+	public void openPost(int i)
+	{
+		Intent intent = new Intent(OknoMapa.this, OknoPost.class);
+		intent.putExtra("postId", postId[i]);
+    	intent.putExtra("postText",postText[i]);
+    	Global.img = decodeBase64(photo[i]);
+    	//intent.putExtra("photo", photo[i]);
+    	intent.putExtra("userLogin", userLogin[i]);
+    	intent.putExtra("place", place[i]);
+    	intent.putExtra("eventTime", eventTime[i]);
+    	intent.putExtra("faculties", faculties);
+    	intent.putExtra("coords", coords);
+    	intent.putExtra("token", token);
+    	intent.putExtra("repPostId", repPostId);
+    	intent.putExtra("repUserId", repUserId);
+    	intent.putExtra("folUserName", folUserName);
+    	intent.putExtra("myLogin", myLogin);
+    	startActivity(intent);
+	}
+	
+	public void openGroupPost(Marker marker)
+	{
+		if(marker.getTitle()!="Tu jesteœ")
+		{
+		for(int j=0;j<listPoint.size();j++)
+    	{
+    		if((marker.getPosition().latitude==listPoint.get(j).latitude) && (marker.getPosition().longitude==listPoint.get(j).longitude))
+    		{
+    			LatLng newPosition = new LatLng(listPoint.get(j).latitude,listPoint.get(j).longitude);
+    			LatLng northeast = new LatLng(listPoint.get(j).latitude-0.001,listPoint.get(j).longitude-0.001);
+    			LatLng southwest = new LatLng(listPoint.get(j).latitude+0.001,listPoint.get(j).longitude+0.001);
+    			LatLngBounds bounds = new LatLngBounds(northeast,southwest);
+    			googleMap.moveCamera(CameraUpdateFactory.newLatLng(newPosition));
+    			googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+    			marker.setVisible(false);
+    			zoomTest = googleMap.getCameraPosition().zoom;
+    			for(int k=0;k<markerList.size();k++)
+       			{
+    				if((markerList.get(k).getPosition().latitude - listPoint.get(j).latitude < 0.0005)
+       						&& (markerList.get(k).getPosition().latitude - listPoint.get(j).latitude > -0.0005)
+       					&&(markerList.get(k).getPosition().longitude - listPoint.get(j).longitude < 0.0005)
+       					&& (markerList.get(k).getPosition().longitude - listPoint.get(j).longitude < 0.0005))
+       				{
+       					markerList.get(k).setVisible(true);
+       					test2=0;
+       				}
+       			}
+    		}
+    		test=true;
+    	}
+	}
+	}
+	
+	 public static Bitmap decodeBase64(String input) 
+	    {
+	        byte[] decodedByte = Base64.decode(input, Base64.URL_SAFE);
+	        return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
+	    }
+	
+	public void markerClicked(Marker marker)
+	{
+		for(int i=0; i<content.length; i++){
+        	if(marker.getTitle().equals(content[i])) // if marker source is clicked
+            { 
+        		openPost(i);
+            }
+        	else
+        	{
+        		openGroupPost(marker);
+        	}
+        	}
+	}
+	
+	public void loadMap()
+	{
+		try { 
             if (googleMap == null) {
                googleMap = ((MapFragment) getFragmentManager().
-               findFragmentById(R.id.map)).getMap();
+               findFragmentById(R.id.map)).getMap();               
             }
 
-            final LocationListener myLocationListener = new LocationListener(){   		       
-    	        @Override
-    	        public void onProviderDisabled(String provider){
-    	        }
-
-    	        @Override
-    	        public void onProviderEnabled(String provider){           
-    	        }
-
-    			@Override
-    			public void onLocationChanged(Location loc) {
-    				// TODO Auto-generated method stub
-    				Log.d("tag", "Finding Latitude");
-    	            double lat = loc.getLatitude();
-    	            Log.d("tag", "Lat: "+String.valueOf(lat));
-    	            Log.d("tag", "Finding Longitude");
-    	            double lon = loc.getLongitude();
-    	            Log.d("tag", "Lon: "+String.valueOf(lon));
-    	            yourLocation = new LatLng(lat, lon);
-    	            googleMap.moveCamera(CameraUpdateFactory.newLatLng(yourLocation));
-    	            googleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
-    	            googleMap.addMarker(new MarkerOptions().position(yourLocation).title("Tu jesteœ"));
-    	            locManager.removeUpdates(this); 
-    	            
-    			}
-
-    			@Override
-    			public void onStatusChanged(String provider, int status, Bundle extras) {
-    				// TODO Auto-generated method stub   				
-    			}   			
-    		};
-    	    
-    		locManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-    		boolean isGPSEnabled = locManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-    		if(isGPSEnabled)
-    		{
-    			locManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 0, 0, myLocationListener);
-    		}
-    		else locManager.requestLocationUpdates( LocationManager.NETWORK_PROVIDER, 0, 0, myLocationListener);    		  
-    		
+           getLocation();
+            
     		googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
     		
     		googleMap.setInfoWindowAdapter(new InfoWindowAdapter() {
@@ -152,7 +278,7 @@ public class OknoMapa extends FragmentActivity {
 	            }
 
 	            // Defines the contents of the InfoWindow
-	            @Override
+	            @SuppressLint("InflateParams") @Override
 	            public View getInfoContents(Marker args) {
 
 	                // Getting view from the layout file info_window_layout
@@ -163,59 +289,7 @@ public class OknoMapa extends FragmentActivity {
 	                googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {          
                     public void onInfoWindowClick(Marker marker) 
                     {
-                    	for(int i=0; i<content.length; i++){
-                    	if(marker.getTitle().equals(content[i])) // if marker source is clicked
-                        { 
-						Intent intent = new Intent(OknoMapa.this, OknoPost.class);
-						intent.putExtra("postId", postId[i]);
-            	    	intent.putExtra("postText",postText[i]);
-            	    	intent.putExtra("photo", photo[i]);
-            	    	intent.putExtra("userLogin", userLogin[i]);
-            	    	intent.putExtra("place", place[i]);
-            	    	intent.putExtra("eventTime", eventTime[i]);
-            	    	intent.putExtra("faculties", faculties);
-            	    	intent.putExtra("coords", coords);
-            	    	intent.putExtra("token", token);
-            	    	intent.putExtra("repPostId", repPostId);
-            	    	intent.putExtra("repUserId", repUserId);
-            	    	intent.putExtra("folUserName", folUserName);
-            	    	intent.putExtra("myLogin", myLogin);
-            	    	startActivity(intent);
-                        }
-                    	else
-                    	{
-                    		if(marker.getTitle()!="Tu jesteœ")
-                    		{
-                    		for(int j=0;j<listPoint.size();j++)
-                        	{
-                        		if((marker.getPosition().latitude==listPoint.get(j).latitude) && (marker.getPosition().longitude==listPoint.get(j).longitude))
-                        		{
-                        			LatLng newPosition = new LatLng(listPoint.get(j).latitude,listPoint.get(j).longitude);
-                        			LatLng northeast = new LatLng(listPoint.get(j).latitude-0.001,listPoint.get(j).longitude-0.001);
-                        			LatLng southwest = new LatLng(listPoint.get(j).latitude+0.001,listPoint.get(j).longitude+0.001);
-                        			LatLngBounds bounds = new LatLngBounds(northeast,southwest);
-                        			googleMap.moveCamera(CameraUpdateFactory.newLatLng(newPosition));
-                        			googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
-                        			marker.setVisible(false);
-                        			zoomTest = googleMap.getCameraPosition().zoom;
-                        			for(int k=0;k<markerList.size();k++)
-                           			{
-                        				if((markerList.get(k).getPosition().latitude - listPoint.get(j).latitude < 0.001)
-                           						&& (markerList.get(k).getPosition().latitude - listPoint.get(j).latitude > -0.001)
-                           					&&(markerList.get(k).getPosition().longitude - listPoint.get(j).longitude < 0.001)
-                           					&& (markerList.get(k).getPosition().longitude - listPoint.get(j).longitude < 0.001))
-                           				{
-                           					markerList.get(k).setVisible(true);
-                           					test2=0;
-                           				}
-                           			}
-                        		}
-                        		test=true;
-                        	}
-                    	}
-                    	}
-                    	}
-                    
+                    	markerClicked(marker);                    
                     }
                 });
 
@@ -230,8 +304,7 @@ public class OknoMapa extends FragmentActivity {
         } catch (Exception e) {
          e.printStackTrace();
       }
-       
-    }  
+	}
 	
 	public OnCameraChangeListener getCameraChangeListener()
 	{
@@ -245,14 +318,14 @@ public class OknoMapa extends FragmentActivity {
 				{
 					for(int i=0; i<markerYellow.size();i++)
 					{
-						if((markerYellow.get(i).getPosition().latitude<arg0.target.latitude+0.001) && ((markerYellow.get(i).getPosition().longitude<arg0.target.longitude+0.001)))
+						if((markerYellow.get(i).getPosition().latitude<arg0.target.latitude+0.0005) && ((markerYellow.get(i).getPosition().longitude<arg0.target.longitude+0.0005)))
 						{
 							for(int k=0;k<markerList.size();k++)
                    			{
-                				if((markerList.get(k).getPosition().latitude - markerYellow.get(i).getPosition().latitude < 0.001)
-                   						&& (markerList.get(k).getPosition().latitude - markerYellow.get(i).getPosition().latitude > -0.001)
-                   					&&(markerList.get(k).getPosition().longitude - markerYellow.get(i).getPosition().longitude < 0.001)
-                   					&& (markerList.get(k).getPosition().longitude - markerYellow.get(i).getPosition().longitude < 0.001))
+                				if((markerList.get(k).getPosition().latitude - markerYellow.get(i).getPosition().latitude < 0.0005)
+                   						&& (markerList.get(k).getPosition().latitude - markerYellow.get(i).getPosition().latitude > -0.0005)
+                   					&&(markerList.get(k).getPosition().longitude - markerYellow.get(i).getPosition().longitude < 0.0005)
+                   					&& (markerList.get(k).getPosition().longitude - markerYellow.get(i).getPosition().longitude < 0.0005))
                    				{
                    					markerList.get(k).setVisible(false);
                    					markerYellow.get(i).setVisible(true);
@@ -287,7 +360,7 @@ public class OknoMapa extends FragmentActivity {
 	public void handleResponse(String resp) {   
    		try {
    			JSONArray jsonarray = new JSONArray(resp);
-   				postId = new String[jsonarray.length()];
+   				postId = new int[jsonarray.length()];
 				userLogin = new String[jsonarray.length()];
 				content = new String[jsonarray.length()];
 				newContent = new String[jsonarray.length()];
@@ -300,10 +373,9 @@ public class OknoMapa extends FragmentActivity {
    			for(int i=0; i<jsonarray.length(); i++){	
    				JSONObject jso = jsonarray.getJSONObject(i);
    				if(jso!=null){
-   					postId[i] = jso.getString("postId");
+   					postId[i] = jso.getInt("postId");
    					userLogin[i] = jso.getString("userLogin");
    					content[i] = jso.getString("content");
-   					content[i] = postId[i] + content[i];
    					postText[i] = content[i];
    					content[i] = truncate(content[i],40);
    					photo[i] = jso.getString("photo");
@@ -318,7 +390,7 @@ public class OknoMapa extends FragmentActivity {
    					markerLocation = loc;
    					for(int j=0; j<list.size(); j++)
    					{
-   						if ( (list.get(j).latitude-loc.latitude<0.00002) && (list.get(j).latitude-loc.latitude>-0.00002) && (list.get(j).longitude-loc.longitude<0.00002) && (list.get(j).longitude-loc.longitude>-0.00002) )
+   						if ( (list.get(j).latitude-loc.latitude<0.0005) && (list.get(j).latitude-loc.latitude>-0.0005) && (list.get(j).longitude-loc.longitude<0.0005) && (list.get(j).longitude-loc.longitude>-0.0005) )
    						{
    							listTest=true;
    						}
@@ -365,25 +437,28 @@ public class OknoMapa extends FragmentActivity {
    		
    		for(int i=0; i<listPoint.size();i++)
    		{
+   			System.out.println("punkty g³ówne: "+listPoint.get(i).toString());
    			int number = 0;
    			for(int j=0; j<markerList.size(); j++)
    			{
-   				if((markerList.get(j).getPosition().latitude - listPoint.get(i).latitude < 0.001)
-   						&& (markerList.get(j).getPosition().latitude - listPoint.get(i).latitude > -0.001)
-   					&&(markerList.get(j).getPosition().longitude - listPoint.get(i).longitude < 0.001)
-   					&& (markerList.get(j).getPosition().longitude - listPoint.get(i).longitude < 0.001))
+   				System.out.println("markery: "+markerList.get(j).getPosition().toString());
+   				if((markerList.get(j).getPosition().latitude - listPoint.get(i).latitude < 0.0005)
+   						&& (markerList.get(j).getPosition().latitude - listPoint.get(i).latitude > -0.0005)
+   					&&(markerList.get(j).getPosition().longitude - listPoint.get(i).longitude < 0.0005)
+   					&& (markerList.get(j).getPosition().longitude - listPoint.get(i).longitude < 0.0005))
    				{
    					number++;
+   					System.out.println("number: "+number);
    				}
    			}
    			if (number==1)
    			{
    				for(int j=0; j<markerList.size(); j++)
    	   			{
-   	   				if((markerList.get(j).getPosition().latitude - listPoint.get(i).latitude < 0.001)
-   	   						&& (markerList.get(j).getPosition().latitude - listPoint.get(i).latitude > -0.001)
-   	   					&&(markerList.get(j).getPosition().longitude - listPoint.get(i).longitude < 0.001)
-   	   					&& (markerList.get(j).getPosition().longitude - listPoint.get(i).longitude < 0.001))
+   	   				if((markerList.get(j).getPosition().latitude - listPoint.get(i).latitude < 0.0005)
+   	   						&& (markerList.get(j).getPosition().latitude - listPoint.get(i).latitude > -0.0005)
+   	   					&&(markerList.get(j).getPosition().longitude - listPoint.get(i).longitude < 0.0005)
+   	   					&& (markerList.get(j).getPosition().longitude - listPoint.get(i).longitude < 0.0005))
    	   				{
    	   					markerList.get(j).setVisible(true);
    	   				}
@@ -395,7 +470,7 @@ public class OknoMapa extends FragmentActivity {
 		    double nlng = listPoint.get(i).longitude;
 		    LatLng nloc = new LatLng(nlat,nlng);
 		    Marker TP = googleMap.addMarker(new MarkerOptions().position(nloc).title("Iloœæ postów: "+number).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-   			markerYellow.add(TP);
+		    markerYellow.add(TP);
    			}
    		}
 
@@ -415,10 +490,10 @@ public class OknoMapa extends FragmentActivity {
    		private Context mContext = null;
    		private String token;
    		private String processMessage = "Processing...";
-   	//	private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+   		//private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
    		private ProgressDialog pDlg = null;
-   	//	private String[] favCategoryId;
-   	//	private String tag;
+   		//private String[] favCategoryId;
+   		//private String tag;
    		public WebServiceTask(int taskType, Context mContext, String processMessage, String token){
    			this.taskType = taskType;
    			this.mContext = mContext;
@@ -431,7 +506,7 @@ public class OknoMapa extends FragmentActivity {
    		}*/
 
    		@SuppressWarnings("deprecation")
-		private void showProgressDialog() {    
+		private void showProgressDialog() {     
    			pDlg = new ProgressDialog(mContext);
    			pDlg.setMessage(processMessage);
    			pDlg.setProgressDrawable(mContext.getWallpaper());
@@ -448,14 +523,14 @@ public class OknoMapa extends FragmentActivity {
    		protected String doInBackground(String... urls) {
    			String url = urls[0];
    			String result = ""; 
-   		//	String resp = "";
+   			//String resp = "";
    			HttpResponse response = doResponse(url); 
    			if (response == null) {
    				return result;
    			} else { 
    				try {
    					result = inputStreamToString(response.getEntity().getContent());
-   			//		resp = response.toString();
+   					//resp = response.toString();
    				} catch (IllegalStateException e) {
    					Log.e(TAG, e.getLocalizedMessage(), e); 
    				} catch (IOException e) {
@@ -498,7 +573,7 @@ public class OknoMapa extends FragmentActivity {
   					httpPost.addHeader("Content-Type","application/json");
   					httpPost.setEntity(se);
   					response = httpClient.execute(httpPost);				
-  				/*	if(response != null){
+  					/*if(response != null){
   						InputStream in = response.getEntity().getContent();
   					}*/
   				}catch(Exception e){
@@ -533,5 +608,8 @@ public class OknoMapa extends FragmentActivity {
           return total.toString();
       }
    }
+	
+
+
     
 }

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+ 
+   <Button
+        android:id="@+id/btn_ok"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/OK" />
+    
+    <Button
+        android:id="@+id/btn_show"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/szukaj"
+         android:layout_toLeftOf="@id/btn_ok" />
+    
+    
+ 
+    <EditText
+        android:id="@+id/et_place"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="Wpisz adres"
+        android:inputType="text"
+        android:layout_toLeftOf="@id/btn_show" />
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:layout_width="match_parent"
+         android:layout_below="@id/et_place"
+        android:layout_height="match_parent" />
+
+</RelativeLayout>

@@ -23,8 +23,9 @@
         <ImageView
             android:id="@+id/userPhoto"
             android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
             android:layout_width="100dp"
-            android:layout_height="180dp" />
+            android:layout_height="150dp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -37,7 +38,7 @@
                 android:id="@+id/textViewUserName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
             
@@ -58,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="5dp"
                 android:text="@string/LogOut" />
             
             </LinearLayout>
@@ -72,6 +73,7 @@
         android:id="@+id/popup1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="50dp"
         android:textSize="18sp"
         android:text="@string/popup1" />
@@ -81,6 +83,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="50dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="25dp"
         android:textSize="18sp"
         android:text="@string/popup2" />
    

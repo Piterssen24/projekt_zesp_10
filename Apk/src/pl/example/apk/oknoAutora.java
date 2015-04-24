@@ -22,10 +22,12 @@ import org.json.JSONObject;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -35,8 +37,12 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,6 +63,7 @@ public class oknoAutora extends Activity {
 	Bitmap userPhoto;
 	public static String token;
 	Button likeOrNot;
+	public int screenTest;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +71,47 @@ public class oknoAutora extends Activity {
         setContentView(R.layout.oknoautora_layout);
         context = getApplicationContext();
         serwer = getResources().getString(R.string.server);
-        Bundle extras= getIntent().getExtras();
+        
+        getExtras();
+        
+        ActionBar bar = getActionBar();
+        bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#009900")));
+        bar.setTitle("PicNews - " + userLogin);
+        
+        likeOrNot = (Button) findViewById(R.id.buttonLike);
+        author = (TextView) findViewById(R.id.textViewAuthorName);
+        
+        yourPicture = (ImageView) findViewById(R.id.userAuthorPhoto);       
+        yourPicture.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub				
+				pictureFullScreen();				
+			}
+		});
+        
+        folOrNfolButton();        
+        likeOrNot.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				folAndNfol();
+			}
+		});
+        
+        author.setText(userLogin);
+        
+        String sampleURL = serwer + "/author";
+        WebServiceTask wst = new WebServiceTask(WebServiceTask.AUTHOR_TASK, this, "Pobieranie informacji o u¿ytkowniku...", userLogin);   
+        wst.execute(new String[] { sampleURL });   
+    }
+    
+    
+    public void getExtras()
+    {
+    	Bundle extras= getIntent().getExtras();
         if(extras!=null){
            userLogin = extras.getString("userLogin"); 
            faculties = extras.getStringArray("faculties");
@@ -74,19 +121,49 @@ public class oknoAutora extends Activity {
            repUserId = extras.getIntArray("repUserId");
            folUserName = extras.getStringArray("folUserName");
            myLogin = extras.getString("myLogin");
+           screenTest = extras.getInt("screenTest");
         }
-        
-        ActionBar bar = getActionBar();
-        bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#009900")));
-        bar.setTitle("PicNews - " + userLogin);
-        
-        postsNumber = (TextView) findViewById(R.id.textViewPostCounter);
-        //postsNumberDeleted = (TextView) findViewById(R.id.textViewPostsCounterDeleted);
-        likeOrNot = (Button) findViewById(R.id.buttonLike);
-        author = (TextView) findViewById(R.id.textViewAuthorName);
-        yourPicture = (ImageView) findViewById(R.id.userAuthorPhoto);
-        
-        List<String> list1 = new ArrayList<String>();
+    }
+    
+    public Bitmap pictureClickZoom()
+    {
+    	Bitmap bmp;
+    	if(screenTest==1)
+		  {
+    		bmp = Bitmap.createScaledBitmap(userPhoto, userPhoto.getWidth()*3, userPhoto.getHeight()*3, true); 
+		  }
+		  else
+		  {
+			  bmp = Bitmap.createScaledBitmap(userPhoto, userPhoto.getWidth()*2-200, userPhoto.getHeight()*2-200, true); 
+		  }
+    	return bmp;
+    }
+    
+    public void pictureFullScreen()
+    {
+    	Dialog builder = new Dialog(oknoAutora.this);
+		    builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		    builder.getWindow().setBackgroundDrawable(
+		        new ColorDrawable(android.graphics.Color.TRANSPARENT));
+		    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+		        @Override
+		        public void onDismiss(DialogInterface dialogInterface) {
+		            //nothing;
+		        }
+		    });
+		    
+		  ImageView imageView = new ImageView(oknoAutora.this);
+		  imageView.setImageBitmap(pictureClickZoom());
+		  
+		  builder.addContentView(imageView, new RelativeLayout.LayoutParams(
+	            ViewGroup.LayoutParams.MATCH_PARENT, 
+	            ViewGroup.LayoutParams.MATCH_PARENT));
+		  builder.show();
+    }
+    
+    public void folOrNfolButton()
+    {
+    	List<String> list1 = new ArrayList<String>();
 		 for(int i=0; i<folUserName.length; i++){
 			 list1.add(folUserName[i]);
 		 }
@@ -100,36 +177,20 @@ public class oknoAutora extends Activity {
 				 likeOrNot.setText("Obserwuj");
 			 }
 		 }
-        
-        likeOrNot.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				if(likeOrNot.getText().toString().equals("Obserwuj")){
-					String sampleURL = serwer + "/Follow";
-			        WebServiceTask wst = new WebServiceTask(WebServiceTask.FOLLOW_TASK, "Trwa dodawanie u¿ytkownika do listy ulubionych u¿ytkowników...", userLogin, token, oknoAutora.this);   
-			        wst.execute(new String[] { sampleURL });
-				} else if(likeOrNot.getText().toString().equals("Usuñ z obserwowanych")){
-					String sampleURL = serwer + "/stopFollow";
-			        WebServiceTask wst = new WebServiceTask(WebServiceTask.STOPFOLLOW_TASK, "Trwa usuwanie u¿ytkownika z listy ulubionych u¿ytkowników...", userLogin, token, oknoAutora.this);   
-			        wst.execute(new String[] { sampleURL });
-				}
-			}
-		});
-        
-        author.setText(userLogin);
-        //postsNumber.setText("10");
-        //postsNumberDeleted.setText("0");
-        //userRate.setText("5,0");
-        
-        String sampleURL = serwer + "/author";
-        WebServiceTask wst = new WebServiceTask(WebServiceTask.AUTHOR_TASK, this, "Pobieranie informacji o u¿ytkowniku...", userLogin);   
-        wst.execute(new String[] { sampleURL });
-        
-       
     }
     
+    public void folAndNfol()
+    {
+    	if(likeOrNot.getText().toString().equals("Obserwuj")){
+			String sampleURL = serwer + "/Follow";
+	        WebServiceTask wst = new WebServiceTask(WebServiceTask.FOLLOW_TASK, "Trwa dodawanie u¿ytkownika do listy ulubionych u¿ytkowników...", userLogin, token, oknoAutora.this);   
+	        wst.execute(new String[] { sampleURL });
+		} else if(likeOrNot.getText().toString().equals("Usuñ z obserwowanych")){
+			String sampleURL = serwer + "/stopFollow";
+	        WebServiceTask wst = new WebServiceTask(WebServiceTask.STOPFOLLOW_TASK, "Trwa usuwanie u¿ytkownika z listy ulubionych u¿ytkowników...", userLogin, token, oknoAutora.this);   
+	        wst.execute(new String[] { sampleURL });
+		}
+    }
     /**
      * metoda przyjmuje jako parametr string, który zawiera odpowiedŸ od serwera
      * i tworzy z niego obiekt JSON, który nastêpnie jest parsowany. Tworzy obiekty postElement,
@@ -141,9 +202,9 @@ public class oknoAutora extends Activity {
    			JSONArray jarray = new JSONArray(response);
    			if(jarray!=null){
     			JSONArray jarrayPosts = jarray.getJSONArray(0);
-    			String postsCount = jarray.getString(1);
+    			//String postsCount = jarray.getString(1);
     			photou = jarray.getString(2);
-    			postsNumber.setText(postsCount);
+    			//postsNumber.setText(postsCount);
     			if(userPhoto!=null)
     			{
     	        	 userPhoto.recycle();
@@ -160,7 +221,7 @@ public class oknoAutora extends Activity {
    					addTime = jso.getString("addTime");
    					place = jso.getString("place");
    					eventTime = jso.getString("eventTime");
-   					newpost = new postElement(token, postId, userLogin, content, photo, categoryId, addTime, place, eventTime, faculties, coords, "Autora", repPostId, repUserId, folUserName, myLogin);
+   					newpost = new postElement(token, postId, userLogin, content, photo, categoryId, addTime, place, eventTime, faculties, coords, "Autora", repPostId, repUserId, folUserName, myLogin,screenTest);
    					ft = getFragmentManager().beginTransaction();
    					ft.add(R.id.content, newpost, "f1");
    					ft.commit();

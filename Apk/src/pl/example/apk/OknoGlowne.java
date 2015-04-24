@@ -32,36 +32,15 @@ public class OknoGlowne extends Activity {
 	private final static String ALGORITHM = "AES";
 	private final static String HEX = "0123456789ABCDEF";
 	private String cryptedpass, deviceId;
+	String key = "key-0123123451";
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String key = "key-0123123451";
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(OknoGlowne.this); //Get the preferences
-   		login = prefs.getString("name", "defaultName"); //get a String
-   		String Password = prefs.getString("passwd", "defPasswd");
-   		try {
-			password = decipher(key, Password);
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-   		prefs.getBoolean("rememberCredentials", true);
         
-        if((login!=null) && (password!=null) && (login!="") && (password!="") && (!login.equals("defaultName")) && (!password.equals("defPasswd")))
+        if(isDefaulUser())
         {
-        	serwer = getResources().getString(R.string.server);
-        	String sampleURL = serwer + "/login";
-            try {
-    			cryptedpass = cipher(key, password);
-    		} catch (Exception e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
-            TelephonyManager tManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-        	deviceId = tManager.getDeviceId();
-        	WebServiceTask wst = new WebServiceTask(WebServiceTask.LOG_TASK, this, "Logging...", login, cryptedpass, deviceId);   
-            wst.execute(new String[] { sampleURL });          	
+        	 logIn();        	
         }
         else
         {
@@ -93,7 +72,43 @@ public class OknoGlowne extends Activity {
        
     }   
 	
-	/**
+public boolean isDefaulUser()
+{
+	Boolean result = false;
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(OknoGlowne.this); //Get the preferences
+		login = prefs.getString("name", "defaultName"); //get a String
+		String Password = prefs.getString("passwd", "defPasswd");
+		try {
+		password = decipher(key, Password);
+	} catch (Exception e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
+		prefs.getBoolean("rememberCredentials", true);
+    
+    if((login!=null) && (password!=null) && (login!="") && (password!="") && (!login.equals("defaultName")) && (!password.equals("defPasswd")))
+    {
+    	result = true;
+    }
+    return result;
+}
+
+public void logIn()
+{
+	serwer = getResources().getString(R.string.server);
+	String sampleURL = serwer + "/login";
+    try {
+		cryptedpass = cipher(key, password);
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+    TelephonyManager tManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+	deviceId = tManager.getDeviceId();
+	WebServiceTask wst = new WebServiceTask(WebServiceTask.LOG_TASK, this, "Logging...", login, cryptedpass, deviceId);   
+    wst.execute(new String[] { sampleURL }); 
+}
+/**
 	    * Encrypt data
 	    * metoda szyfruj¹ca has³o
 	    * @param secretKey - a secret key used for encryption
