@@ -41,8 +41,9 @@ public class OknoPost extends Activity {
 	public static String[] faculties, coords, folUserName;
 	Context context;
 	public static int[] repPostId, repUserId;
+	public static String[]  favUserId, favCategoryId, tags, tagsId;
     public StringBuilder strAddress;
-    public static String token;
+    public static String token, role;
     public String myLogin, serwer = "";
 	public int postId, screenTest, pictureTest=0;
     
@@ -122,6 +123,11 @@ public class OknoPost extends Activity {
     	    	intent.putExtra("folUserName", folUserName);
     	    	intent.putExtra("myLogin", myLogin);
     	    	intent.putExtra("screenTest",screenTest);
+    	    	intent.putExtra("role",role);
+    	    	intent.putExtra("tags", tags);
+    	    	intent.putExtra("tagsId", tagsId);
+    	    	intent.putExtra("favUserId", favUserId);
+    	    	intent.putExtra("favCategoryId", favCategoryId);
               	startActivity(intent);
   				}
             }			
@@ -196,6 +202,11 @@ public class OknoPost extends Activity {
     {
     	 Bundle b = getIntent().getExtras();
          if(b!=null){
+        	role = b.getString("role");
+        	tags = b.getStringArray("tags");
+    		tagsId = b.getStringArray("tagsId");
+    		favUserId = b.getStringArray("favUserId");
+    		favCategoryId = b.getStringArray("favCategoryId");
          	postId = b.getInt("postId");
          	postText = b.getString("postText");
          	//photo = b.getString("photo");

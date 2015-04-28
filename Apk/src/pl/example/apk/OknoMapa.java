@@ -306,6 +306,35 @@ public class OknoMapa extends FragmentActivity{
       }
 	}
 	
+	public void closeGroupPost(CameraPosition arg0)
+	{
+		if((zoomTest > arg0.zoom) && (test) && (test2>0) && (zoomTest<17))
+		{
+			for(int i=0; i<markerYellow.size();i++)
+			{
+				if((markerYellow.get(i).getPosition().latitude<arg0.target.latitude+0.0005) && ((markerYellow.get(i).getPosition().longitude<arg0.target.longitude+0.0005)))
+				{
+					for(int k=0;k<markerList.size();k++)
+           			{
+        				if((markerList.get(k).getPosition().latitude - markerYellow.get(i).getPosition().latitude < 0.0005)
+           						&& (markerList.get(k).getPosition().latitude - markerYellow.get(i).getPosition().latitude > -0.0005)
+           					&&(markerList.get(k).getPosition().longitude - markerYellow.get(i).getPosition().longitude < 0.0005)
+           					&& (markerList.get(k).getPosition().longitude - markerYellow.get(i).getPosition().longitude < 0.0005))
+           				{
+           					markerList.get(k).setVisible(false);
+           					markerYellow.get(i).setVisible(true);
+           					test=false;
+           				}
+           			}
+					
+				}
+			}
+		
+		}
+		zoomTest = arg0.zoom;
+		test2++;
+	}
+	
 	public OnCameraChangeListener getCameraChangeListener()
 	{
 	    return new OnCameraChangeListener() 
@@ -313,32 +342,8 @@ public class OknoMapa extends FragmentActivity{
 			@Override
 			public void onCameraChange(CameraPosition arg0) {
 				
+				closeGroupPost(arg0);
 				
-				if((zoomTest > arg0.zoom) && (test) && (test2>0) && (zoomTest<17))
-				{
-					for(int i=0; i<markerYellow.size();i++)
-					{
-						if((markerYellow.get(i).getPosition().latitude<arg0.target.latitude+0.0005) && ((markerYellow.get(i).getPosition().longitude<arg0.target.longitude+0.0005)))
-						{
-							for(int k=0;k<markerList.size();k++)
-                   			{
-                				if((markerList.get(k).getPosition().latitude - markerYellow.get(i).getPosition().latitude < 0.0005)
-                   						&& (markerList.get(k).getPosition().latitude - markerYellow.get(i).getPosition().latitude > -0.0005)
-                   					&&(markerList.get(k).getPosition().longitude - markerYellow.get(i).getPosition().longitude < 0.0005)
-                   					&& (markerList.get(k).getPosition().longitude - markerYellow.get(i).getPosition().longitude < 0.0005))
-                   				{
-                   					markerList.get(k).setVisible(false);
-                   					markerYellow.get(i).setVisible(true);
-                   					test=false;
-                   				}
-                   			}
-							
-						}
-					}
-				
-				}
-				zoomTest = arg0.zoom;
-				test2++;
 				
 			}
 	    };
@@ -437,18 +442,15 @@ public class OknoMapa extends FragmentActivity{
    		
    		for(int i=0; i<listPoint.size();i++)
    		{
-   			System.out.println("punkty g³ówne: "+listPoint.get(i).toString());
    			int number = 0;
    			for(int j=0; j<markerList.size(); j++)
    			{
-   				System.out.println("markery: "+markerList.get(j).getPosition().toString());
    				if((markerList.get(j).getPosition().latitude - listPoint.get(i).latitude < 0.0005)
    						&& (markerList.get(j).getPosition().latitude - listPoint.get(i).latitude > -0.0005)
    					&&(markerList.get(j).getPosition().longitude - listPoint.get(i).longitude < 0.0005)
    					&& (markerList.get(j).getPosition().longitude - listPoint.get(i).longitude < 0.0005))
    				{
    					number++;
-   					System.out.println("number: "+number);
    				}
    			}
    			if (number==1)

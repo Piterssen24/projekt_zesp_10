@@ -38,11 +38,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -67,7 +70,7 @@ public class OknoKonto extends Activity {
     public String serwer = "";
     public String s1,s2;
     public static int[] repPostId, repUserId;
-    public static String token;
+    public static String token, role;
 	public static String login, myLogin;
 	public String place, postId, content, photo, categoryId, addTime, eventTime;
 	private static final String TAG = "OknoKonto";
@@ -86,6 +89,7 @@ public class OknoKonto extends Activity {
         serwer = getResources().getString(R.string.server);
         
         getExtras();
+        getScreenType();
         
         ActionBar bar = getActionBar();
         bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#009900")));
@@ -269,6 +273,7 @@ public void getExtras()
     {
     	Bundle b = getIntent().getExtras();
    		if(b!=null) {
+   			role = b.getString("role");
    			token = b.getString("token");
    			faculties = b.getStringArray("faculties");
    			coords = b.getStringArray("coords");
@@ -280,10 +285,22 @@ public void getExtras()
    			repUserId = b.getIntArray("repUserId");
    			folUserName = b.getStringArray("folUserName");
    			myLogin = b.getString("myLogin");
-   			screenTest = b.getInt("screenTest");
    		}
     }
-    
+
+public void getScreenType()
+	{
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		int width = size.x;
+		int height = size.y;
+		if( (width>1100) && (height>1500) )
+		{
+			screenTest=1;
+		}
+	}
+
 public void intentEditProfile()
     {
     	Intent intent = new Intent(getApplicationContext(), OknoEdytujProfil.class);
@@ -356,7 +373,7 @@ public void favUsers(View v)
     {
     	menu2 = new PopupMenu(OknoKonto.this, v);
 		for(int i=0; i<folUserName.length;i++){
-			menu2.getMenu().add(0,i,0,folUserName[i] + "     usuÅ„");
+			menu2.getMenu().add(0,i,0,folUserName[i] + "     usuñ");
 		}
 		menu2.show();
 		menu2.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {  
@@ -364,7 +381,7 @@ public void favUsers(View v)
             	 itemId = item.getItemId();
             	 System.out.println("item: " + itemId);
             	 String sampleURL = serwer + "/stopFollow";
-		        WebServiceTask wst = new WebServiceTask(WebServiceTask.STOPFOLLOW_TASK, "Trwa usuwanie uÅ¼ytkownika z listy ulubionych uÅ¼ytkownikÃ³w...", folUserName[item.getItemId()], token, OknoKonto.this);   
+		        WebServiceTask wst = new WebServiceTask(WebServiceTask.STOPFOLLOW_TASK, "Trwa usuwanie u¿ytkownika z listy ulubionych u¿ytkowników...", folUserName[item.getItemId()], token, OknoKonto.this);   
 		        wst.execute(new String[] { sampleURL });
             //  Toast.makeText(OknoKonto.this,"UsuniÄ™to : " + item.getItemId(),Toast.LENGTH_SHORT).show(); 
               return true;  
@@ -379,32 +396,71 @@ public boolean onCreateOptionsMenu(Menu menu) {
         return true;
     }
     
-public boolean onOptionsItemSelected(MenuItem item) {
-        
-        switch (item.getItemId()) {
-        case R.id.home:
-      	  	Intent intent = new Intent(getApplicationContext(), OknoNews.class);
-      	 // 	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		//	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        		startActivity(intent);
-            return true;
-        case R.id.map:
-        	Intent intentmapa = new Intent(getApplicationContext(), OknoMapa.class);
-   			startActivity(intentmapa); 
-            return true;
-        case R.id.news:
-            
-            return true;
-        case R.id.konto:
-      	  Intent intentkonto = new Intent(getApplicationContext(), OknoKonto.class);
-      	  startActivity(intentkonto);
-            
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
-    }
+public boolean onOptionsItemSelected(MenuItem item) {        
+	switch (item.getItemId()) {
+		case R.id.home:
+	  	Intent intent = new Intent(getApplicationContext(), OknoNews.class);
+	  	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+  		startActivity(intent);
+  		return true;
+		case R.id.map:
+			Intent intentmapa = new Intent(getApplicationContext(), OknoMapa.class);
+			intentmapa.putExtra("token", token);
+			intentmapa.putExtra("faculties", faculties);
+    	intentmapa.putExtra("coords", coords);
+    	intentmapa.putExtra("repPostId", repPostId);
+    	intentmapa.putExtra("repUserId", repUserId);
+    	intentmapa.putExtra("folUserName", folUserName);
+    	intentmapa.putExtra("myLogin", myLogin);
+    	intentmapa.putExtra("screenTest", screenTest);
+			startActivity(intentmapa);  
+			return true;
+		case R.id.news:
+			if(role.equals("D")) {
+				Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE); 
+				startActivityForResult(cameraIntent, 0);
+			} else {
+				Toast.makeText(this, "Nie masz uprawnieñ do wykonania tej operacji!", Toast.LENGTH_LONG).show();
+			}
+			return true;
+		case R.id.konto:
+			Intent intentkonto = new Intent(getApplicationContext(), OknoKonto.class);
+			intentkonto.putExtra("screenTest",screenTest);
+			intentkonto.putExtra("token", token);
+			intentkonto.putExtra("faculties", faculties);
+    	intentkonto.putExtra("coords", coords);
+    	intentkonto.putExtra("tags", tags);
+    	intentkonto.putExtra("tagsId", tagsId);
+    	intentkonto.putExtra("favUserId", favUserId);
+    	intentkonto.putExtra("favCategoryId", favCategoryId);
+    	intentkonto.putExtra("repPostId", repPostId);
+    	intentkonto.putExtra("repUserId", repUserId);
+    	intentkonto.putExtra("folUserName", folUserName);
+    	intentkonto.putExtra("myLogin", myLogin);
+    	intentkonto.putExtra("role",role);
+			startActivity(intentkonto);
+     	return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
     }   
-  
+ 
+@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		Uri u = data.getData();
+		Intent intentPhoto = new Intent(this, OknoNew.class);
+		intentPhoto.putExtra("imgurl", u);
+		intentPhoto.putExtra("token", token);
+		intentPhoto.putExtra("tags", tags);
+		intentPhoto.putExtra("faculties", faculties);
+		intentPhoto.putExtra("coords", coords);
+		intentPhoto.putExtra("tagsId", tagsId);
+		startActivity(intentPhoto);
+	}   
+
     /**
      * metoda konwertujÄ…ca String na obiekt bitmap (zdjÄ™cie).
      */

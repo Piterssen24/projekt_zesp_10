@@ -154,7 +154,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
   		list = new String[tags.length + 3];
   		list[0] = "Wszystkie";
   		list[1] = "Ulubione kategorie";
-  		list[2] = "Ulubieni u¿ytkownicy";
+  		list[2] = "Obserwowani u¿ytkownicy";
   		for(int i=0; i<tags.length; i++){
   			list[i+3] = tags[i];
   		}
@@ -279,6 +279,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
 	    	intentkonto.putExtra("repUserId", repUserId);
 	    	intentkonto.putExtra("folUserName", folUserName);
 	    	intentkonto.putExtra("myLogin", myLogin);
+	    	intentkonto.putExtra("role",role);
    			startActivity(intentkonto);
          	return true;
    		default:

@@ -277,7 +277,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             			jsonr.put("role", role);
             			jsonr.put("userPhoto", userPhoto);
             			StringEntity se = new StringEntity(jsonr.toString(), "UTF-8");
-            			httpPost.addHeader("Content-Type","application/json");
+            			httpPost.addHeader("Content-Type","application/json; charset=utf-8");
             			httpPost.setEntity(se);
             			response = httpClient.execute(httpPost);
             		/*	if(response != null){
@@ -611,7 +611,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
     public void handleResponseREGISTER(String response) {   
         if(response.equals("TRUE")){
         	Toast.makeText(mContext, "Rejestracja przebieg³a pomyœlnie! Za chwilê zostaniesz przeniesiony na stronê logowania", Toast.LENGTH_LONG).show();
-        	Intent i = new Intent(mContext,OknoGlowne.class);
+        	Intent i = new Intent(mContext,OknoLog.class);
         	mContext.startActivity(i);
         } else if(response.equals("LOGINISTNIEJE")) {
         	Toast.makeText(mContext, "Login jest ju¿ zajêty!", Toast.LENGTH_LONG).show();

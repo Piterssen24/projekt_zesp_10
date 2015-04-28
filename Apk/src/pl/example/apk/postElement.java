@@ -59,6 +59,7 @@ public class postElement extends Fragment {
     	   this.folUserName = folUserName;
     	   this.myLogin = myLogin;
     	   this.screenTest = screenTest;
+    	   
        }
        
        @Override
@@ -259,6 +260,7 @@ public class postElement extends Fragment {
        
        public void deletePost()
        {
+    	   System.out.println("screenTest= "+screenTest);
     	   AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		    builder.setTitle("Ostrze¿enie");
 		    builder.setMessage("Czy na pewno chcesz usun¹æ posta?");
@@ -268,8 +270,8 @@ public class postElement extends Fragment {
 		       		WebServiceTask wst = new WebServiceTask(WebServiceTask.POSTDELETE_TASK, getActivity(), "Trwa usuwanie posta, proszê czekaæ...", token, postId);   
 		       		wst.execute(new String[] { sampleURL }); 
 		            dialog.dismiss();
-		            Intent intentkonto = new Intent(getActivity().getApplicationContext(), OknoKonto.class);
-		        	startActivity(intentkonto);
+		           /* Intent intentkonto = new Intent(getActivity().getApplicationContext(), OknoKonto.class);
+		        	startActivity(intentkonto);*/
 		        }
 		    });
 		    

@@ -26,7 +26,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -45,6 +44,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
@@ -56,7 +56,8 @@ import android.util.Base64;
 public class OknoNew extends FragmentActivity {
 
 	Context context;
-	Button buttonConfirm, buttonChangeLocation, buttonChangeLocation2, buttonDate;
+	Button buttonConfirm, buttonChangeLocation, buttonChangeLocation2; 
+	ImageButton buttonDate;
 	TextView counter, gps, dateView;
 	EditText content2;
 	ActionBar ab;
@@ -86,7 +87,6 @@ public class OknoNew extends FragmentActivity {
         serwer = getResources().getString(R.string.server);
         context = getApplicationContext();  
         
-        Typeface font = Typeface.createFromAsset( getAssets(), "fontawesome-webfont.ttf" );
         ab = getActionBar();
         ab.setTitle("PicNews - Nowy Post");
         ab.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#009900")));
@@ -148,8 +148,8 @@ public class OknoNew extends FragmentActivity {
 			}
 		});
     	
-    	buttonDate = (Button) findViewById(R.id.buttonDate);
-    	buttonDate.setTypeface(font);
+    	buttonDate = (ImageButton) findViewById(R.id.buttonDate);
+    	
     	buttonDate.setOnClickListener(new View.OnClickListener() {		
 			@Override
 			public void onClick(View v) {	        
@@ -319,6 +319,30 @@ public class OknoNew extends FragmentActivity {
   				if(!testLocation)
                 {
                 gps.setText(strAddress.toString());
+                
+                for(int i=0; i<coords.length; i++){
+	            	String[] tokens = coords[i].split(",");
+		        	double lat2 = Double.parseDouble(tokens[0]);
+		        	double lon2 = Double.parseDouble(tokens[1]);
+		        	if((fastLocation.getLatitude() - lat2 < 0.0005)
+       						&& (fastLocation.getLatitude() - lat2 > -0.0005)
+       					&&(fastLocation.getLongitude() - lon2 < 0.0005)
+       					&& (fastLocation.getLongitude() - lon2 < 0.0005))
+		        	{
+		        		if(!testLocation)
+		        		{
+		        		place = coords[i];
+		        		test=true;
+		        		}
+		        	}
+		        		
+	            }
+	            if((!test) && (!testLocation))
+	            {
+	            	place = fastLocation.getLatitude()+","+fastLocation.getLatitude();
+    	        }
+                
+                
                 }
   			} catch (IOException e) {
   				// TODO Auto-generated catch block
@@ -344,6 +368,27 @@ public class OknoNew extends FragmentActivity {
   				if(!testLocation)
                 {
   					gps.setText(strAddress.toString());
+  					for(int i=0; i<coords.length; i++){
+  		            	String[] tokens = coords[i].split(",");
+  			        	double lat2 = Double.parseDouble(tokens[0]);
+  			        	double lon2 = Double.parseDouble(tokens[1]);
+  			        	if((fastLocation2.getLatitude() - lat2 < 0.0005)
+  	       						&& (fastLocation2.getLatitude() - lat2 > -0.0005)
+  	       					&&(fastLocation2.getLongitude() - lon2 < 0.0005)
+  	       					&& (fastLocation2.getLongitude() - lon2 < 0.0005))
+  			        	{
+  			        		if(!testLocation)
+  			        		{
+  			        		place = coords[i];
+  			        		test=true;
+  			        		}
+  			        	}
+  			        		
+  		            }
+  		            if((!test) && (!testLocation))
+  		            {
+  		            	place = fastLocation2.getLatitude()+","+fastLocation2.getLatitude();
+  	    	        }
                 }
   			} catch (IOException e) {
   				// TODO Auto-generated catch block
@@ -457,9 +502,7 @@ public class OknoNew extends FragmentActivity {
         	photoB = encodeTobase64(bitmapRotated);
         }
     }
-
-    
-    
+   
     public void setCurrentDate()
     {
     	final Calendar c = Calendar.getInstance();
@@ -467,7 +510,7 @@ public class OknoNew extends FragmentActivity {
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
         dateView.setText(String.valueOf(year)+"/"+String.valueOf(month+1)+"/"+String.valueOf(day));
-    	date = new SimpleDateFormat("yyyy-MM-dd");
+        date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         addTime = date.format(new Date());
     }
     
@@ -532,12 +575,19 @@ public class OknoNew extends FragmentActivity {
      */
     public void addNewPost(View vw) { 
     	content = content2.getText().toString();
+    	if(content.length()==0)
+    	{
+    		Toast.makeText(this, "Dodaj treœæ posta!", Toast.LENGTH_LONG).show();
+    	}
+    	else
+    	{
     	photo = photoB;      	
     	eventTime = dateView.getText().toString();
-    	System.out.println("place dodany: "+place);
     	String sampleURL = serwer + "/post";
+    	System.out.println("place "+place);
         WebServiceTask wst = new WebServiceTask(WebServiceTask.NEW_TASK, this, "Dodawanie posta...", content, photo, addTime, place, eventTime, tag, token);   
         wst.execute(new String[] { sampleURL }); 
+    	}
     		
 	}
     

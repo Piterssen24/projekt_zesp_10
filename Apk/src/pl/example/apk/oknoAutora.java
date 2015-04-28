@@ -58,10 +58,10 @@ public class oknoAutora extends Activity {
 	public String place, postId, content, photo, categoryId, addTime, eventTime;
 	private static final String TAG = "OknoAutora";
 	Context context;
-	public static String[] faculties, coords, folUserName;
+	public static String[] faculties, coords, folUserName, tags, tagsId, favUserId, favCategoryId;
 	public String photou;
 	Bitmap userPhoto;
-	public static String token;
+	public static String token, role;
 	Button likeOrNot;
 	public int screenTest;
 	
@@ -122,6 +122,11 @@ public class oknoAutora extends Activity {
            folUserName = extras.getStringArray("folUserName");
            myLogin = extras.getString("myLogin");
            screenTest = extras.getInt("screenTest");
+           role = extras.getString("role");
+       		tags = extras.getStringArray("tags");
+       		tagsId = extras.getStringArray("tagsId");
+       		favUserId = extras.getStringArray("favUserId");
+       		favCategoryId = extras.getStringArray("favCategoryId");
         }
     }
     

@@ -14,7 +14,7 @@
         android:layout_height="40dp"
         android:layout_centerVertical="true"
         android:background="#CC009900"
-        android:text="@string/stringrejestracja" />
+        android:text="@string/stringrej" />
 
     <Button
         android:id="@+id/buttonLogin"
@@ -25,7 +25,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginBottom="120dp"
         android:background="#CC009900"
-        android:text="@string/stringlogowanie" />
+        android:text="@string/stringlog" />
     
      <ImageView
         android:id="@+id/imageTest"
