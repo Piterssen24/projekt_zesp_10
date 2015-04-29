@@ -87,7 +87,7 @@ public class OknoLog extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        WebServiceTask wst = new WebServiceTask(WebServiceTask.LOG_TASK, this, "Logging...", login, cryptedpass, deviceId);   
+        WebServiceTask wst = new WebServiceTask(WebServiceTask.LOG_TASK, this, "Logowanie...", login, cryptedpass, deviceId);   
         wst.execute(new String[] { sampleURL });       
     }
     

@@ -9,21 +9,22 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.widget.Button;
+import android.widget.TextView;
+
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class OknoRejestracja extends Activity {
@@ -50,7 +51,8 @@ public class OknoRejestracja extends Activity {
         epassword = (EditText) findViewById(R.id.editTextPassword);
         erepassword = (EditText) findViewById(R.id.editTextPasswordRepeat);
         eemail = (EditText) findViewById(R.id.editTextEmail);
-        reg  =(TextView) findViewById(R.id.reg);
+        
+        reg  = (TextView) findViewById(R.id.reg);
         
         reg.setOnClickListener(new View.OnClickListener() {
 			
@@ -64,8 +66,7 @@ public class OknoRejestracja extends Activity {
         
         ActionBar bar = getActionBar();
         bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#009900")));
-        bar.setTitle("PicNews - rejestracja");  
-        
+        bar.setTitle("PicNews - rejestracja");              
         register = (Button) findViewById(R.id.buttonRegister);
         register.setOnClickListener(new View.OnClickListener() {
 			
@@ -106,7 +107,7 @@ public class OknoRejestracja extends Activity {
     				// TODO Auto-generated catch block
     				e.printStackTrace();
     			}
-    		WebServiceTask wst = new WebServiceTask(WebServiceTask.REGISTER_TASK, this, "Registering...", login, cryptedpass, email, role, userPhoto);   
+    		WebServiceTask wst = new WebServiceTask(WebServiceTask.REGISTER_TASK, this, "Rejestracja nowego u¿ytkownika...", login, cryptedpass, email, role, userPhoto);   
         	wst.execute(new String[] { sampleURL });
     	}else{
     		Toast.makeText(this, "Has³a siê nie zgadzaj¹!", Toast.LENGTH_LONG).show();

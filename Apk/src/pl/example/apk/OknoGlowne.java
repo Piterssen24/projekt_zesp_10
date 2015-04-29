@@ -105,7 +105,7 @@ public void logIn()
 	}
     TelephonyManager tManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
 	deviceId = tManager.getDeviceId();
-	WebServiceTask wst = new WebServiceTask(WebServiceTask.LOG_TASK, this, "Logging...", login, cryptedpass, deviceId);   
+	WebServiceTask wst = new WebServiceTask(WebServiceTask.LOG_TASK, this, "Logowanie...", login, cryptedpass, deviceId);   
     wst.execute(new String[] { sampleURL }); 
 }
 /**

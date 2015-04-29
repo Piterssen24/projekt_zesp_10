@@ -185,7 +185,7 @@ public void submitChanges()
 		}
 	}
 	String sampleURL = serwer + "/edit";
-		WebServiceTask wst = new WebServiceTask(WebServiceTask.EDIT_TASK, OknoEdytujProfil.this , "Saving changes...", photo, token, favouritesTags);   
+		WebServiceTask wst = new WebServiceTask(WebServiceTask.EDIT_TASK, OknoEdytujProfil.this , "Zapisywanie zmian profilu...", photo, token, favouritesTags);   
 		wst.execute(new String[] { sampleURL });
 }
 

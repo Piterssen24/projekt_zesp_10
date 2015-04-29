@@ -26,6 +26,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
+import android.widget.ImageButton;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -44,7 +45,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
@@ -56,7 +56,7 @@ import android.util.Base64;
 public class OknoNew extends FragmentActivity {
 
 	Context context;
-	Button buttonConfirm, buttonChangeLocation, buttonChangeLocation2; 
+	Button buttonConfirm, buttonChangeLocation, buttonChangeLocation2;
 	ImageButton buttonDate;
 	TextView counter, gps, dateView;
 	EditText content2;
@@ -86,7 +86,7 @@ public class OknoNew extends FragmentActivity {
         setContentView(R.layout.oknonew_layout);
         serwer = getResources().getString(R.string.server);
         context = getApplicationContext();  
-        
+
         ab = getActionBar();
         ab.setTitle("PicNews - Nowy Post");
         ab.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#009900")));
@@ -149,7 +149,6 @@ public class OknoNew extends FragmentActivity {
 		});
     	
     	buttonDate = (ImageButton) findViewById(R.id.buttonDate);
-    	
     	buttonDate.setOnClickListener(new View.OnClickListener() {		
 			@Override
 			public void onClick(View v) {	        
@@ -341,8 +340,6 @@ public class OknoNew extends FragmentActivity {
 	            {
 	            	place = fastLocation.getLatitude()+","+fastLocation.getLatitude();
     	        }
-                
-                
                 }
   			} catch (IOException e) {
   				// TODO Auto-generated catch block
@@ -368,6 +365,7 @@ public class OknoNew extends FragmentActivity {
   				if(!testLocation)
                 {
   					gps.setText(strAddress.toString());
+  					
   					for(int i=0; i<coords.length; i++){
   		            	String[] tokens = coords[i].split(",");
   			        	double lat2 = Double.parseDouble(tokens[0]);
@@ -502,7 +500,9 @@ public class OknoNew extends FragmentActivity {
         	photoB = encodeTobase64(bitmapRotated);
         }
     }
-   
+
+    
+    
     public void setCurrentDate()
     {
     	final Calendar c = Calendar.getInstance();
@@ -588,7 +588,6 @@ public class OknoNew extends FragmentActivity {
         WebServiceTask wst = new WebServiceTask(WebServiceTask.NEW_TASK, this, "Dodawanie posta...", content, photo, addTime, place, eventTime, tag, token);   
         wst.execute(new String[] { sampleURL }); 
     	}
-    		
 	}
     
     /**

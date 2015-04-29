@@ -38,14 +38,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -55,6 +52,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
+import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
+import android.view.Display;
 
 public class OknoKonto extends Activity {
 	
@@ -172,7 +177,7 @@ public class OknoKonto extends Activity {
 		});
         
         String sampleURL = serwer + "/account";
-   		WebServiceTask wst = new WebServiceTask(WebServiceTask.ACCOUNT_TASK, this, token);   
+   		WebServiceTask wst = new WebServiceTask(WebServiceTask.ACCOUNT_TASK, "£adowanie profilu...", this, token);   
    		wst.execute(new String[] { sampleURL }); 
     }  
       
@@ -226,7 +231,7 @@ public void handleResponseLOGOUT(String response){
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
         	startActivity(intent);
     	} else {
-    		Toast.makeText(this, "WystÄ…piÅ‚ bÅ‚Ä…d podczas wykonywania Å¼Ä…danej operacji!", Toast.LENGTH_LONG).show();
+    		Toast.makeText(this, "Wyst¹pi³‚ b³¹d podczas wykonywania ¿¹danej operacji!", Toast.LENGTH_LONG).show();
     	}
     }
     
@@ -248,9 +253,9 @@ public void handleResponseSTOPFOLLOW(String response){
    		 	}
    		 	folUserName = tmp;
             menu2.show();
-    		Toast.makeText(this, "PomyÅ›lnie usuniÄ™to uÅ¼ytkownika z listy obserwowanych!", Toast.LENGTH_LONG).show();
+    		Toast.makeText(this, "Pomyœlnie usuniêto u¿ytkownika z listy obserwowanych!", Toast.LENGTH_LONG).show();
     	} else {
-    		Toast.makeText(this, "WystÄ…piÅ‚ bÅ‚Ä…d podczas wykonywania Å¼Ä…danej operacji!", Toast.LENGTH_LONG).show();
+    		Toast.makeText(this, "Wyst¹pi³‚ b³¹d podczas wykonywania ¿¹danej operacji!", Toast.LENGTH_LONG).show();
     	}
     }
     
@@ -289,18 +294,18 @@ public void getExtras()
     }
 
 public void getScreenType()
+{
+	Display display = getWindowManager().getDefaultDisplay();
+	Point size = new Point();
+	display.getSize(size);
+	int width = size.x;
+	int height = size.y;
+	if( (width>1100) && (height>1500) )
 	{
-		Display display = getWindowManager().getDefaultDisplay();
-		Point size = new Point();
-		display.getSize(size);
-		int width = size.x;
-		int height = size.y;
-		if( (width>1100) && (height>1500) )
-		{
-			screenTest=1;
-		}
+		screenTest=1;
 	}
-
+}
+    
 public void intentEditProfile()
     {
     	Intent intent = new Intent(getApplicationContext(), OknoEdytujProfil.class);
@@ -330,7 +335,7 @@ public void logOut()
         edit.putBoolean("rememberCredentials", true); //add a boolean
         edit.commit();  // save the edits. 
         String sampleURL = serwer + "/logout";
-        WebServiceTask wst = new WebServiceTask(WebServiceTask.LOGOUT_TASK, OknoKonto.this, "Logging out...", myLogin);   
+        WebServiceTask wst = new WebServiceTask(WebServiceTask.LOGOUT_TASK, OknoKonto.this, "Wylogowywanie...", myLogin);   
         wst.execute(new String[] { sampleURL }); 
     }
     
@@ -381,7 +386,7 @@ public void favUsers(View v)
             	 itemId = item.getItemId();
             	 System.out.println("item: " + itemId);
             	 String sampleURL = serwer + "/stopFollow";
-		        WebServiceTask wst = new WebServiceTask(WebServiceTask.STOPFOLLOW_TASK, "Trwa usuwanie u¿ytkownika z listy ulubionych u¿ytkowników...", folUserName[item.getItemId()], token, OknoKonto.this);   
+		        WebServiceTask wst = new WebServiceTask(WebServiceTask.STOPFOLLOW_TASK, "Usuwanie u¿ytkownika z listy ulubionych u¿ytkowników...", folUserName[item.getItemId()], token, OknoKonto.this);   
 		        wst.execute(new String[] { sampleURL });
             //  Toast.makeText(OknoKonto.this,"UsuniÄ™to : " + item.getItemId(),Toast.LENGTH_SHORT).show(); 
               return true;  
@@ -396,57 +401,57 @@ public boolean onCreateOptionsMenu(Menu menu) {
         return true;
     }
     
-public boolean onOptionsItemSelected(MenuItem item) {        
-	switch (item.getItemId()) {
-		case R.id.home:
-	  	Intent intent = new Intent(getApplicationContext(), OknoNews.class);
-	  	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
-  		startActivity(intent);
-  		return true;
-		case R.id.map:
-			Intent intentmapa = new Intent(getApplicationContext(), OknoMapa.class);
-			intentmapa.putExtra("token", token);
-			intentmapa.putExtra("faculties", faculties);
-    	intentmapa.putExtra("coords", coords);
-    	intentmapa.putExtra("repPostId", repPostId);
-    	intentmapa.putExtra("repUserId", repUserId);
-    	intentmapa.putExtra("folUserName", folUserName);
-    	intentmapa.putExtra("myLogin", myLogin);
-    	intentmapa.putExtra("screenTest", screenTest);
-			startActivity(intentmapa);  
-			return true;
-		case R.id.news:
-			if(role.equals("D")) {
-				Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE); 
-				startActivityForResult(cameraIntent, 0);
-			} else {
-				Toast.makeText(this, "Nie masz uprawnieñ do wykonania tej operacji!", Toast.LENGTH_LONG).show();
-			}
-			return true;
-		case R.id.konto:
-			Intent intentkonto = new Intent(getApplicationContext(), OknoKonto.class);
-			intentkonto.putExtra("screenTest",screenTest);
-			intentkonto.putExtra("token", token);
-			intentkonto.putExtra("faculties", faculties);
-    	intentkonto.putExtra("coords", coords);
-    	intentkonto.putExtra("tags", tags);
-    	intentkonto.putExtra("tagsId", tagsId);
-    	intentkonto.putExtra("favUserId", favUserId);
-    	intentkonto.putExtra("favCategoryId", favCategoryId);
-    	intentkonto.putExtra("repPostId", repPostId);
-    	intentkonto.putExtra("repUserId", repUserId);
-    	intentkonto.putExtra("folUserName", folUserName);
-    	intentkonto.putExtra("myLogin", myLogin);
-    	intentkonto.putExtra("role",role);
-			startActivity(intentkonto);
-     	return true;
-		default:
-			return super.onOptionsItemSelected(item);
+    public boolean onOptionsItemSelected(MenuItem item) {        
+    	switch (item.getItemId()) {
+    		case R.id.home:
+    	  	Intent intent = new Intent(getApplicationContext(), OknoNews.class);
+    	  	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+      		startActivity(intent);
+      		return true;
+    		case R.id.map:
+    			Intent intentmapa = new Intent(getApplicationContext(), OknoMapa.class);
+    			intentmapa.putExtra("token", token);
+    			intentmapa.putExtra("faculties", faculties);
+        	intentmapa.putExtra("coords", coords);
+        	intentmapa.putExtra("repPostId", repPostId);
+        	intentmapa.putExtra("repUserId", repUserId);
+        	intentmapa.putExtra("folUserName", folUserName);
+        	intentmapa.putExtra("myLogin", myLogin);
+        	intentmapa.putExtra("screenTest", screenTest);
+    			startActivity(intentmapa);  
+    			return true;
+    		case R.id.news:
+    			if(role.equals("D")) {
+    				Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE); 
+    				startActivityForResult(cameraIntent, 0);
+    			} else {
+    				Toast.makeText(this, "Nie masz uprawnieñ do wykonania tej operacji!", Toast.LENGTH_LONG).show();
+    			}
+    			return true;
+    		case R.id.konto:
+    			Intent intentkonto = new Intent(getApplicationContext(), OknoKonto.class);
+    			intentkonto.putExtra("screenTest",screenTest);
+    			intentkonto.putExtra("token", token);
+    			intentkonto.putExtra("faculties", faculties);
+        	intentkonto.putExtra("coords", coords);
+        	intentkonto.putExtra("tags", tags);
+        	intentkonto.putExtra("tagsId", tagsId);
+        	intentkonto.putExtra("favUserId", favUserId);
+        	intentkonto.putExtra("favCategoryId", favCategoryId);
+        	intentkonto.putExtra("repPostId", repPostId);
+        	intentkonto.putExtra("repUserId", repUserId);
+        	intentkonto.putExtra("folUserName", folUserName);
+        	intentkonto.putExtra("myLogin", myLogin);
+        	intentkonto.putExtra("role",role);
+    			startActivity(intentkonto);
+         	return true;
+    		default:
+    			return super.onOptionsItemSelected(item);
 		}
     }   
- 
-@Override
+    
+    @Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
@@ -459,8 +464,8 @@ public boolean onOptionsItemSelected(MenuItem item) {
 		intentPhoto.putExtra("coords", coords);
 		intentPhoto.putExtra("tagsId", tagsId);
 		startActivity(intentPhoto);
-	}   
-
+	} 
+  
     /**
      * metoda konwertujÄ…ca String na obiekt bitmap (zdjÄ™cie).
      */
@@ -502,8 +507,9 @@ private class WebServiceTask extends AsyncTask<String, Integer, String> {
     private ProgressDialog pDlg = null;
     
     // konstruktor do okna konto
-    public WebServiceTask(int taskType, Context mContext, String token){
+    public WebServiceTask(int taskType, String processMessage, Context mContext, String token){
     	this.taskType = taskType;
+    	this.processMessage = processMessage;
         this.mContext = mContext;
         this.token = token;
     }

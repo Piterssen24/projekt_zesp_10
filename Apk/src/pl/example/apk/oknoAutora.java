@@ -123,10 +123,10 @@ public class oknoAutora extends Activity {
            myLogin = extras.getString("myLogin");
            screenTest = extras.getInt("screenTest");
            role = extras.getString("role");
-       		tags = extras.getStringArray("tags");
-       		tagsId = extras.getStringArray("tagsId");
-       		favUserId = extras.getStringArray("favUserId");
-       		favCategoryId = extras.getStringArray("favCategoryId");
+      		tags = extras.getStringArray("tags");
+      		tagsId = extras.getStringArray("tagsId");
+      		favUserId = extras.getStringArray("favUserId");
+      		favCategoryId = extras.getStringArray("favCategoryId");
         }
     }
     
@@ -188,11 +188,11 @@ public class oknoAutora extends Activity {
     {
     	if(likeOrNot.getText().toString().equals("Obserwuj")){
 			String sampleURL = serwer + "/Follow";
-	        WebServiceTask wst = new WebServiceTask(WebServiceTask.FOLLOW_TASK, "Trwa dodawanie u¿ytkownika do listy ulubionych u¿ytkowników...", userLogin, token, oknoAutora.this);   
+	        WebServiceTask wst = new WebServiceTask(WebServiceTask.FOLLOW_TASK, "Dodawanie u¿ytkownika do listy ulubionych u¿ytkowników...", userLogin, token, oknoAutora.this);   
 	        wst.execute(new String[] { sampleURL });
 		} else if(likeOrNot.getText().toString().equals("Usuñ z obserwowanych")){
 			String sampleURL = serwer + "/stopFollow";
-	        WebServiceTask wst = new WebServiceTask(WebServiceTask.STOPFOLLOW_TASK, "Trwa usuwanie u¿ytkownika z listy ulubionych u¿ytkowników...", userLogin, token, oknoAutora.this);   
+	        WebServiceTask wst = new WebServiceTask(WebServiceTask.STOPFOLLOW_TASK, "Usuwanie u¿ytkownika z listy ulubionych u¿ytkowników...", userLogin, token, oknoAutora.this);   
 	        wst.execute(new String[] { sampleURL });
 		}
     }

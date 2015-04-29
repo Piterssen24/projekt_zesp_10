@@ -277,7 +277,7 @@ public class WebServiceTask extends AsyncTask<String, Integer, String> {
             			jsonr.put("role", role);
             			jsonr.put("userPhoto", userPhoto);
             			StringEntity se = new StringEntity(jsonr.toString(), "UTF-8");
-            			httpPost.addHeader("Content-Type","application/json; charset=utf-8");
+            			httpPost.addHeader("Content-Type","application/json");
             			httpPost.setEntity(se);
             			response = httpClient.execute(httpPost);
             		/*	if(response != null){

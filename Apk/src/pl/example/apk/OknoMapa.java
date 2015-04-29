@@ -112,7 +112,7 @@ public class OknoMapa extends FragmentActivity{
 	public void loadPosts()
 	{
 		String sampleURL = serwer + "/map";
-   		WebServiceTask wst = new WebServiceTask(WebServiceTask.MAP_TASK, this, "Loading posts on map...", token);   
+   		WebServiceTask wst = new WebServiceTask(WebServiceTask.MAP_TASK, this, "£adowanie postów na mapie...", token);   
    		wst.execute(new String[] { sampleURL }); 
 	}
 	
@@ -321,7 +321,7 @@ public class OknoMapa extends FragmentActivity{
            					&&(markerList.get(k).getPosition().longitude - markerYellow.get(i).getPosition().longitude < 0.0005)
            					&& (markerList.get(k).getPosition().longitude - markerYellow.get(i).getPosition().longitude < 0.0005))
            				{
-           					markerList.get(k).setVisible(false);
+        					markerList.get(k).setVisible(false);
            					markerYellow.get(i).setVisible(true);
            					test=false;
            				}
@@ -334,6 +334,7 @@ public class OknoMapa extends FragmentActivity{
 		zoomTest = arg0.zoom;
 		test2++;
 	}
+           				
 	
 	public OnCameraChangeListener getCameraChangeListener()
 	{
@@ -343,9 +344,7 @@ public class OknoMapa extends FragmentActivity{
 			public void onCameraChange(CameraPosition arg0) {
 				
 				closeGroupPost(arg0);
-				
-				
-			}
+			}	
 	    };
 	}
 	

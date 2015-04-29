@@ -59,7 +59,6 @@ public class postElement extends Fragment {
     	   this.folUserName = folUserName;
     	   this.myLogin = myLogin;
     	   this.screenTest = screenTest;
-    	   
        }
        
        @Override
@@ -260,14 +259,13 @@ public class postElement extends Fragment {
        
        public void deletePost()
        {
-    	   System.out.println("screenTest= "+screenTest);
     	   AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		    builder.setTitle("Ostrze¿enie");
 		    builder.setMessage("Czy na pewno chcesz usun¹æ posta?");
 		    builder.setPositiveButton("Tak", new DialogInterface.OnClickListener() {
 		        public void onClick(DialogInterface dialog, int which) {
 		        	String sampleURL = serwer + "/removePost";
-		       		WebServiceTask wst = new WebServiceTask(WebServiceTask.POSTDELETE_TASK, getActivity(), "Trwa usuwanie posta, proszê czekaæ...", token, postId);   
+		       		WebServiceTask wst = new WebServiceTask(WebServiceTask.POSTDELETE_TASK, getActivity(), "Usuwanie posta...", token, postId);   
 		       		wst.execute(new String[] { sampleURL }); 
 		            dialog.dismiss();
 		           /* Intent intentkonto = new Intent(getActivity().getApplicationContext(), OknoKonto.class);
@@ -307,7 +305,7 @@ public class postElement extends Fragment {
 		            temp[repPostId.length] = postId;
 		            repPostId = temp;
 		        	String sampleURL = serwer + "/report";
-		       		WebServiceTask wst = new WebServiceTask(WebServiceTask.POSTREPORT_TASK, getActivity(), "Trwa zg³aszanie posta, proszê czekaæ...", postId, token);   
+		       		WebServiceTask wst = new WebServiceTask(WebServiceTask.POSTREPORT_TASK, getActivity(), "Zg³aszanie posta...", postId, token);   
 		       		wst.execute(new String[] { sampleURL }); 
 		            dialog.dismiss();
 		        }

@@ -180,7 +180,7 @@ public class OknoPost extends Activity {
 		            temp[repPostId.length] = postId;
 		            repPostId = temp;
 		        	String sampleURL = serwer + "/report";
-		       		WebServiceTask wst = new WebServiceTask(WebServiceTask.POSTREPORT_TASK, OknoPost.this, "Trwa zg³aszanie posta, proszê czekaæ...", postId, token);   
+		       		WebServiceTask wst = new WebServiceTask(WebServiceTask.POSTREPORT_TASK, OknoPost.this, "Zg³aszanie posta...", postId, token);   
 		       		wst.execute(new String[] { sampleURL }); 
 		            dialog.dismiss();
 		        }
@@ -202,11 +202,11 @@ public class OknoPost extends Activity {
     {
     	 Bundle b = getIntent().getExtras();
          if(b!=null){
-        	role = b.getString("role");
-        	tags = b.getStringArray("tags");
-    		tagsId = b.getStringArray("tagsId");
-    		favUserId = b.getStringArray("favUserId");
-    		favCategoryId = b.getStringArray("favCategoryId");
+        	 role = b.getString("role");
+         	tags = b.getStringArray("tags");
+     		tagsId = b.getStringArray("tagsId");
+     		favUserId = b.getStringArray("favUserId");
+     		favCategoryId = b.getStringArray("favCategoryId");
          	postId = b.getInt("postId");
          	postText = b.getString("postText");
          	//photo = b.getString("photo");
