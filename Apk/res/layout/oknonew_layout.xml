@@ -93,12 +93,12 @@
             android:ems="10"
             android:textSize="17sp" />
 
-        <Button
+        <ImageButton
             android:id="@+id/buttonDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-            android:text="@string/icon_calendar" />
+            android:src="@drawable/calendar" />
     </LinearLayout>
 
     <TextView
