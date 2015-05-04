@@ -79,7 +79,8 @@ public boolean isDefaulUser()
 		login = prefs.getString("name", "defaultName"); //get a String
 		String Password = prefs.getString("passwd", "defPasswd");
 		try {
-		password = decipher(key, Password);
+		//password = decipher(key, Password);
+		password = Password;
 	} catch (Exception e1) {
 		// TODO Auto-generated catch block
 		e1.printStackTrace();
@@ -98,14 +99,14 @@ public void logIn()
 	serwer = getResources().getString(R.string.server);
 	String sampleURL = serwer + "/login";
     try {
-		cryptedpass = cipher(key, password);
+		//cryptedpass = cipher(key, password);
 	} catch (Exception e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
     TelephonyManager tManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
 	deviceId = tManager.getDeviceId();
-	WebServiceTask wst = new WebServiceTask(WebServiceTask.LOG_TASK, this, "Logowanie...", login, cryptedpass, deviceId);   
+	WebServiceTask wst = new WebServiceTask(WebServiceTask.LOG_TASK, this, "Logowanie...", login, password, deviceId);   
     wst.execute(new String[] { sampleURL }); 
 }
 /**

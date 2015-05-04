@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import com.koushikdutta.ion.Ion;
+
 import android.view.View.OnClickListener;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -16,6 +19,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -23,8 +27,10 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.Display;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.RelativeLayout;
@@ -57,10 +63,10 @@ public class OknoPost extends Activity {
         
        getExtras();
        getAdres(); 
+       // getScreenType();
         
-        
-        picture = Global.img;
-        scalePicture();
+        //picture = Global.img;
+        //scalePicture();
         
         
         ActionBar bar = getActionBar();
@@ -75,8 +81,9 @@ public class OknoPost extends Activity {
 			});
         
         photoView = (ImageView) findViewById(R.id.picture);
-        photoView.setImageBitmap(picture);
-        System.out.println("Rozmiar zdjêcia out"+picture.getWidth()+" "+picture.getHeight());
+        //photoView.setImageBitmap(picture);
+        Ion.with(photoView).placeholder(R.drawable.h6viz).load(photo);
+        //System.out.println("Rozmiar zdjêcia out"+picture.getWidth()+" "+picture.getHeight());
         photoView.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -133,15 +140,28 @@ public class OknoPost extends Activity {
             }			
   		});   
     }
+    
+	public void getScreenType()
+   	{
+   		Display display = getWindowManager().getDefaultDisplay();
+   		Point size = new Point();
+   		display.getSize(size);
+   		int width = size.x;
+   		int height = size.y;
+   		if( (width>1100) && (height>1500) )
+   		{
+   			screenTest=1;
+   		}
+   	}
 
     public void scalePicture()
     {
-    	int w = picture.getWidth();
+    	/*int w = picture.getWidth();
         int h = picture.getHeight();
         if(h>w)
         {
      	   pictureTest=1;
-        }
+        }*/
         if(screenTest==0)
         {
         	System.out.println("jestem tu");
@@ -209,7 +229,7 @@ public class OknoPost extends Activity {
      		favCategoryId = b.getStringArray("favCategoryId");
          	postId = b.getInt("postId");
          	postText = b.getString("postText");
-         	//photo = b.getString("photo");
+         	photo = b.getString("photo");
          	userLogin = b.getString("userLogin");
          	place = b.getString("place");
          	eventTime = b.getString("eventTime");
@@ -254,39 +274,61 @@ public class OknoPost extends Activity {
 		}
     }
     
-    public void pictureZoom(ImageView imageView)
+    public int[] pictureZoom(ImageView imageView)
     {
-    	int w = picture.getWidth();
+    	/*int w = picture.getWidth();
 	    int h = picture.getHeight();
 	    if(h>w)
         {
      	   pictureTest=1;
-        }
+        }*/
 	    if(screenTest==1)
 		    {
+	    	System.out.println(imageView.getWidth()+" "+imageView.getHeight());
 		    	if(pictureTest==0)
 		    	{
-		    		bmp = Bitmap.createScaledBitmap(picture, picture.getWidth()*2-300, picture.getHeight()*2-130, true);
-    			    imageView.setImageBitmap(bmp);
+		    		//bmp = Bitmap.createScaledBitmap(picture, picture.getWidth()*2-300, picture.getHeight()*2-130, true);
+    			    //imageView.setImageBitmap(bmp);
+		    		int width = imageView.getWidth()*2-300;
+		    		int height = imageView.getHeight()*2-130;
+		    		LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(width,height);
+		    		imageView.setLayoutParams(parms);
+		    		Ion.with(imageView).placeholder(R.drawable.h6viz).load(photo);
 		    	}
 		    	if(pictureTest==1)
 		    	{
-		    		bmp = Bitmap.createScaledBitmap(picture, picture.getWidth()*2+120, picture.getHeight()*2+200, true);
-    			    imageView.setImageBitmap(bmp);
+		    		//bmp = Bitmap.createScaledBitmap(picture, picture.getWidth()*2+120, picture.getHeight()*2+200, true);
+    			    //imageView.setImageBitmap(bmp);
+		    		int width = imageView.getWidth()*2+120;
+		    		int height = imageView.getHeight()*2+20;
+		    		LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(width,height);
+		    		imageView.setLayoutParams(parms);
+		    		Ion.with(imageView).placeholder(R.drawable.h6viz).load(photo);
 		    	}
 		    
 		    }
 		    else
 		    {
+		    	System.out.println(imageView.getWidth()+" "+imageView.getHeight());
 		    	if(pictureTest==0)
 		    	{
-		    		bmp = Bitmap.createScaledBitmap(picture, picture.getWidth()+70, picture.getHeight()+70, true);
-    			    imageView.setImageBitmap(bmp);
+		    		//bmp = Bitmap.createScaledBitmap(picture, picture.getWidth()+70, picture.getHeight()+70, true);
+    			    //imageView.setImageBitmap(bmp);
+		    		int width = imageView.getWidth()*2+70;
+		    		int height = imageView.getHeight()*2+70;
+		    		LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(width,height);
+		    		imageView.setLayoutParams(parms);
+		    		Ion.with(imageView).placeholder(R.drawable.h6viz).load(photo);
 		    	}
 		    	if(pictureTest==1)
 		    	{
-		    		bmp = Bitmap.createScaledBitmap(picture, picture.getWidth()*2-100, picture.getHeight()*2, true);
-    			    imageView.setImageBitmap(bmp);
+		    		//bmp = Bitmap.createScaledBitmap(picture, picture.getWidth()*2-100, picture.getHeight()*2, true);
+    			    //imageView.setImageBitmap(bmp);
+		    		int width = imageView.getWidth()*2-100;
+		    		int height = imageView.getHeight()*2;
+		    		LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(width,height);
+		    		imageView.setLayoutParams(parms);
+		    		Ion.with(imageView).placeholder(R.drawable.h6viz).load(photo);
 		    	}
 		    }
         
@@ -295,6 +337,25 @@ public class OknoPost extends Activity {
         	Bitmap b = Bitmap.createScaledBitmap(picture, w*2-140, h*2-100, true);
         	imageView.setImageBitmap(b);
         }*/
+	    
+	    int w,h;
+	    
+	    if(screenTest==0)
+	    {
+	    	w=450;
+	    	h = 650;
+	    }
+	    else
+	    {
+	    	w=1300;
+	    	h=2000;
+	    }
+	    
+	    int[] tab = new int[2];
+	    tab[0]=w;
+	    tab[1]=h;
+	    
+	    return tab;
     }
     
     public void pictureFulscreen()
@@ -311,13 +372,25 @@ public class OknoPost extends Activity {
 		    });
 		    
 		    ImageView imageView = new ImageView(OknoPost.this);
-		    pictureZoom(imageView);
+		    int t[]=pictureZoom(imageView);
 	    
+		    /*int w,h;
 	    
-	    builder.addContentView(imageView, new RelativeLayout.LayoutParams(
-	            ViewGroup.LayoutParams.MATCH_PARENT, 
-	            ViewGroup.LayoutParams.MATCH_PARENT));
-	    builder.show();
+		    if(screenTest==0)
+		    {
+		    	w=450;
+		    	h = 650;
+		    }
+		    else
+		    {
+		    	w=1300;
+		    	h=2000;
+		    }*/
+		    
+		    builder.addContentView(imageView, new RelativeLayout.LayoutParams(
+		            t[0], 
+		            t[1]));
+		    builder.show();
     }
     
     public static Bitmap decodeBase64(String input) 

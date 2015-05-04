@@ -72,7 +72,7 @@ public class OknoMapa extends FragmentActivity{
     public List<Marker> markerYellow;
     public boolean test = false, listTest=false, backTest=false;
     public float zoomTest;
-    public int test2=0;
+    public int test2=0, screenTest;
     public Location mLastLocation;
 	
 	@Override
@@ -106,6 +106,7 @@ public class OknoMapa extends FragmentActivity{
    			repUserId = b.getIntArray("repUserId");
    			folUserName = b.getStringArray("folUserName");
    			myLogin = b.getString("myLogin");
+   			screenTest = b.getInt("screenTest");
         }
 	}
 	
@@ -189,8 +190,8 @@ public class OknoMapa extends FragmentActivity{
 		Intent intent = new Intent(OknoMapa.this, OknoPost.class);
 		intent.putExtra("postId", postId[i]);
     	intent.putExtra("postText",postText[i]);
-    	Global.img = decodeBase64(photo[i]);
-    	//intent.putExtra("photo", photo[i]);
+    	//Global.img = decodeBase64(photo[i]);
+    	intent.putExtra("photo", photo[i]);
     	intent.putExtra("userLogin", userLogin[i]);
     	intent.putExtra("place", place[i]);
     	intent.putExtra("eventTime", eventTime[i]);
@@ -201,6 +202,7 @@ public class OknoMapa extends FragmentActivity{
     	intent.putExtra("repUserId", repUserId);
     	intent.putExtra("folUserName", folUserName);
     	intent.putExtra("myLogin", myLogin);
+    	intent.putExtra("screenTest", screenTest);
     	startActivity(intent);
 	}
 	

@@ -10,7 +10,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="miasta">Wybierz miasto:</string>
-    <string name="stringregulamin">Rejestrując się potwierdzasz, że zapoznałeś się z <u>regulaminem</u> oraz akceptujesz wszelkie jego warunki</string>
     <string-array name="listCategories">
         <item>Wybierz tag</item>
         <item>Sport</item>
@@ -48,8 +47,6 @@
     <string name="news">NEWS</string>
     <string name="account">MY</string>
     <string name="stringrejestracja">Zarejestruj</string>
-    <string name="stringrej">Rejestracja</string>
-    <string name="stringlog">Logowanie</string>
     <string name="kontynuujfacebook">Kontynuuj przez Facebook\'a</string>
     <string name="stringlogowanie">Zaloguj</string>
     <string name="stringbezlogowania">Przejdź do aplikacji</string>
@@ -88,8 +85,12 @@
     <string name="OK">"OK"</string>
     <string name="szukaj">"Wyszukaj"</string>
     <string name="popup2">"Obserwowani użytkownicy"</string>
+    <string name="stringregulamin">Rejestrując się potwierdzasz, że zapoznałeś się z <u>regulaminem</u> oraz akceptujesz wszelkie jego warunki</string>
     <string name="LogOut">"Wyloguj"</string>
     <string name="deletePost">"Usuń</string>
+    <string name="stringrej">Rejestracja</string>
+    <string name="stringlog">Logowanie</string>
     <string name="server">http://158.75.2.10:10000/PicNewsApp/rest/main</string>
     <string name="server2">http://192.168.1.18:8080/RestWebServiceDemo/rest/main</string>
+    <string name="server3">http://192.168.1.18:8080/PicNewsApp/rest/main</string>
 </resources>

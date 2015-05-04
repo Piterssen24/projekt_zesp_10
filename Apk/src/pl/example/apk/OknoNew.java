@@ -597,7 +597,7 @@ public class OknoNew extends FragmentActivity {
     {
     	Bitmap immagex = image;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();  
-        immagex.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        immagex.compress(Bitmap.CompressFormat.JPEG, 80, baos);
         if((immagex!=null) && (!immagex.isRecycled()))
         {
         immagex.recycle();

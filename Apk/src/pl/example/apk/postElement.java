@@ -1,9 +1,17 @@
 package pl.example.apk;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.koushikdutta.ion.Ion;
+
 import android.app.Dialog;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import pl.example.apk.WebServiceTask;
 import android.widget.RelativeLayout;
 import android.view.Window;
@@ -74,7 +82,7 @@ public class postElement extends Fragment {
         	   report.setText(getResources().getString(R.string.deletePost));
            } else {
         	   report.setText(getResources().getString(R.string.stringzglosnaduzycie));
-           }
+          }
            readPost = (TextView) v.findViewById(R.id.readMore);
            readPost.setOnClickListener(new View.OnClickListener() {  			
         	    @Override
@@ -120,7 +128,7 @@ public class postElement extends Fragment {
         	   pictureSee.recycle();
         	   pictureSee = null;
            }
-           pictureOriginal = decodeBase64(photo);
+          /* pictureOriginal = decodeBase64(photo);
            picture = pictureOriginal;
            int w = picture.getWidth();
            int h = picture.getHeight();
@@ -128,14 +136,12 @@ public class postElement extends Fragment {
            {
         	   pictureTest=1;
            }
-           photoView = (ImageView) v.findViewById(R.id.authorPhoto);
-          // photoView.setImageBitmap(picture);
+           */
            
-       	  
-       	   //photoView.setImageBitmap(pictureSee);
-       	   photoView.setLayoutParams(setPictureParams());
-       	   photoView.setImageBitmap(picture);
-       	   
+           photoView = (ImageView) v.findViewById(R.id.authorPhoto);          
+       	   photoView.setLayoutParams(setPictureParams());    	   
+       	   Ion.with(photoView).placeholder(R.drawable.h6viz).load(photo);
+         
        	   photoView.setOnClickListener(new View.OnClickListener() {      			
       			@Override
               	public void onClick(View v) {
@@ -151,13 +157,15 @@ public class postElement extends Fragment {
 			    {
 			    	if(pictureTest==0)
 			    	{
-			    		b = Bitmap.createScaledBitmap(picture, picture.getWidth()*2-300, picture.getHeight()*2-130, true);
-	      			    imageView.setImageBitmap(b);
+			    		//b = Bitmap.createScaledBitmap(picture, picture.getWidth()*2-300, picture.getHeight()*2-130, true);
+	      			    //imageView.setImageBitmap(b);
+			    		Ion.with(imageView).placeholder(R.drawable.h6viz).load(photo);
 			    	}
 			    	if(pictureTest==1)
 			    	{
-			    		b = Bitmap.createScaledBitmap(picture, picture.getWidth()*2+100, picture.getHeight()*2+180, true);
-	      			    imageView.setImageBitmap(b);
+			    		//b = Bitmap.createScaledBitmap(picture, picture.getWidth()*2+100, picture.getHeight()*2+180, true);
+	      			    //imageView.setImageBitmap(b);
+			    		Ion.with(imageView).placeholder(R.drawable.h6viz).load(photo);
 			    	}
 			    
 			    }
@@ -165,13 +173,15 @@ public class postElement extends Fragment {
 			    {
 			    	if(pictureTest==0)
 			    	{
-			    		b = Bitmap.createScaledBitmap(picture, picture.getWidth()-400, picture.getHeight()-250, true);
-	      			    imageView.setImageBitmap(b);
+			    		//b = Bitmap.createScaledBitmap(picture, picture.getWidth()-400, picture.getHeight()-250, true);
+	      			    //imageView.setImageBitmap(b);
+			    		Ion.with(imageView).placeholder(R.drawable.h6viz).load(photo);
 			    	}
 			    	if(pictureTest==1)
 			    	{
-			    		b = Bitmap.createScaledBitmap(picture, picture.getWidth()-150, picture.getHeight()-220, true);
-	      			    imageView.setImageBitmap(b);
+			    		//b = Bitmap.createScaledBitmap(picture, picture.getWidth()-150, picture.getHeight()-220, true);
+	      			    //imageView.setImageBitmap(b);
+			    		Ion.with(imageView).placeholder(R.drawable.h6viz).load(photo);
 			    	}
 			    }
        }
@@ -229,10 +239,22 @@ public class postElement extends Fragment {
 
 			    ImageView imageView = new ImageView(getActivity());
 			    zoomPicture(imageView);
+			    int w,h;
+			    
+			    if(screenTest==0)
+			    {
+			    	w=450;
+			    	h = 650;
+			    }
+			    else
+			    {
+			    	w=1300;
+			    	h=2000;
+			    }
 			    
 			    builder.addContentView(imageView, new RelativeLayout.LayoutParams(
-			            ViewGroup.LayoutParams.MATCH_PARENT, 
-			            ViewGroup.LayoutParams.MATCH_PARENT));
+			            w, 
+			            h));
 			    builder.show();
        }
        
@@ -241,8 +263,8 @@ public class postElement extends Fragment {
     	   Intent intent = new Intent(getActivity(), OknoPost.class);
 	    	intent.putExtra("postId", postId);
 	    	intent.putExtra("postText",postText);
-	    	//intent.putExtra("photo", photo);
-	    	Global.img = decodeBase64(photo);
+	    	intent.putExtra("photo", photo);
+	    	//Global.img = decodeBase64(photo);
 	    	intent.putExtra("userLogin", userLogin);
 	    	intent.putExtra("place", place);
 	    	intent.putExtra("eventTime", eventTime);

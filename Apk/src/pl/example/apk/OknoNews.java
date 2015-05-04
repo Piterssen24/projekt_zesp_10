@@ -1,10 +1,13 @@
 package pl.example.apk;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.zip.GZIPInputStream;
+
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import org.apache.http.HttpResponse;
@@ -151,12 +154,13 @@ public class OknoNews extends Activity implements ScrollViewListener {
    
   		// Setting DrawerToggle on DrawerLayout
   		dLayout.setDrawerListener(mDrawerToggle);
-  		list = new String[tags.length + 3];
+  		list = new String[tags.length + 4];
   		list[0] = "Wszystkie";
   		list[1] = "Ulubione kategorie";
   		list[2] = "Obserwowani u¿ytkownicy";
+  		list[3] = "Najbli¿sze 3 dni";
   		for(int i=0; i<tags.length; i++){
-  			list[i+3] = tags[i];
+  			list[i+4] = tags[i];
   		}
    	// Creating an ArrayAdapter to add items to the listview mDrawerList
   		adapter = new ArrayAdapter<String>(getBaseContext(), R.layout.drawer_list_item , list);
@@ -193,11 +197,18 @@ public class OknoNews extends Activity implements ScrollViewListener {
               		wst = new WebServiceTask(WebServiceTask.NEWSFOLLOWED_TASK, "£adowanie postów...", number, token, folUserName, OknoNews.this);   
               		wst.execute(new String[] { sampleURL }); 
                	break;
+               case 3:
+                  	variant = 5;
+                  	over = false;
+                 		sampleURL = serwer + "/news3Days";
+                 		wst = new WebServiceTask(WebServiceTask.NEWS3DAYS_TASK, "£adowanie postów...", number, token,  OknoNews.this);   
+                 		wst.execute(new String[] { sampleURL }); 
+                  	break;
                default:
                	variant = 4;
                	over = false;
               		sampleURL = serwer + "/newsFiltered";
-              		pos = position - 3;
+              		pos = position - 4;
               		wst = new WebServiceTask(WebServiceTask.NEWSFILTERED_TASK, OknoNews.this, "£adowanie postów...", number, token, tagsId[pos]);   
               		wst.execute(new String[] { sampleURL }); 
                	break;
@@ -424,9 +435,16 @@ public class OknoNews extends Activity implements ScrollViewListener {
                		wst = new WebServiceTask(WebServiceTask.NEWSFILTERED_TASK, OknoNews.this, "£adowanie postów...", Integer.toString(lastId), token, tagsId[pos]);   
                		wst.execute(new String[] { sampleURL }); 
                 	break;
+   				case 5:
+               		sampleURL = serwer + "/news3Days";
+               		wst = new WebServiceTask(WebServiceTask.NEWS3DAYS_TASK, "£adowanie postów...", Integer.toString(lastId), token, OknoNews.this);   
+               		wst.execute(new String[] { sampleURL }); 
+                	break;
    			}
    		}	
    		}
+   		
+   		
    	}
    
    	/**
@@ -437,6 +455,7 @@ public class OknoNews extends Activity implements ScrollViewListener {
    		public static final int NEWSFILTERED_TASK = 3;
    		public static final int NEWSFAVOURITES_TASK = 4;
    		public static final int NEWSFOLLOWED_TASK = 5;
+   		public static final int NEWS3DAYS_TASK = 6;
    		private static final String TAG = "WebServiceTask";
    		// connection timeout, in milliseconds (waiting to connect)
    		private static final int CONN_TIMEOUT = 50000;        
@@ -474,6 +493,14 @@ public class OknoNews extends Activity implements ScrollViewListener {
    			this.number = number;
    			this.token = token;
    			this.folUserName = folUserName;
+   		}
+   		
+   		public WebServiceTask(int taskType, String processMessage, String number, String token, Context mContext){
+   			this.taskType = taskType;
+   			this.mContext = mContext;
+   			this.processMessage = processMessage;
+   			this.number = number;
+   			this.token = token;
    		}
    		
    		public WebServiceTask(int taskType, Context mContext, String processMessage, String number, String token, String tag){
@@ -619,7 +646,30 @@ public class OknoNews extends Activity implements ScrollViewListener {
                           	httpget = new HttpGet(url);
                           	response = httpclient.execute(httpget);
                           	break;
-                          	
+                     
+            		case NEWS3DAYS_TASK:
+                		url2 = serwer + "/news3Days2";
+       				HttpConnectionParams.setConnectionTimeout(httpClient.getParams(), 10000);
+                    json = new JSONObject();
+                    try{
+                    	HttpPost httpPost = new HttpPost(url2);
+      					json.put("id", number);
+      					json.put("token", token);
+      					StringEntity se = new StringEntity(json.toString(), "UTF-8");
+      					httpPost.addHeader("Content-Type","application/json");
+      					httpPost.setEntity(se);
+      					response = httpClient.execute(httpPost);				
+      					/*if(response != null){
+      						response.getEntity().getContent();
+      					}*/
+      				}catch(Exception e){
+      					e.printStackTrace();
+      					//createDialog("Error", "Cannot Estabilish Connection");
+      				}
+                      	httpget = new HttpGet(url);
+                      	response = httpclient.execute(httpget);
+                      	break;
+                      	
             		case NEWSFOLLOWED_TASK:
             			url2 = serwer + "/newsFollowed2";
        				HttpConnectionParams.setConnectionTimeout(httpClient.getParams(), 10000);

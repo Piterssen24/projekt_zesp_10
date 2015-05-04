@@ -8,5 +8,7 @@
 	<classpathentry kind="lib" path="D:/Programy/Workspace/appcompat_v7/libs/android-support-v4.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Julka/.m2/repository/com/google/collections/google-collections/1.0/google-collections-1.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Julka/.m2/repository/com/google/code/findbugs/jsr305/2.0.1/jsr305-2.0.1.jar"/>
+	<classpathentry kind="lib" path="D:/Pobrane/ion-1.2.4.jar"/>
+	<classpathentry kind="lib" path="D:/Pobrane/androidasync-1.1.2-sources.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
